@@ -17,33 +17,34 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     @Override
-    public boolean place(Animal animal) throws IncorrectPositionException {
+    public void place(Animal animal) throws IncorrectPositionException {
         Vector2d position = animal.getCurrentPosition();
 
         if (canMoveTo(position)) {
             animals.put(position, animal);
-            mapChanged("Zwierzak %s ustawiony na pozycji %s.".formatted(animal, position.toString()));
-            return true;
+            mapChanged("Animal placed at %s.".formatted(
+                    position.toString()));
         } else
             throw new IncorrectPositionException(position);
-
     }
 
     @Override
-    public void move(Animal animal, MoveDirection direction) {
+    public void move(Animal animal, MoveDirection move) {
         if (animal == null || !animals.containsValue(animal))
             return;
 
         Vector2d oldPosition = animal.getCurrentPosition();
-        animal.move(this, direction);
+        animal.move(this, move);
 
         Vector2d newPosition = animal.getCurrentPosition();
         if (!oldPosition.equals(newPosition)) {
             animals.remove(oldPosition);
             animals.put(newPosition, animal);
-            mapChanged("Zwierzak %s zmienił pozycję z %s na pozycję  %s.".formatted(animal, oldPosition.toString(),
-                    newPosition, toString()));
+            mapChanged("Animal %s changed position to %s.".formatted(oldPosition.toString(),
+                    newPosition.toString()));
         }
+        mapChanged("Animal %s changed direction to %s.".formatted(animal.getCurrentPosition(),
+                animal.getCurrentOrientation()));
     }
 
     @Override

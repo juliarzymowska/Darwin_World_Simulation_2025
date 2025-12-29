@@ -2,10 +2,7 @@ package agh.ics.oop.model;
 
 import agh.ics.oop.model.util.Boundary;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import static java.lang.Math.sqrt;
 
@@ -14,8 +11,6 @@ public class GrassField extends AbstractWorldMap {
 
     public GrassField(int n) {
         Random random = new Random();
-
-        random.setSeed(2173);
 
         while (grassMap.size() < n) {
             int x = random.nextInt((int) sqrt(n * 10));
@@ -27,6 +22,13 @@ public class GrassField extends AbstractWorldMap {
                 grassMap.put(position, new Grass(position));
             }
         }
+    }
+    @Override
+    public List<WorldElement> getElements() {
+        List<WorldElement> result = super.getElements();
+        result.addAll(grassMap.values());
+
+        return result;
     }
 
     @Override
