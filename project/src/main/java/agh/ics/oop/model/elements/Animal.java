@@ -1,4 +1,9 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.elements;
+
+import agh.ics.oop.model.*;
+import agh.ics.oop.model.util.MapDirection;
+import agh.ics.oop.model.util.MoveValidator;
+import agh.ics.oop.model.util.Vector2d;
 
 public class Animal implements WorldElement {
     private MapDirection currentOrientation = MapDirection.NORTH;

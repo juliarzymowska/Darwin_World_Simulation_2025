@@ -1,5 +1,7 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.observators.MapChangeListener;
+
 public class ConsoleMapDisplay implements MapChangeListener {
     private int actionCounter = 1;
 
