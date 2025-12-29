@@ -1,6 +1,7 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.util.Vector2d;
 
 import java.util.ArrayList;
 import java.util.List;

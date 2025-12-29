@@ -1,8 +1,8 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.Animal;
+import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.WorldMap;
 import agh.ics.oop.model.util.IncorrectPositionException;
 
@@ -21,10 +21,10 @@ public class Simulation implements Runnable {
         for (Vector2d pos : positions) {
             Animal newAnimal = new Animal(pos);
             try {
-                if (map.place(newAnimal))
+                    map.place(newAnimal);
                     animals.add(newAnimal);
             } catch (IncorrectPositionException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.err);
             }
         }
     }
