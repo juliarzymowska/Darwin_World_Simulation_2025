@@ -23,10 +23,14 @@ public class Animal implements WorldElement {
     @Override
     public String toString() {
         return switch (currentOrientation) {
-            case NORTH -> "^";
-            case SOUTH -> "v";
-            case EAST -> ">";
-            case WEST -> "<";
+            case NORTH -> "0";
+            case NORTH_EAST -> "1";
+            case EAST -> "2";
+            case SOUTH_EAST -> "3";
+            case SOUTH -> "4";
+            case SOUTH_WEST -> "5";
+            case WEST -> "6";
+            case NORTH_WEST -> "7";
         };
     }
 
@@ -34,27 +38,14 @@ public class Animal implements WorldElement {
         return currentPosition.equals(position);
     }
 
-    protected void move(MoveValidator validator, MoveDirection direction) {
+    protected void move(MoveValidator validator, MapDirection direction) {
         if (direction == null)
             return;
 
-        Vector2d newPosition = currentPosition;
-        switch (direction) {
-            case MoveDirection.LEFT:
-                currentOrientation = currentOrientation.previous();
-                break;
-            case MoveDirection.RIGHT:
-                currentOrientation = currentOrientation.next();
-                break;
-            case MoveDirection.FORWARD:
-                newPosition = currentPosition.add(currentOrientation.toUnitVector());
-                break;
-            case MoveDirection.BACKWARD:
-                newPosition = currentPosition.subtract(currentOrientation.toUnitVector());
-                break;
-        }
+        Vector2d newPosition = currentPosition.add(direction.toUnitVector());
         if (validator.canMoveTo(newPosition)) {
             currentPosition = newPosition;
+            currentOrientation = direction;
         }
     }
 }

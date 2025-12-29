@@ -29,22 +29,27 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     @Override
-    public void move(Animal animal, MoveDirection move) {
+    public void move(Animal animal, MapDirection move) {
         if (animal == null || !animals.containsValue(animal))
             return;
 
         Vector2d oldPosition = animal.getCurrentPosition();
+        MapDirection oldOrientation = animal.getCurrentOrientation();
         animal.move(this, move);
 
         Vector2d newPosition = animal.getCurrentPosition();
+        MapDirection newOrientation = animal.getCurrentOrientation();
         if (!oldPosition.equals(newPosition)) {
             animals.remove(oldPosition);
             animals.put(newPosition, animal);
-            mapChanged("Animal %s changed position to %s.".formatted(oldPosition.toString(),
-                    newPosition.toString()));
+            if(!oldOrientation.equals(newOrientation)) {
+                mapChanged("Animal %s changed position to %s and changed direction from %s to %s.".formatted(oldPosition,
+                        newPosition, oldOrientation, animal.getCurrentOrientation()));
+            }
+            else {
+                mapChanged("Animal %s changed position to %s".formatted(oldPosition, newPosition));
+            }
         }
-        mapChanged("Animal %s changed direction to %s.".formatted(animal.getCurrentPosition(),
-                animal.getCurrentOrientation()));
     }
 
     @Override

@@ -1,7 +1,7 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.Animal;
-import agh.ics.oop.model.MoveDirection;
+import agh.ics.oop.model.MapDirection;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.WorldMap;
 import agh.ics.oop.model.util.IncorrectPositionException;
@@ -11,10 +11,10 @@ import java.util.List;
 
 public class Simulation implements Runnable {
     private final List<Animal> animals = new ArrayList<>();
-    private final List<MoveDirection> moves;
+    private final List<MapDirection> moves;
     private final WorldMap map;
 
-    public Simulation(List<Vector2d> positions, List<MoveDirection> moves, WorldMap map) {
+    public Simulation(List<Vector2d> positions, List<MapDirection> moves, WorldMap map) {
         this.moves = moves;
         this.map = map;
 
@@ -36,7 +36,7 @@ public class Simulation implements Runnable {
         int n = animals.size();
         for (int i = 0; i < moves.size(); i++) {
             Animal current = animals.get(i % n);
-            MoveDirection direction = moves.get(i);
+            MapDirection direction = moves.get(i);
 
             map.move(current, direction);
         }
