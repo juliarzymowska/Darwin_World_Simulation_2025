@@ -1,7 +1,9 @@
 package agh.ics.oop.model;
 
+import java.util.Random;
 /*
-* Class representing position of an animal on map.
+* Class representing position of an animal on map and its direction.
+* It turns animal by 45 degrees to right.
 * */
 public enum MapDirection {
     /*
@@ -15,6 +17,28 @@ public enum MapDirection {
     SOUTH_WEST, // 5
     WEST, // 6
     NORTH_WEST; // 7
+
+    private static final MapDirection[] DIRECTIONS = MapDirection.values();
+    private static final Integer LENGTH = DIRECTIONS.length;
+    private static final Random random = new Random();
+
+    /*
+    * (for tests)
+    * @return random direction
+    * */
+    public MapDirection getRandomDirection() {
+        return DIRECTIONS[random.nextInt() % LENGTH];
+    }
+
+    /*
+    * (for tests)
+    * Makes the animal turn by 45 degrees to the right.
+    * @param no_turns - number of turns for animal to make
+    * @return direction of animal after turns
+    * */
+    public MapDirection turn(int no_turns) {
+        return DIRECTIONS[(this.ordinal() + no_turns) % LENGTH];
+    }
 
     @Override
     public String toString() {
@@ -33,6 +57,7 @@ public enum MapDirection {
     /*
     * Converts directions to Vector2d positions on map.
     * (new position already moves animal forward in according direction!)
+    * @return new Vector2d according to new position of animal on map
     * */
     public Vector2d toUnitVector() {
         return switch (this) {
