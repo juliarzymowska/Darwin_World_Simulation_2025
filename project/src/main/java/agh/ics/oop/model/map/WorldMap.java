@@ -1,5 +1,6 @@
 package agh.ics.oop.model.map;
 
+import agh.ics.oop.model.MoveDirection;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.elements.Plant;
 import agh.ics.oop.model.elements.WorldElement;
@@ -32,9 +33,9 @@ public interface WorldMap extends MoveValidator {
 
     /**
      * Moves an animal (if it is present on the map) according to specified direction.
-     * If the move is not possible, this method has no effect.
+     * If the move is not possible, this method has no effect null.
      */
-    AbstractMap.SimpleEntry<Vector2d, MapDirection> moveTo(Animal animal, MapDirection direction);
+    AbstractMap.SimpleEntry<Vector2d, MoveDirection> moveTo(Animal animal, MoveDirection direction);
 
     /**
      * Return an animal at a given position.
@@ -60,10 +61,9 @@ public interface WorldMap extends MoveValidator {
 
     void addObserver(MapChangeListener observer);
 
-    void mapChanged();
-
     void removeAnimal(Animal animal);
 
     void removePlant(Vector2d position);
 
+    void mapChanged(WorldMap map, String message);
 }
