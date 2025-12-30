@@ -1,6 +1,6 @@
 package agh.ics.oop.model.map;
 
-import agh.ics.oop.model.MoveDirection;
+import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.elements.Plant;
 import agh.ics.oop.model.elements.WorldElement;
@@ -28,7 +28,7 @@ public class EarthMap implements WorldMap {
         Vector2d position = animal.getCurrentPosition();
         assert canMoveTo(position);
         elementsManager.placeAnimal(animal);
-        mapChanged(this, "placed animal");
+//        mapChanged(this, "placed animal");
     }
 
     @Override
@@ -40,7 +40,7 @@ public class EarthMap implements WorldMap {
 //    @Override
 //    public AbstractMap.SimpleEntry<Vector2d, MapDirection> moveTo(Animal animal, MapDirection direction) {
     @Override
-    public AbstractMap.SimpleEntry<Vector2d, MoveDirection> moveTo(Animal animal, MoveDirection direction) {
+    public AbstractMap.SimpleEntry<Vector2d, MapDirection> moveTo(Animal animal, MapDirection direction) {
         removeAnimal(animal);
         animal.move(this, direction);
         placeAnimal(animal);
