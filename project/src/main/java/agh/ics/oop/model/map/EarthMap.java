@@ -1,5 +1,6 @@
 package agh.ics.oop.model.map;
 
+import agh.ics.oop.model.MoveDirection;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.elements.Plant;
 import agh.ics.oop.model.elements.WorldElement;
@@ -27,7 +28,7 @@ public class EarthMap implements WorldMap {
         Vector2d position = animal.getCurrentPosition();
         assert canMoveTo(position);
         elementsManager.placeAnimal(animal);
-
+        mapChanged(this, "placed animal");
     }
 
     @Override
@@ -36,11 +37,14 @@ public class EarthMap implements WorldMap {
         elementsManager.removeAnimal(animal);
     }
 
+//    @Override
+//    public AbstractMap.SimpleEntry<Vector2d, MapDirection> moveTo(Animal animal, MapDirection direction) {
     @Override
-    public AbstractMap.SimpleEntry<Vector2d, MapDirection> moveTo(Animal animal, MapDirection direction) {
+    public AbstractMap.SimpleEntry<Vector2d, MoveDirection> moveTo(Animal animal, MoveDirection direction) {
         removeAnimal(animal);
         animal.move(this, direction);
         placeAnimal(animal);
+        mapChanged(this, "moved animal");
         return null;
     }
 
@@ -109,9 +113,9 @@ public class EarthMap implements WorldMap {
     }
 
     @Override
-    public void mapChanged() {
+    public void mapChanged(WorldMap map, String message) {
         for (MapChangeListener observer : observers) {
-            observer.mapChanged(this,"");
+            observer.mapChanged(this,message);
         }
     }
 

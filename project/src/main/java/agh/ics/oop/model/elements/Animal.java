@@ -43,7 +43,7 @@ public class Animal implements WorldElement {
         return currentPosition.equals(position);
     }
 
-    protected void move(MoveValidator validator, MapDirection direction) {
+    public void move(MoveValidator validator, MoveDirection direction) {
         if (direction == null)
             return;
 

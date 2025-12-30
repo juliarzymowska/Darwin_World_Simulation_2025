@@ -1,11 +1,11 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.map.EarthMap;
 import agh.ics.oop.model.util.Vector2d;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class World {
     static void main() {
@@ -13,7 +13,7 @@ public class World {
                 MapDirection.SOUTH_WEST, MapDirection.WEST);
         List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(3, 4), new Vector2d(0, 0));
         ConsoleMapDisplay consoleMapDisplay = new ConsoleMapDisplay();
-        AbstractWorldMap map = new RectangularMap(10, 10);
+        WorldMap map = new EarthMap(10, 10, 10);
         map.addObserver(consoleMapDisplay);
         Simulation simulation = new Simulation(positions, directions, map);
         simulation.run();
