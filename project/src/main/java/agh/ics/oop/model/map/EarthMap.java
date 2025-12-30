@@ -37,20 +37,46 @@ public class EarthMap implements WorldMap {
         elementsManager.removeAnimal(animal);
     }
 
-//    @Override
-//    public AbstractMap.SimpleEntry<Vector2d, MapDirection> moveTo(Animal animal, MapDirection direction) {
     @Override
-    public AbstractMap.SimpleEntry<Vector2d, MapDirection> moveTo(Animal animal, MapDirection direction) {
+    public void moveTo(Animal animal, MapDirection direction) {
         removeAnimal(animal);
-        animal.move(this, direction);
+        Vector2d currentPosition = animal.getCurrentPosition();
+        MapDirection currentOrientation = animal.getCurrentOrientation().turn(direction.toInt());
+        Vector2d newPosition = currentPosition.add(currentOrientation.toUnitVector());
+        if (canMoveTo(newPosition)) {
+            animal.move(newPosition, direction);
+        }
+        else{
+            PositionAndDirection posAndDir = positionAndDirectionOnBorder(currentPosition, currentOrientation);
+            animal.move(posAndDir.getPosition(), posAndDir.getDirection());
+        }
         placeAnimal(animal);
         mapChanged(this, "moved animal");
-        return null;
     }
 
-    public AbstractMap.SimpleEntry<Vector2d,MapDirection> positionAndDirectionOnBorder(Animal animal) {
-        Vector2d position = animal.getCurrentPosition();
-        return null;
+    public PositionAndDirection positionAndDirectionOnBorder(Vector2d position, MapDirection direction) {
+        int minX = leftDownMapCorner.getX();
+        int maxX = rightUpMapCorner.getX();
+
+        int minY = leftDownMapCorner.getY();
+        int maxY = rightUpMapCorner.getY();
+
+        int x = position.getX();
+        int y = position.getY();
+        int new_x = x;
+        MapDirection actual_direction = switch (direction){
+            case NORTH_EAST -> MapDirection.SOUTH_EAST;
+            case EAST, WEST-> direction;
+            case SOUTH_EAST -> MapDirection.NORTH_EAST;
+            case NORTH, SOUTH -> direction.turn(4);
+            case SOUTH_WEST -> MapDirection.NORTH_WEST;
+            case NORTH_WEST ->  MapDirection.SOUTH_WEST;
+        };
+
+        new_x = minX + maxX - x;
+
+        Vector2d actual_pos = new Vector2d(new_x,y);
+        return new PositionAndDirection(actual_pos, actual_direction);
     }
 
     @Override

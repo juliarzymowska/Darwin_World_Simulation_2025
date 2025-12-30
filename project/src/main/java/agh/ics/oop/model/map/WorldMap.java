@@ -9,7 +9,6 @@ import agh.ics.oop.model.util.Boundary;
 import agh.ics.oop.model.util.MoveValidator;
 import agh.ics.oop.model.util.Vector2d;
 
-import java.util.AbstractMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,7 +33,7 @@ public interface WorldMap extends MoveValidator {
      * Moves an animal (if it is present on the map) according to specified direction.
      * If the move is not possible, this method has no effect null.
      */
-    AbstractMap.SimpleEntry<Vector2d, MapDirection> moveTo(Animal animal, MapDirection direction);
+    void moveTo(Animal animal, MapDirection direction);
 
     /**
      * Return an animal at a given position.

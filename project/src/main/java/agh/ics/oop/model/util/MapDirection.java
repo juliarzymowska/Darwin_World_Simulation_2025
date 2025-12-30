@@ -71,4 +71,17 @@ public enum MapDirection {
             case NORTH_WEST -> new Vector2d(-1,1);
         };
     }
+
+    public int toInt(){
+        return switch (this) {
+            case NORTH -> 0;
+            case NORTH_EAST -> 1;
+            case EAST -> 2;
+            case SOUTH_EAST -> 3;
+            case SOUTH -> 4;
+            case SOUTH_WEST -> 5;
+            case WEST -> 6;
+            case NORTH_WEST -> 7;
+        };
+    }
 }
