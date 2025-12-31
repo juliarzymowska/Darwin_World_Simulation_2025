@@ -27,7 +27,7 @@ public enum MapDirection {
     * @return random direction
     * */
     public MapDirection getRandomDirection() {
-        return DIRECTIONS[random.nextInt() % LENGTH];
+        return DIRECTIONS[random.nextInt(LENGTH)];
     }
 
     /*
