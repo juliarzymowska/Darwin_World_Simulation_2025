@@ -47,14 +47,13 @@ public class EarthMap implements WorldMap {
             animal.move(newPosition, direction);
         }
         else{
-            PositionAndDirection posAndDir = positionAndDirectionOnBorder(currentPosition, currentOrientation);
-            animal.move(posAndDir.getPosition(), posAndDir.getDirection());
+            animal.move(positionOnBorder(currentPosition), directionOnBorder(currentOrientation));
         }
         placeAnimal(animal);
         mapChanged(this, "moved animal");
     }
 
-    public PositionAndDirection positionAndDirectionOnBorder(Vector2d position, MapDirection direction) {
+    public Vector2d positionOnBorder(Vector2d position) {
         int minX = leftDownMapCorner.getX();
         int maxX = rightUpMapCorner.getX();
 
@@ -64,7 +63,14 @@ public class EarthMap implements WorldMap {
         int x = position.getX();
         int y = position.getY();
         int new_x = x;
-        MapDirection actual_direction = switch (direction){
+
+        new_x = minX + maxX - x;
+
+        return new Vector2d(new_x,y);
+    }
+
+    private MapDirection directionOnBorder(MapDirection direction) {
+        return switch (direction){
             case NORTH_EAST -> MapDirection.SOUTH_EAST;
             case EAST, WEST-> direction;
             case SOUTH_EAST -> MapDirection.NORTH_EAST;
@@ -72,11 +78,6 @@ public class EarthMap implements WorldMap {
             case SOUTH_WEST -> MapDirection.NORTH_WEST;
             case NORTH_WEST ->  MapDirection.SOUTH_WEST;
         };
-
-        new_x = minX + maxX - x;
-
-        Vector2d actual_pos = new Vector2d(new_x,y);
-        return new PositionAndDirection(actual_pos, actual_direction);
     }
 
     @Override
