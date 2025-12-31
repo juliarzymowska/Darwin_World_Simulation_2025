@@ -28,7 +28,11 @@ public class EarthMap implements WorldMap {
         Vector2d position = animal.getCurrentPosition();
         assert canMoveTo(position);
         elementsManager.placeAnimal(animal);
-//        mapChanged(this, "placed animal");
+        mapChanged(this, "placed animal");
+    }
+
+    public void updateAnimal(Animal animal) {
+        elementsManager.placeAnimal(animal);
     }
 
     @Override
@@ -49,7 +53,7 @@ public class EarthMap implements WorldMap {
         else{
             animal.move(positionOnBorder(currentPosition), directionOnBorder(currentOrientation));
         }
-        placeAnimal(animal);
+        updateAnimal(animal);
         mapChanged(this, "moved animal");
     }
 
