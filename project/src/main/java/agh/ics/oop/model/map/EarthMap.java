@@ -70,9 +70,8 @@ public class EarthMap implements WorldMap {
 
         int x = position.getX();
         int y = position.getY();
-        int new_x = x;
 
-        new_x = minX + maxX - x;
+        int new_x = minX + maxX - x;
 
         return new Vector2d(new_x,y);
     }
