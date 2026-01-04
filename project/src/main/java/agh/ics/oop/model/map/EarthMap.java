@@ -28,7 +28,11 @@ public class EarthMap implements WorldMap {
         Vector2d position = animal.getCurrentPosition();
         assert canMoveTo(position);
         elementsManager.placeAnimal(animal);
-//        mapChanged(this, "placed animal");
+        mapChanged(this, "placed animal");
+    }
+
+    public void updateAnimal(Animal animal) {
+        elementsManager.placeAnimal(animal);
     }
 
     @Override
@@ -37,20 +41,50 @@ public class EarthMap implements WorldMap {
         elementsManager.removeAnimal(animal);
     }
 
-//    @Override
-//    public AbstractMap.SimpleEntry<Vector2d, MapDirection> moveTo(Animal animal, MapDirection direction) {
     @Override
-    public AbstractMap.SimpleEntry<Vector2d, MapDirection> moveTo(Animal animal, MapDirection direction) {
+    public void moveTo(Animal animal, MapDirection direction) {
         removeAnimal(animal);
-        animal.move(this, direction);
-        placeAnimal(animal);
+        Vector2d currentPosition = animal.getCurrentPosition();
+        MapDirection currentOrientation = animal.getCurrentOrientation().turn(direction.toInt());
+        Vector2d newPosition = currentPosition.add(currentOrientation.toUnitVector());
+        if (canMoveTo(newPosition)) {
+            animal.move(newPosition, direction);
+        }
+        else{
+            if (currentPosition.getY() == leftDownMapCorner.getY() || currentPosition.getY() == rightUpMapCorner.getY()){
+                animal.move(positionOnBorder(currentPosition), directionOnBorder(currentOrientation));
+            }
+            else{
+                newPosition = new Vector2d(positionOnBorder(currentPosition).getX(), newPosition.getY());
+                animal.move(newPosition, currentOrientation);
+            }
+
+        }
+        updateAnimal(animal);
         mapChanged(this, "moved animal");
-        return null;
     }
 
-    public AbstractMap.SimpleEntry<Vector2d,MapDirection> positionAndDirectionOnBorder(Animal animal) {
-        Vector2d position = animal.getCurrentPosition();
-        return null;
+    public Vector2d positionOnBorder(Vector2d position) {
+        int minX = leftDownMapCorner.getX();
+        int maxX = rightUpMapCorner.getX();
+
+        int x = position.getX();
+        int y = position.getY();
+
+        int new_x = minX + maxX - x;
+
+        return new Vector2d(new_x,y);
+    }
+
+    private MapDirection directionOnBorder(MapDirection direction) {
+        return switch (direction){
+            case NORTH_EAST -> MapDirection.SOUTH_EAST;
+            case EAST, WEST-> direction;
+            case SOUTH_EAST -> MapDirection.NORTH_EAST;
+            case NORTH, SOUTH -> direction.turn(4);
+            case SOUTH_WEST -> MapDirection.NORTH_WEST;
+            case NORTH_WEST ->  MapDirection.SOUTH_WEST;
+        };
     }
 
     @Override
