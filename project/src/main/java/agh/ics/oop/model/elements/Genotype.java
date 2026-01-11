@@ -15,7 +15,7 @@ public class Genotype {
      * For animals to be placed on map at the beginning of simulation.
      * @param genotypeLength - length of genotype
      * @return new random genotype
-     * TODO: move to RandomGenotypeGenerator
+     * TODO: move to RandomGenotypeGenerator???
      * */
     public Genotype(int genotypeLength) {
         for (int i = 0; i < genotypeLength; i++) {
@@ -29,7 +29,7 @@ public class Genotype {
      * @param father - father animal
      * @param mother - mother animal
      * @return new genotype created from parents' genotypes
-     * TODO: move to RandomGenotypeGenerator
+     * TODO: move to RandomGenotypeGenerator???
      * */
     public Genotype(Animal father, Animal mother) {
         int genotypeLength = father.getGenotype().getGenotypeList().size();
