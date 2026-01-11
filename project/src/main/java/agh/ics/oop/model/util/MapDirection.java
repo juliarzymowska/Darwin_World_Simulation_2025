@@ -24,10 +24,10 @@ public enum MapDirection {
     private static final Random random = new Random();
 
     /*
-    * (for tests)
-    * @return random direction
-    * */
-    public MapDirection getRandomDirection() {
+     * (for tests)
+     * @return random direction
+     * */
+    public static MapDirection getRandomDirection() {
         return DIRECTIONS[random.nextInt(LENGTH)];
     }
 
@@ -73,7 +73,7 @@ public enum MapDirection {
         };
     }
 
-    public int toInt(){
+    public int toInt() {
         return switch (this) {
             case NORTH -> 0;
             case NORTH_EAST -> 1;

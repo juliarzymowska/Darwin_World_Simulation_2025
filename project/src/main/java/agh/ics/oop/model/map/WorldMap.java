@@ -25,7 +25,6 @@ public interface WorldMap extends MoveValidator {
      * Place a new animal on the map.
      *
      * @param animal The animal to be placed on the map.
-
      */
     void placeAnimal(Animal animal);
 
@@ -33,7 +32,7 @@ public interface WorldMap extends MoveValidator {
      * Moves an animal (if it is present on the map) according to specified direction.
      * If the move is not possible, this method has no effect null.
      */
-    void moveTo(Animal animal, MapDirection direction);
+    void moveTo(Animal animal);
 
     /**
      * Return an animal at a given position.
