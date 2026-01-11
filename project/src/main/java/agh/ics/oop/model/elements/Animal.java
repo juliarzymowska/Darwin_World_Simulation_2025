@@ -16,28 +16,40 @@ public class Animal implements WorldElement {
     private MapDirection currentOrientation;
     private Vector2d currentPosition;
 
-    private int currentEnergy, currentAge = 0, numberOfChildren = 0, numberOfEatenPlants = 0, dayOfDeath = -1,
-            numberOfDescendants = 0;
-    private List<Integer> genotype = new ArrayList<>(); // TODO: make RandomGenotypeGenerator
-    private int genotypeLength;
+    private int currentEnergy, currentAge = 0, numberOfChildren = 0, numberOfEatenPlants = 0,
+            numberOfDescendants = 0, dayOfBirth = 0, dayOfDeath = -1;
+    protected boolean isAlive = true;
+    private final Genotype genotype;
+    private int genotypeLength; // apply from config
     private List<Animal> parents = null;
 
 
     /*
-     * Konstruktory klasy Animal.
+     * Constructor of Animal class.
+     * For animals to be placed on map at the beginning of simulation.
+     * @param position - initial position of animal on map
      * */
     public Animal(Vector2d position) {
         this.currentPosition = position;
-        this.genotype = List.of(0, 2); // default genotype
-        this.genotypeLength = this.genotype.size();
-        this.currentEnergy = 100; // default energy
+        this.genotypeLength = 3;
+        this.genotype = new Genotype(genotypeLength);
+        this.currentEnergy = 100; // default energy, apply from config
         this.currentOrientation = MapDirection.getRandomDirection();
     }
 
-    public Animal(Vector2d position, int energy) {
-        this.currentPosition = position;
-        this.currentEnergy = energy;
+    /*
+     * Constructor of Animal class.
+     * For animals to be placed on map via reproduction.
+     * @param position - initial position of animal on map
+     * @param energy - initial energy of animal
+     * */
+    public Animal(Animal father, Animal mother, int currentDay) {
+        this.currentPosition = new Vector2d(father.getCurrentPosition().getX(), father.getCurrentPosition().getY());
+        this.parents = List.of(father, mother);
+        this.genotype = new Genotype(father, mother);
         this.currentOrientation = MapDirection.getRandomDirection();
+        this.currentEnergy = 2 * 50; // energy from parents, apply reproduction cost from config
+        this.dayOfBirth = currentDay;
     }
 
     /*
@@ -51,7 +63,7 @@ public class Animal implements WorldElement {
         return currentPosition;
     }
 
-    public List<Integer> getGenotype() {
+    public Genotype getGenotype() {
         return genotype;
     }
 
@@ -139,8 +151,8 @@ public class Animal implements WorldElement {
     }
 
     public void move(Vector2d newPosition, MapDirection newOrientation) {
-            currentPosition = newPosition;
-            currentOrientation = newOrientation;
+        currentPosition = newPosition;
+        currentOrientation = newOrientation;
     }
 
 }
