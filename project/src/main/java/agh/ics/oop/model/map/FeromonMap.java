@@ -23,31 +23,32 @@ public class FeromonMap extends EarthMap{
     }
 
     @Override
-    public void moveTo(Animal animal, MapDirection direction){
+    public void moveTo(Animal animal){
         Vector2d currentPos = animal.getCurrentPosition();
-        // Do poprawienia na lepszą złożoność, narazie O(n^2)
+        // Do poprawienia na lepszą złożoność, narazie O(n^2), obsługa zapachów na granicach mapy
         if (random.nextDouble() < probability){
             Optional<Feromon> feromonOpt = feromons.entrySet().stream()
                     .filter(e -> e.getKey().manhattanMetricDistance(currentPos) <= range)
                     .map(Map.Entry::getValue)
-                    .sorted()
-                    .findFirst();
+                    .max(Comparator.naturalOrder());
 
             if (feromonOpt.isPresent()){
+                removeAnimal(animal);
                 Feromon feromon = feromonOpt.get();
-                Vector2d move = new Vector2d(Integer.compare(feromon.getCurrentPosition().getX(), currentPos.getX()),Integer.compare(feromon.getCurrentPosition().getY(), currentPos.getY()));
+                Vector2d unitOrientation = new Vector2d(Integer.compare(feromon.getCurrentPosition().getX(), currentPos.getX()),Integer.compare(feromon.getCurrentPosition().getY(), currentPos.getY()));
 
-                Vector2d nextPosition = currentPos.add(move);
-                MapDirection nextDirection = move.toMapDirection();
-                animal.move(nextPosition, nextDirection);
+                Vector2d newPosition = currentPos.add(unitOrientation);
+                MapDirection newDirection = unitOrientation.toMapDirection();
+                animal.move(newPosition, newDirection);
+                updateAnimal(animal);
             }
             else{
-                super.moveTo(animal, direction);
+                super.moveTo(animal);
             }
 
         }
         else{
-            super.moveTo(animal, direction);
+            super.moveTo(animal);
         }
     }
     public void addFeromon(Vector2d position){
