@@ -25,6 +25,17 @@ public class Genotype {
     }
 
     /*
+     * (for tests)
+     * Constructor of Genotype class.
+     * @param genotype - predefined genotype
+     * @return new genotype with given genes
+     * */
+    public Genotype(List<Integer> genotype) {
+        this.genotype = genotype;
+        this.activeGeneIndex = random.nextInt(genotype.size());
+    }
+
+    /*
      * Genotype constructor for child animal created from two parents.
      * @param father - father animal
      * @param mother - mother animal

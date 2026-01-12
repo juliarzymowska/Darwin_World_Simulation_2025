@@ -1,7 +1,5 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.util;
 
-import agh.ics.oop.model.util.MapDirection;
-import agh.ics.oop.model.util.Vector2d;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -24,6 +22,7 @@ public class MapDirectionTest {
         String result = direction.toString();
         assertEquals(expected, result);
     }
+
     @ParameterizedTest
     @CsvSource({
             "NORTH, 0,1",
@@ -36,7 +35,7 @@ public class MapDirectionTest {
             "NORTH_WEST, -1,1"
     })
     void toUnit(MapDirection direction, int x, int y) {
-        Vector2d expected = new Vector2d(x,y);
+        Vector2d expected = new Vector2d(x, y);
         Vector2d result = direction.toUnitVector();
         assertEquals(expected, result);
     }
