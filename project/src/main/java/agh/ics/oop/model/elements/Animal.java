@@ -1,27 +1,22 @@
 package agh.ics.oop.model.elements;
 
+import agh.ics.oop.configuration.ConfigAnimal;
 import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.util.Vector2d;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /*
- * Klasa reprezentująca zwierzę na mapie.
- * Zwierzę posiada orientację, pozycję oraz statystyki takie jak energia, wiek, liczba dzieci i liczba zjedzonych roślin.
- * Zwierzę może się poruszać na mapie zgodnie z określonymi zasadami walidacji ruchu.
- * TODO: przenieść statystyki do osobnej klasy AnimalStats
+ * Class representing an animal in the simulation.
+ * Contains information about the animal's position, orientation, energy, age, genotype, and other statistics.
  * */
 public class Animal implements WorldElement {
     private MapDirection currentOrientation;
     private Vector2d currentPosition;
+    private final ConfigAnimal config = new ConfigAnimal();
 
     private int currentEnergy, currentAge = 0, numberOfChildren = 0, numberOfEatenPlants = 0,
             numberOfDescendants = 0, dayOfBirth = 0, dayOfDeath = -1;
     protected boolean isAlive = true;
     private final Genotype genotype;
-    private int genotypeLength; // apply from config
-    private List<Animal> parents = null;
 
 
     /*
@@ -31,9 +26,8 @@ public class Animal implements WorldElement {
      * */
     public Animal(Vector2d position) {
         this.currentPosition = position;
-        this.genotypeLength = 3;
-        this.genotype = new Genotype(genotypeLength);
-        this.currentEnergy = 100; // default energy, apply from config
+        this.genotype = new Genotype(config.genotypeLength());
+        this.currentEnergy = config.initialEnergy();
         this.currentOrientation = MapDirection.getRandomDirection();
     }
 
@@ -45,15 +39,14 @@ public class Animal implements WorldElement {
      * */
     public Animal(Animal father, Animal mother, int currentDay) {
         this.currentPosition = new Vector2d(father.getCurrentPosition().getX(), father.getCurrentPosition().getY());
-        this.parents = List.of(father, mother);
         this.genotype = new Genotype(father, mother);
         this.currentOrientation = MapDirection.getRandomDirection();
-        this.currentEnergy = 2 * 50; // energy from parents, apply reproduction cost from config
+        this.currentEnergy = 2 * config.energyToReproduce(); // energy from parents, apply reproduction cost from config
         this.dayOfBirth = currentDay;
     }
 
     /*
-     * Gettery
+     * Getters
      * */
     public MapDirection getCurrentOrientation() {
         return currentOrientation;
@@ -71,11 +64,7 @@ public class Animal implements WorldElement {
         return currentEnergy;
     }
 
-    public int getCurrentEnergy() {
-        return currentEnergy;
-    }
-
-    public int getCurrentAge() {
+    public int getAge() {
         return currentAge;
     }
 
@@ -96,40 +85,35 @@ public class Animal implements WorldElement {
     }
 
     /*
-     * Settery
+     * Setters
      * */
-    public int setCurrentEnergy(int energy) {
+    public void setCurrentEnergy(int energy) {
         this.currentEnergy = energy;
-        return this.currentEnergy;
     }
 
-    public int setNumberOfChildren(int numberOfChildren) {
+    public void setNumberOfChildren(int numberOfChildren) {
         this.numberOfChildren = numberOfChildren;
-        return this.numberOfChildren;
     }
 
-    public int setNumberOfEatenPlants(int numberOfEatenPlants) {
+    public void setNumberOfEatenPlants(int numberOfEatenPlants) {
         this.numberOfEatenPlants = numberOfEatenPlants;
-        return this.numberOfEatenPlants;
     }
 
-    public int setDayOfDeath(int dayOfDeath) {
+    public void setDayOfDeath(int dayOfDeath) {
         this.dayOfDeath = dayOfDeath;
-        return this.dayOfDeath;
     }
 
-    public int setNumberOfDescendants(int numberOfDescendants) {
+    public void setNumberOfDescendants(int numberOfDescendants) {
         this.numberOfDescendants = numberOfDescendants;
-        return this.numberOfDescendants;
     }
 
-    public int setCurrentAge(int currentAge) {
+    public void setCurrentAge(int currentAge) {
         this.currentAge = currentAge;
-        return this.currentAge;
     }
 
-    public void decreaseEnergy(int amount) {
-        this.currentEnergy -= amount;
+    // for movement
+    public void decreaseEnergy() {
+        this.currentEnergy -= config.energyConsumedByMove();
     }
 
     @Override
