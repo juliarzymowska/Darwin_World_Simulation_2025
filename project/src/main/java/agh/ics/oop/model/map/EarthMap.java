@@ -28,12 +28,8 @@ public class EarthMap implements WorldMap {
         Vector2d position = animal.getCurrentPosition();
         assert canMoveTo(position);
         elementsManager.placeAnimal(animal);
-        mapChanged(this, "placed animal");
+        mapChanged(this, "placed animal %s".formatted(position));
     }
-
-//    public void updateAnimal(Animal animal) {
-//        elementsManager.placeAnimal(animal);
-//    }
 
     @Override
     public void removeAnimal(Animal animal) {
@@ -44,26 +40,51 @@ public class EarthMap implements WorldMap {
     @Override
     public void moveTo(Animal animal) {
         removeAnimal(animal);
+
+        Vector2d currentPosition = animal.getCurrentPosition();
+        MapDirection newOrientation = calculateNewOrientation(animal);
+        Vector2d newPosition = calculateNewPosition(animal);
+
+        boolean isAlive = animal.move(newPosition, newOrientation);
+
+        if (isAlive) {
+            elementsManager.placeAnimal(animal);
+            mapChanged(this, "moved animal %s to %s".formatted(currentPosition, newPosition));
+        } else {
+            mapChanged(this, "animal died %s at %s".formatted(currentPosition, newPosition));
+        }
+    }
+
+    private Vector2d calculateNewPosition(Animal animal) {
         Vector2d currentPosition = animal.getCurrentPosition();
         int currentGene = animal.getGenotype().getActiveGene();
-//        MapDirection currentOrientation = animal.getCurrentOrientation();
         MapDirection newOrientation = animal.getCurrentOrientation().turn(currentGene);
-//        MapDirection currentOrientation = animal.getCurrentOrientation().turn(direction.toInt());
         Vector2d newPosition = currentPosition.add(newOrientation.toUnitVector());
+
         if (canMoveTo(newPosition)) {
-            animal.move(newPosition, newOrientation);
+            return newPosition;
         } else {
             if (currentPosition.getY() == leftDownMapCorner.getY() || currentPosition.getY() == rightUpMapCorner.getY()) {
-                animal.move(positionOnBorder(currentPosition), directionOnBorder(newOrientation));
+                return positionOnBorder(currentPosition);
             } else {
-                newPosition = new Vector2d(positionOnBorder(currentPosition).getX(), newPosition.getY());
-                animal.move(newPosition, newOrientation);
+                return new Vector2d(positionOnBorder(currentPosition).getX(), newPosition.getY());
             }
 
         }
-//        updateAnimal(animal);
-        elementsManager.placeAnimal(animal);
-        mapChanged(this, "moved animal");
+    }
+
+    private MapDirection calculateNewOrientation(Animal animal) {
+        int currentGene = animal.getGenotype().getActiveGene();
+        MapDirection newOrientation = animal.getCurrentOrientation().turn(currentGene);
+
+        if (isOnVerticalBorder(animal.getCurrentPosition())) {
+            return directionOnBorder(newOrientation);
+        }
+        return newOrientation;
+    }
+
+    private boolean isOnVerticalBorder(Vector2d position) {
+        return position.getX() == leftDownMapCorner.getX() || position.getX() == rightUpMapCorner.getX();
     }
 
     public Vector2d positionOnBorder(Vector2d position) {

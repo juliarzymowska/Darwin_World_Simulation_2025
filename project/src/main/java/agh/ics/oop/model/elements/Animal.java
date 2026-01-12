@@ -1,6 +1,7 @@
 package agh.ics.oop.model.elements;
 
 import agh.ics.oop.configuration.ConfigAnimal;
+import agh.ics.oop.model.map.EarthMap;
 import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.util.Vector2d;
 
@@ -68,6 +69,10 @@ public class Animal implements WorldElement {
         return currentAge;
     }
 
+    public boolean isAlive() {
+        return isAlive;
+    }
+
     public int getNumberOfChildren() {
         return numberOfChildren;
     }
@@ -99,10 +104,6 @@ public class Animal implements WorldElement {
         this.numberOfEatenPlants = numberOfEatenPlants;
     }
 
-    public void setDayOfDeath(int dayOfDeath) {
-        this.dayOfDeath = dayOfDeath;
-    }
-
     public void setNumberOfDescendants(int numberOfDescendants) {
         this.numberOfDescendants = numberOfDescendants;
     }
@@ -111,10 +112,6 @@ public class Animal implements WorldElement {
         this.currentAge = currentAge;
     }
 
-    // for movement
-    public void decreaseEnergy() {
-        this.currentEnergy -= config.energyConsumedByMove();
-    }
 
     @Override
     public String toString() {
@@ -130,13 +127,37 @@ public class Animal implements WorldElement {
         };
     }
 
+    // methods
     public boolean isAt(Vector2d position) {
         return currentPosition.equals(position);
     }
 
-    public void move(Vector2d newPosition, MapDirection newOrientation) {
-        currentPosition = newPosition;
-        currentOrientation = newOrientation;
+    // for movement
+    private void decreaseEnergy() {
+        this.currentEnergy -= config.energyConsumedByMove();
+    }
+
+    public void die(int currentDay) {
+        if (!isAlive)
+            return; // already dead
+        this.isAlive = false;
+        this.currentEnergy = 0;
+        this.dayOfDeath = currentDay;
+    }
+
+    public boolean move(Vector2d position, MapDirection orientation) {
+        if (!isAlive)
+            return false;
+        decreaseEnergy();
+
+        if (currentEnergy <= 0) {
+            isAlive = false;
+            return false;
+        }
+        this.currentOrientation = orientation;
+        this.currentPosition = position;
+        genotype.moveToNextGene();
+        return true;
     }
 
 }
