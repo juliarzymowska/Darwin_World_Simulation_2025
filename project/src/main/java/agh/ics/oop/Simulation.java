@@ -11,7 +11,8 @@ public class Simulation implements Runnable {
     private final List<Animal> animals = new ArrayList<>();
     private final WorldMap map;
     // some error for config file that doesn't let user make a genotypeLength = 0!
-
+    // error for config file when number of grass per day is bigger than map tiles number
+    // random animal position generation
     public Simulation(List<Vector2d> positions, WorldMap map) {
         this.map = map;
 
