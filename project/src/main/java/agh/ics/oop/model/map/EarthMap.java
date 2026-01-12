@@ -19,7 +19,7 @@ public class EarthMap implements WorldMap {
 
     public EarthMap(int width, int height, int startGrass) {
         this.rightUpMapCorner = new Vector2d(width - 1, height - 1);
-        elementsManager.addPlants(startGrass, rightUpMapCorner.getX(),  rightUpMapCorner.getY());
+        elementsManager.addPlants(startGrass, rightUpMapCorner.getX(), rightUpMapCorner.getY());
     }
 
     //Usunęłam wyjątek, bo jak będą się pojawiać złe pozycje to jest to błąd programisty i nie chcemy tego obsługiwać w trakcie
@@ -31,9 +31,9 @@ public class EarthMap implements WorldMap {
         mapChanged(this, "placed animal");
     }
 
-    public void updateAnimal(Animal animal) {
-        elementsManager.placeAnimal(animal);
-    }
+//    public void updateAnimal(Animal animal) {
+//        elementsManager.placeAnimal(animal);
+//    }
 
     @Override
     public void removeAnimal(Animal animal) {
@@ -42,25 +42,27 @@ public class EarthMap implements WorldMap {
     }
 
     @Override
-    public void moveTo(Animal animal, MapDirection direction) {
+    public void moveTo(Animal animal) {
         removeAnimal(animal);
         Vector2d currentPosition = animal.getCurrentPosition();
-        MapDirection currentOrientation = animal.getCurrentOrientation().turn(direction.toInt());
-        Vector2d newPosition = currentPosition.add(currentOrientation.toUnitVector());
+        int currentGene = animal.getGenotype().getActiveGene();
+//        MapDirection currentOrientation = animal.getCurrentOrientation();
+        MapDirection newOrientation = animal.getCurrentOrientation().turn(currentGene);
+//        MapDirection currentOrientation = animal.getCurrentOrientation().turn(direction.toInt());
+        Vector2d newPosition = currentPosition.add(newOrientation.toUnitVector());
         if (canMoveTo(newPosition)) {
-            animal.move(newPosition, direction);
-        }
-        else{
-            if (currentPosition.getY() == leftDownMapCorner.getY() || currentPosition.getY() == rightUpMapCorner.getY()){
-                animal.move(positionOnBorder(currentPosition), directionOnBorder(currentOrientation));
-            }
-            else{
+            animal.move(newPosition, newOrientation);
+        } else {
+            if (currentPosition.getY() == leftDownMapCorner.getY() || currentPosition.getY() == rightUpMapCorner.getY()) {
+                animal.move(positionOnBorder(currentPosition), directionOnBorder(newOrientation));
+            } else {
                 newPosition = new Vector2d(positionOnBorder(currentPosition).getX(), newPosition.getY());
-                animal.move(newPosition, currentOrientation);
+                animal.move(newPosition, newOrientation);
             }
 
         }
-        updateAnimal(animal);
+//        updateAnimal(animal);
+        elementsManager.placeAnimal(animal);
         mapChanged(this, "moved animal");
     }
 
@@ -73,17 +75,17 @@ public class EarthMap implements WorldMap {
 
         int new_x = minX + maxX - x;
 
-        return new Vector2d(new_x,y);
+        return new Vector2d(new_x, y);
     }
 
     private MapDirection directionOnBorder(MapDirection direction) {
-        return switch (direction){
+        return switch (direction) {
             case NORTH_EAST -> MapDirection.SOUTH_EAST;
-            case EAST, WEST-> direction;
+            case EAST, WEST -> direction;
             case SOUTH_EAST -> MapDirection.NORTH_EAST;
             case NORTH, SOUTH -> direction.turn(4);
             case SOUTH_WEST -> MapDirection.NORTH_WEST;
-            case NORTH_WEST ->  MapDirection.SOUTH_WEST;
+            case NORTH_WEST -> MapDirection.SOUTH_WEST;
         };
     }
 
@@ -149,7 +151,7 @@ public class EarthMap implements WorldMap {
     @Override
     public void mapChanged(WorldMap map, String message) {
         for (MapChangeListener observer : observers) {
-            observer.mapChanged(this,message);
+            observer.mapChanged(this, message);
         }
     }
 

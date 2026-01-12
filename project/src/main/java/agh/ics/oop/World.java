@@ -1,7 +1,6 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
-import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.map.EarthMap;
 import agh.ics.oop.model.map.WorldMap;
 import agh.ics.oop.model.util.Vector2d;
@@ -10,13 +9,13 @@ import java.util.List;
 
 public class World {
     static void main() {
-        List<MapDirection> directions = List.of(MapDirection.NORTH, MapDirection.NORTH_WEST, MapDirection.NORTH,
-                MapDirection.SOUTH_WEST, MapDirection.WEST);
+//        List<MapDirection> directions = List.of(MapDirection.NORTH, MapDirection.NORTH_WEST, MapDirection.NORTH,
+//                MapDirection.SOUTH_WEST, MapDirection.WEST);
         List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(3, 4), new Vector2d(0, 0));
         ConsoleMapDisplay consoleMapDisplay = new ConsoleMapDisplay();
         WorldMap map = new EarthMap(10, 10, 10);
         map.addObserver(consoleMapDisplay);
-        Simulation simulation = new Simulation(positions, directions, map);
+        Simulation simulation = new Simulation(positions, map);
         simulation.run();
         /*
         List<MoveDirection> directions = OptionParser.parse(args);

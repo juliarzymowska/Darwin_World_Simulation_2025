@@ -1,14 +1,15 @@
 package agh.ics.oop.model.util;
 
 import java.util.Random;
+
 /*
-* Class representing position of an animal on map and its direction.
-* It turns animal by 45 degrees to right.
-* */
+ * Class representing position of an animal on map and its direction.
+ * It turns animal by 45 degrees to right.
+ * */
 public enum MapDirection {
     /*
-    * All directions with according number from genotype.
-    * */
+     * All directions with according number from genotype.
+     * */
     NORTH, // 0
     NORTH_EAST, // 1
     EAST, // 2
@@ -23,19 +24,19 @@ public enum MapDirection {
     private static final Random random = new Random();
 
     /*
-    * (for tests)
-    * @return random direction
-    * */
-    public MapDirection getRandomDirection() {
-        return DIRECTIONS[random.nextInt() % LENGTH];
+     * (for tests)
+     * @return random direction
+     * */
+    public static MapDirection getRandomDirection() {
+        return DIRECTIONS[random.nextInt(LENGTH)];
     }
 
     /*
-    * (for tests)
-    * Makes the animal turn by 45 degrees to the right.
-    * @param no_turns - number of turns for animal to make
-    * @return direction of animal after turns
-    * */
+     * (for tests)
+     * Makes the animal turn by 45 degrees to the right.
+     * @param no_turns - number of turns for animal to make
+     * @return direction of animal after turns
+     * */
     public MapDirection turn(int no_turns) {
         return DIRECTIONS[(this.ordinal() + no_turns) % LENGTH];
     }
@@ -55,24 +56,24 @@ public enum MapDirection {
     }
 
     /*
-    * Converts directions to Vector2d positions on map.
-    * (new position already moves animal forward in according direction!)
-    * @return new Vector2d according to new position of animal on map
-    * */
+     * Converts directions to Vector2d positions on map.
+     * (new position already moves animal forward in according direction!)
+     * @return new Vector2d according to new position of animal on map
+     * */
     public Vector2d toUnitVector() {
         return switch (this) {
             case NORTH -> new Vector2d(0, 1);
-            case NORTH_EAST -> new Vector2d(1,1);
+            case NORTH_EAST -> new Vector2d(1, 1);
             case EAST -> new Vector2d(1, 0);
-            case SOUTH_EAST -> new Vector2d(1,-1);
+            case SOUTH_EAST -> new Vector2d(1, -1);
             case SOUTH -> new Vector2d(0, -1);
-            case SOUTH_WEST -> new Vector2d(-1,-1);
+            case SOUTH_WEST -> new Vector2d(-1, -1);
             case WEST -> new Vector2d(-1, 0);
-            case NORTH_WEST -> new Vector2d(-1,1);
+            case NORTH_WEST -> new Vector2d(-1, 1);
         };
     }
 
-    public int toInt(){
+    public int toInt() {
         return switch (this) {
             case NORTH -> 0;
             case NORTH_EAST -> 1;

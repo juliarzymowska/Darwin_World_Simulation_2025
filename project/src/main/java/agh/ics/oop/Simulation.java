@@ -1,21 +1,18 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.map.WorldMap;
-import agh.ics.oop.model.util.IncorrectPositionException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Simulation implements Runnable {
     private final List<Animal> animals = new ArrayList<>();
-    private final List<MapDirection> moves;
     private final WorldMap map;
+    // some error for config file that doesn't let user make a genotypeLength = 0!
 
-    public Simulation(List<Vector2d> positions, List<MapDirection> moves, WorldMap map) {
-        this.moves = moves;
+    public Simulation(List<Vector2d> positions, WorldMap map) {
         this.map = map;
 
         for (Vector2d pos : positions) {
@@ -26,15 +23,17 @@ public class Simulation implements Runnable {
     }
 
     public void run() {
-        if (animals.isEmpty()) {
-            return;
-        }
-        int n = animals.size();
-        for (int i = 0; i < moves.size(); i++) {
-            Animal current = animals.get(i % n);
-            MapDirection direction = moves.get(i);
-
-            map.moveTo(current, direction);
+        while (true) {
+            for (Animal animal : animals) {
+                map.moveTo(animal);
+                animal.getGenotype().moveToNextGene(); // next movements here/in animal/in earthmap????
+            }
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
         }
     }
 
