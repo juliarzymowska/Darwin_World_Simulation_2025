@@ -45,6 +45,17 @@ public class MapElementsManager {
         }
     }
 
+    public void deleteDeadAnimals() {
+        List<Animal> allAnimals = animals.values().stream()
+                .flatMap(List::stream)
+                .toList();
+        for (Animal animal :allAnimals){
+             if (animal.getEnergy() == 0) {
+                 removeAnimal(animal);
+             }
+        }
+    }
+
     public void removeAnimal(Animal animal) {
         if (animal == null) return;
         Vector2d position = animal.getCurrentPosition();
@@ -74,4 +85,6 @@ public class MapElementsManager {
             return plants.get(position);
         }
     }
+
+
 }
