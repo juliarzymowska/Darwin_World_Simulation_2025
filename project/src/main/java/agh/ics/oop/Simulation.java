@@ -24,11 +24,26 @@ public class Simulation implements Runnable {
     }
 
     public void run() {
+        int currentDay = 0;
         while (true) {
+            currentDay++;
+
+            // 1. Remove dead animals
+            removeDeadAnimals(currentDay);
+
+            if (animals.isEmpty()) {
+                IO.println("All animals have died. Simulation ending.");
+                break;
+            }
+
+            // 2. Move animals
             for (Animal animal : animals) {
                 map.moveTo(animal);
-                animal.getGenotype().moveToNextGene(); // next movements here/in animal/in earthmap????
             }
+
+            // 3. TODO: Consume plants
+            // 4. TODO: Reproduce animals
+            // 5. TODO: Grow new plants
             try {
                 Thread.sleep(300);
             } catch (InterruptedException e) {
@@ -36,6 +51,19 @@ public class Simulation implements Runnable {
                 break;
             }
         }
+    }
+
+    private void removeDeadAnimals(int currentDay) {
+        List<Animal> deadAnimals = animals.stream()
+                .filter(animal -> !animal.isAlive())
+                .toList();
+
+        for (Animal animal : deadAnimals) {
+            animal.die(currentDay);
+            map.removeAnimal(animal);
+        }
+
+        animals.removeAll(deadAnimals);
     }
 
     public List<Animal> getAnimals() {
