@@ -3,7 +3,6 @@ package agh.ics.oop.model.elements;
 import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.util.Vector2d;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -53,6 +52,20 @@ public class Animal implements WorldElement {
     }
 
     /*
+     * (for tests)
+     * Constructor of Animal class.
+     * @param position - initial position of animal on map
+     * @param energy - initial energy of animal
+     * @param genotype - genotype of animal
+     * */
+    public Animal(Vector2d position, int energy, Genotype genotype, MapDirection orientation) {
+        this.currentPosition = position;
+        this.genotype = genotype;
+        this.currentEnergy = energy;
+        this.currentOrientation = orientation;
+    }
+
+    /*
      * Gettery
      * */
     public MapDirection getCurrentOrientation() {
@@ -98,9 +111,8 @@ public class Animal implements WorldElement {
     /*
      * Settery
      * */
-    public int setCurrentEnergy(int energy) {
+    public void setCurrentEnergy(int energy) {
         this.currentEnergy = energy;
-        return this.currentEnergy;
     }
 
     public int setNumberOfChildren(int numberOfChildren) {
@@ -126,6 +138,11 @@ public class Animal implements WorldElement {
     public int setCurrentAge(int currentAge) {
         this.currentAge = currentAge;
         return this.currentAge;
+    }
+
+    // (for tests)
+    public void setOrientation(MapDirection mapDirection) {
+        this.currentOrientation = mapDirection;
     }
 
     public void decreaseEnergy(int amount) {
