@@ -16,13 +16,13 @@ public class EarthMap implements WorldMap {
     protected final MapVisualizer vis = new MapVisualizer(this);
     private final List<MapChangeListener> observers = new ArrayList<>();
     private final UUID id = UUID.randomUUID();
+    //Zrobić funkcje nextday() usuwającą zwierzęta, a w feromonmap zmniejszające intensywnośc zapachów.
 
     public EarthMap(int width, int height, int startGrass) {
         this.rightUpMapCorner = new Vector2d(width - 1, height - 1);
         elementsManager.addPlants(startGrass, rightUpMapCorner.getX(), rightUpMapCorner.getY());
     }
 
-    //Usunęłam wyjątek, bo jak będą się pojawiać złe pozycje to jest to błąd programisty i nie chcemy tego obsługiwać w trakcie
     @Override
     public void placeAnimal(Animal animal) {
         Vector2d position = animal.getCurrentPosition();
@@ -32,9 +32,13 @@ public class EarthMap implements WorldMap {
     }
 
     @Override
-    public void removeAnimal(Animal animal) {
+     public void removeAnimal(Animal animal) {
         if (animal == null) return;
         elementsManager.removeAnimal(animal);
+    }
+
+    public void deleteDeadAnimals(){
+        elementsManager.deleteDeadAnimals();
     }
 
     @Override
@@ -99,7 +103,7 @@ public class EarthMap implements WorldMap {
         return new Vector2d(new_x, y);
     }
 
-    private MapDirection directionOnBorder(MapDirection direction) {
+    public MapDirection directionOnBorder(MapDirection direction) {
         return switch (direction) {
             case NORTH_EAST -> MapDirection.SOUTH_EAST;
             case EAST, WEST -> direction;
