@@ -11,11 +11,11 @@ import agh.ics.oop.model.util.Vector2d;
 public class Animal implements WorldElement {
     private MapDirection currentOrientation;
     private Vector2d currentPosition;
-    private final ConfigAnimal config = new ConfigAnimal();
+    protected final static ConfigAnimal config = new ConfigAnimal(); // for testing purposes, later should be passed from outside
 
     private int currentEnergy, currentAge = 0, numberOfChildren = 0, numberOfEatenPlants = 0,
             numberOfDescendants = 0, dayOfBirth = 0, dayOfDeath = -1;
-    protected boolean isAlive = true;
+    private boolean isAlive = true;
     private final Genotype genotype;
 
 
@@ -39,7 +39,7 @@ public class Animal implements WorldElement {
      * */
     public Animal(Animal father, Animal mother, int currentDay) {
         this.currentPosition = new Vector2d(father.getCurrentPosition().getX(), father.getCurrentPosition().getY());
-        this.genotype = new Genotype(father, mother);
+        this.genotype = new Genotype(father, mother, config.minMutations(), config.maxMutations());
         this.currentOrientation = MapDirection.getRandomDirection();
         this.currentEnergy = 2 * config.energyToReproduce(); // energy from parents, apply reproduction cost from config
         this.dayOfBirth = currentDay;
@@ -105,6 +105,7 @@ public class Animal implements WorldElement {
     /*
      * Setters
      * */
+    // (for tests)
     public void setCurrentEnergy(int energy) {
         this.currentEnergy = energy;
     }
