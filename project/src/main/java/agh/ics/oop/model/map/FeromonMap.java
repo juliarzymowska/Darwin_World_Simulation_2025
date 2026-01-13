@@ -1,5 +1,6 @@
 package agh.ics.oop.model.map;
 
+import agh.ics.oop.configuration.ConfigMap;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.elements.Feromon;
 import agh.ics.oop.model.util.MapDirection;
@@ -9,17 +10,18 @@ import java.util.*;
 
 
 public class FeromonMap extends EarthMap{
-    private final int probability; //from config
-    private final int daysToDecrese; //from config
-    private final int range; // from config
+    private final double probability;
+    private final int daysToDecrease;
+    private final int smellRange;
     Random random = new Random();
+    ConfigMap configMap = new ConfigMap();
     private final Map<Vector2d, Feromon> feromons = new HashMap<>();
 
-    public FeromonMap(int width, int height, int startGrass, int probability, int daysToDecrese, int range) {
-        super(width, height, startGrass);
-        this.probability = probability; // from config
-        this.daysToDecrese = daysToDecrese; // from config
-        this.range = range; // from config
+    public FeromonMap(ConfigMap configMap) {
+        super(configMap);
+        this.probability = configMap.moveToFeromonProbability();
+        this.daysToDecrease = configMap.daysToDecreaseFeromon();
+        this.smellRange = configMap.smellRange();
     }
 
     @Override
@@ -28,7 +30,7 @@ public class FeromonMap extends EarthMap{
         // Do poprawienia na lepszą złożoność, narazie O(n^2), obsługa zapachów na granicach mapy
         if (random.nextDouble() < probability){
             Optional<Feromon> feromonOpt = feromons.entrySet().stream()
-                    .filter(e -> e.getKey().manhattanMetricDistance(currentPos) <= range)
+                    .filter(e -> e.getKey().manhattanMetricDistance(currentPos) <= smellRange)
                     .map(Map.Entry::getValue)
                     .max(Comparator.naturalOrder());
 
@@ -60,9 +62,9 @@ public class FeromonMap extends EarthMap{
         }
     }
 
-    public void decreseFeromons(){
+    public void decreaseFeromons(){
         for (Feromon feromon : feromons.values()){
-            if (feromon.getFeromonDay()%daysToDecrese == 0){
+            if (feromon.getFeromonDay()%daysToDecrease == 0){
                 feromon.decreseFeromonValue();
                 if (feromon.getFeromonValue() == 0){
                     feromons.remove(feromon);
