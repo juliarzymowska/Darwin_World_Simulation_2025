@@ -63,4 +63,9 @@ public interface WorldMap extends MoveValidator {
     void removePlant(Vector2d position);
 
     void mapChanged(WorldMap map, String message);
+
+    /*
+     * Remove plants that are eaten by animals according to the simulation rules.
+     * */
+    void consumePlants();
 }

@@ -40,7 +40,8 @@ public class Simulation implements Runnable {
                 map.moveTo(animal);
             }
 
-            // 3. TODO: Consume plants
+            // 3. Consume plants
+            map.consumePlants();
             // 4. TODO: Reproduce animals
             // 5. TODO: Grow new plants
             try {

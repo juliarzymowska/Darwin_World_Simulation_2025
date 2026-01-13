@@ -110,6 +110,10 @@ public class EarthMap implements WorldMap {
         };
     }
 
+    public void consumePlants() {
+        elementsManager.consumePlants(this);
+    }
+
     @Override
     public WorldElement objectAt(Vector2d position) {
         return elementsManager.objectAt(position);

@@ -145,13 +145,27 @@ public class Animal implements WorldElement {
         };
     }
 
-    public boolean isAt(Vector2d position) {
-        return currentPosition.equals(position);
+//    public boolean isAt(Vector2d position) {
+//        return currentPosition.equals(position);
+//    }
+    /*
+     * Methods
+     * */
+
+    public void updateAge() {
+        if (isAlive) {
+            this.currentAge += 1;
+        }
     }
 
     // for movement
     private void decreaseEnergy() {
         this.currentEnergy -= config.energyConsumedByMove();
+    }
+
+    // for eating
+    public void gainEnergy() {
+        this.currentEnergy += config.energyGainedByEating();
     }
 
     public void die(int currentDay) {
@@ -165,6 +179,7 @@ public class Animal implements WorldElement {
     public boolean move(Vector2d position, MapDirection orientation) {
         if (!isAlive)
             return false;
+        updateAge(); // increase age on each move
         decreaseEnergy();
 
         if (currentEnergy <= 0) {

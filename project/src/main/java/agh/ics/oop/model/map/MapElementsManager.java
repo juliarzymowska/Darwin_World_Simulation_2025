@@ -16,10 +16,10 @@ public class MapElementsManager {
     //tu można przemyśleć, co chcemy robić jak wylosuje się kolejnego dnia pozycja trawy która nie została jeszcze zjedzona
     //na razie implementuję tak, że wtedy jaj nie dodajemy i jedna przepada
 
-    public void addPlants(int n, int x, int y){
+    public void addPlants(int n, int x, int y) {
         NormalPositionGenerator randomPositionGenerator = new NormalPositionGenerator(n, x, y);
-        for(Vector2d v : randomPositionGenerator) {
-            if(!plants.containsKey(v)) {
+        for (Vector2d v : randomPositionGenerator) {
+            if (!plants.containsKey(v)) {
                 this.plants.put(v, new Plant(v));
             }
         }
@@ -62,6 +62,42 @@ public class MapElementsManager {
 
     public Optional<List<Animal>> animalAt(Vector2d position) {
         return Optional.ofNullable(animals.get(position));
+    }
+
+    public void consumePlants(WorldMap map) {
+        Random rand = new Random();
+
+        // for each plant, check if there are animals at that position
+        List<Plant> plants = getPlants();
+        for (Plant plant : plants) {
+            Vector2d position = plant.getCurrentPosition();
+            Optional<List<Animal>> animalsAtPosition = animalAt(position); // get animals at the plant's position
+
+            if (animalsAtPosition.isPresent()) {
+                List<Animal> animalList = animalsAtPosition.get();
+                if (!animalList.isEmpty()) {
+                    // find the highest energy level among the animals
+                    int maxEnergy = animalList.stream()
+                            .mapToInt(Animal::getEnergy)
+                            .max()
+                            .orElse(0);
+
+                    // filter animals that have the highest energy
+                    List<Animal> strongestAnimals = animalList.stream()
+                            .filter(animal -> animal.getEnergy() == maxEnergy)
+                            .toList();
+
+                    // randomly select one of the strongest animals to eat the plant
+                    Animal eater = strongestAnimals.get(rand.nextInt(strongestAnimals.size()));
+                    eater.gainEnergy();
+
+                    // remove the plant from the map
+                    removePlant(position);
+
+                    map.mapChanged(map, "plant at %s eaten by animal".formatted(position));
+                }
+            }
+        }
     }
 
     public List<Animal> getAnimals() {
