@@ -1,7 +1,6 @@
 package agh.ics.oop.model.elements;
 
 import agh.ics.oop.configuration.ConfigAnimal;
-import agh.ics.oop.model.map.EarthMap;
 import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.util.Vector2d;
 
@@ -44,6 +43,20 @@ public class Animal implements WorldElement {
         this.currentOrientation = MapDirection.getRandomDirection();
         this.currentEnergy = 2 * config.energyToReproduce(); // energy from parents, apply reproduction cost from config
         this.dayOfBirth = currentDay;
+    }
+
+    /*
+     * (for tests)
+     * Constructor of Animal class.
+     * @param position - initial position of animal on map
+     * @param energy - initial energy of animal
+     * @param genotype - genotype of animal
+     * */
+    public Animal(Vector2d position, int energy, Genotype genotype, MapDirection orientation) {
+        this.currentPosition = position;
+        this.genotype = genotype;
+        this.currentEnergy = energy;
+        this.currentOrientation = orientation;
     }
 
     /*
@@ -112,6 +125,10 @@ public class Animal implements WorldElement {
         this.currentAge = currentAge;
     }
 
+    // (for tests)
+    public void setOrientation(MapDirection mapDirection) {
+        this.currentOrientation = mapDirection;
+    }
 
     @Override
     public String toString() {
@@ -127,7 +144,6 @@ public class Animal implements WorldElement {
         };
     }
 
-    // methods
     public boolean isAt(Vector2d position) {
         return currentPosition.equals(position);
     }
