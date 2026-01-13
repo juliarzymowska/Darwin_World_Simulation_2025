@@ -114,6 +114,11 @@ public class EarthMap implements WorldMap {
         elementsManager.consumePlants(this);
     }
 
+    public void growPlants(int n) {
+        elementsManager.addPlants(n, rightUpMapCorner.getX(), rightUpMapCorner.getY());
+        mapChanged(this, "growing %d plants".formatted(n));
+    }
+
     @Override
     public WorldElement objectAt(Vector2d position) {
         return elementsManager.objectAt(position);
