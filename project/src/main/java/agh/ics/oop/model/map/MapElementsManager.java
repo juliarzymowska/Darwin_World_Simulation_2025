@@ -57,6 +57,32 @@ public class MapElementsManager {
         if (list.isEmpty()) animals.remove(position);
     }
 
+    protected static Optional<Animal> reproduceAtPosition(List<Animal> animalsAtPosition, int currentDay) {
+        if (animalsAtPosition.size() < 2) {
+            return Optional.empty(); // Not enough animals to reproduce
+        }
+
+        // Filter animals with enough energy to reproduce
+        List<Animal> eligibleAnimals = animalsAtPosition.stream()
+                .filter(Animal::validateReproduction) // alive and enough energy
+                .sorted() // Uses compareTo for priority
+                .toList();
+
+        if (eligibleAnimals.size() < 2) {
+            return Optional.empty();
+        }
+
+        // Take top 2 animals
+        Animal father = eligibleAnimals.get(0);
+        Animal mother = eligibleAnimals.get(1);
+
+        // Remove energy and update stats
+        father.reproduce();
+        mother.reproduce();
+
+        return Optional.of(new Animal(father, mother, currentDay));
+    }
+
     public Optional<List<Animal>> animalAt(Vector2d position) {
         return Optional.ofNullable(animals.get(position));
     }

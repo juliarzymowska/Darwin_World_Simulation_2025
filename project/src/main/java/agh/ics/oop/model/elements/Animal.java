@@ -8,7 +8,7 @@ import agh.ics.oop.model.util.Vector2d;
  * Class representing an animal in the simulation.
  * Contains information about the animal's position, orientation, energy, age, genotype, and other statistics.
  * */
-public class Animal implements WorldElement {
+public class Animal implements WorldElement, Comparable<Animal> {
     private MapDirection currentOrientation;
     private Vector2d currentPosition;
     protected final static ConfigAnimal config = new ConfigAnimal(); // for testing purposes, later should be passed from outside
@@ -16,6 +16,8 @@ public class Animal implements WorldElement {
     private int currentEnergy, currentAge = 0, numberOfChildren = 0, numberOfEatenPlants = 0,
             numberOfDescendants = 0, dayOfBirth = 0, dayOfDeath = -1;
     private boolean isAlive = true;
+    //    private final int id = this.hashCode(); // unique identifier for each animal, will it be needed for statistics?
+//    private final List<Animal> children = new ArrayList<>(); // for statistics(?), not used now
     private final Genotype genotype;
 
 
@@ -103,9 +105,8 @@ public class Animal implements WorldElement {
     }
 
     /*
-     * Setters
+     * Setters (mostly for testing)
      * */
-    // (for tests)
     public void setCurrentEnergy(int energy) {
         this.currentEnergy = energy;
     }
@@ -126,11 +127,11 @@ public class Animal implements WorldElement {
         this.currentAge = currentAge;
     }
 
-    // (for tests)
     public void setOrientation(MapDirection mapDirection) {
         this.currentOrientation = mapDirection;
     }
 
+    // visual representation of the animal based on its orientation
     @Override
     public String toString() {
         return switch (currentOrientation) {
@@ -144,7 +145,7 @@ public class Animal implements WorldElement {
             case NORTH_WEST -> "↖";
         };
     }
-
+// not needed now
 //    public boolean isAt(Vector2d position) {
 //        return currentPosition.equals(position);
 //    }
@@ -161,6 +162,18 @@ public class Animal implements WorldElement {
     // for movement
     private void decreaseEnergy() {
         this.currentEnergy -= config.energyConsumedByMove();
+    }
+
+    // for reproduction
+    public void reproduce() {
+        this.currentEnergy -= config.energyToReproduce();
+        this.numberOfChildren += 1;
+//        this.children.add(); // TODO later for statistics
+    }
+
+    // check if animal can reproduce, used in MapElementsManager
+    public boolean validateReproduction() {
+        return this.isAlive && this.currentEnergy >= config.energyToReproduce();
     }
 
     // for eating
@@ -193,4 +206,27 @@ public class Animal implements WorldElement {
         return true;
     }
 
+    @Override
+    public int compareTo(Animal other) {
+        // 1. Higher energy has priority
+        int energyComparison = Integer.compare(other.currentEnergy, this.currentEnergy);
+        if (energyComparison != 0) {
+            return energyComparison;
+        }
+
+        // 2. Older animals have priority
+        int ageComparison = Integer.compare(other.currentAge, this.currentAge);
+        if (ageComparison != 0) {
+            return ageComparison;
+        }
+
+        // 3. Animals with more children have priority
+        int childrenComparison = Integer.compare(other.numberOfChildren, this.numberOfChildren);
+        if (childrenComparison != 0) {
+            return childrenComparison;
+        }
+
+        // 4. Random tie-breaking (using hash codes for pseudo-randomness)
+        return Integer.compare(System.identityHashCode(other), System.identityHashCode(this));
+    }
 }
