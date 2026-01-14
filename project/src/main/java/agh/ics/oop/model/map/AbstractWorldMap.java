@@ -80,6 +80,16 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     }
 
+    public void consumePlants() {
+        elementsManager.consumePlants(this);
+    }
+
+    public void growPlants(int n) {
+        elementsManager.addPlants(n, rightUpMapCorner.getX(), rightUpMapCorner.getY());
+        mapChanged(this, "growing %d plants".formatted(n));
+    }
+
+
     @Override
     public Boundary getCurrentBounds() {
         return new Boundary(leftDownMapCorner, rightUpMapCorner);

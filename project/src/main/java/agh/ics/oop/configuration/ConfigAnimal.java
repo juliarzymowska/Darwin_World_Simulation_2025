@@ -14,6 +14,7 @@ public record ConfigAnimal(
         int maxMutations,
         int genotypeLength
 ) {
+    //  (for testing) Default constructor with preset values
     public ConfigAnimal() {
         this(1, 100, 50, 50, 20, 1, 3, 8);
     }

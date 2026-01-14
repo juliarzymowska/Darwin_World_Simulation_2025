@@ -25,7 +25,7 @@ public class EarthMap extends AbstractWorldMap {
         boolean isAlive = animal.move(newPosition, newOrientation);
 
         if (isAlive) {
-            super.placeAnimal(animal);
+            super.updateAnimal(animal);
             mapChanged(this, "moved animal %s to %s".formatted(currentPosition, newPosition));
         } else {
             mapChanged(this, "animal died %s at %s".formatted(currentPosition, newPosition));

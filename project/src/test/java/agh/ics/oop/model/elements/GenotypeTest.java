@@ -68,7 +68,7 @@ public class GenotypeTest {
         father.setCurrentEnergy(100);
         mother.setCurrentEnergy(100);
 
-        Genotype childGenotype = new Genotype(father, mother);
+        Genotype childGenotype = new Genotype(father, mother, 0, 0);
 
         assertNotNull(childGenotype);
         assertEquals(father.getGenotype().getGenotypeList().size(),
@@ -82,7 +82,7 @@ public class GenotypeTest {
         father.setCurrentEnergy(80);
         mother.setCurrentEnergy(120);
 
-        Genotype childGenotype = new Genotype(father, mother);
+        Genotype childGenotype = new Genotype(father, mother, 0, 0);
 
         for (int gene : childGenotype.getGenotypeList()) {
             assertTrue(gene >= 0 && gene < 8);
@@ -96,7 +96,7 @@ public class GenotypeTest {
         father.setCurrentEnergy(100);
         mother.setCurrentEnergy(100);
 
-        Genotype childGenotype = new Genotype(father, mother);
+        Genotype childGenotype = new Genotype(father, mother, 0, 0);
 
         assertNotNull(childGenotype);
         assertEquals(father.getGenotype().getGenotypeList().size(),
