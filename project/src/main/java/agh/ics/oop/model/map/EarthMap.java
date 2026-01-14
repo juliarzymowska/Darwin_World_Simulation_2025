@@ -87,6 +87,15 @@ public class EarthMap extends AbstractWorldMap {
         };
     }
 
+    public void consumePlants() {
+        elementsManager.consumePlants(this);
+    }
+
+    public void growPlants(int n) {
+        elementsManager.addPlants(n, rightUpMapCorner.getX(), rightUpMapCorner.getY());
+        mapChanged(this, "growing %d plants".formatted(n));
+    }
+
     @Override
     public boolean canMoveTo(Vector2d position) {
         return (position.precedes(rightUpMapCorner) && position.follows(leftDownMapCorner));

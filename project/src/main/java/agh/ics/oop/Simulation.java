@@ -41,15 +41,17 @@ public class Simulation implements Runnable {
                 map.moveTo(animal);
             }
 
-            // 3. TODO: Consume plants
+            // 3. Consume plants
+            map.consumePlants();
             // 4. TODO: Reproduce animals
-            // 5. TODO: Grow new plants
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
-            }
+            // 5. Grow new plants
+            map.growPlants(10); // TODO: apply from config number of new plants per day
+//            try {
+//                Thread.sleep(300);
+//            } catch (InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//                break;
+//            }
         }
     }
 
