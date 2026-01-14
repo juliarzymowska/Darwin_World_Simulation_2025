@@ -1,5 +1,6 @@
 package agh.ics.oop;
 
+import agh.ics.oop.configuration.ConfigMap;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.map.EarthMap;
 import agh.ics.oop.model.map.WorldMap;
@@ -13,7 +14,8 @@ public class World {
 //                MapDirection.SOUTH_WEST, MapDirection.WEST);
         List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(3, 4), new Vector2d(0, 0));
         ConsoleMapDisplay consoleMapDisplay = new ConsoleMapDisplay();
-        WorldMap map = new EarthMap(10, 10, 10);
+        ConfigMap configMap = new ConfigMap();
+        WorldMap map = new EarthMap(configMap);
         map.addObserver(consoleMapDisplay);
         Simulation simulation = new Simulation(positions, map);
         simulation.run();
