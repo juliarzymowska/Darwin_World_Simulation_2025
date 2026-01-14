@@ -13,9 +13,6 @@ public class MapElementsManager {
     private final Map<Vector2d, List<Animal>> animals = new HashMap<>();
     private final Map<Vector2d, Plant> plants = new HashMap<>();
 
-    //tu można przemyśleć, co chcemy robić jak wylosuje się kolejnego dnia pozycja trawy która nie została jeszcze zjedzona
-    //na razie implementuję tak, że wtedy jaj nie dodajemy i jedna przepada
-
     public void addPlants(int n, int x, int y) {
         NormalPositionGenerator randomPositionGenerator = new NormalPositionGenerator(n, x, y);
         for (Vector2d v : randomPositionGenerator) {
