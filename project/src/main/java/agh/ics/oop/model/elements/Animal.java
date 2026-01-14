@@ -166,6 +166,7 @@ public class Animal implements WorldElement {
     // for eating
     public void gainEnergy() {
         this.currentEnergy += config.energyGainedByEating();
+        numberOfEatenPlants += 1;
     }
 
     public void die(int currentDay) {
