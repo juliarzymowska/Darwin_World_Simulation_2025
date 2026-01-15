@@ -61,6 +61,7 @@ public class Genotype {
         // Randomly choose side: true = right, false = left
         boolean rightSide = random.nextBoolean();
 
+        // TODO: change from loops to addAll with subList
         if (rightSide) {
             // Stronger parent contributes from right side
             for (int i = 0; i < genotypeLength - strongerGeneCount; i++) {

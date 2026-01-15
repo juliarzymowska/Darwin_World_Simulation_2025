@@ -4,6 +4,7 @@ package agh.ics.oop.configuration;
  * Class representing configuration parameters for animals in the simulation.
  * It includes settings for initial counts, energy levels, reproduction, and genetics.
  * */
+// TODO: make exceptions for invalid config values (like negative energy, zero genotype length, etc.)
 public record ConfigAnimal(
         int initialAnimalCount,
         int initialEnergy,

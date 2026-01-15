@@ -1,5 +1,6 @@
 package agh.ics.oop.model.map;
 
+import agh.ics.oop.Simulation;
 import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.elements.Plant;
@@ -34,21 +35,11 @@ public interface WorldMap extends MoveValidator {
      */
     void moveTo(Animal animal);
 
-    /**
-     * Return an animal at a given position.
-     *
-     * @param position The position of the animal.
-     * @return animal or null if the position is not occupied.
-     */
     WorldElement objectAt(Vector2d position);
 
     boolean isOccupied(Vector2d position);
 
-    Optional<Plant> plantAt(Vector2d position);
-
-    Optional<List<Animal>> animalAt(Vector2d position);
-
-    List<Animal> getAnimals();
+    void removeDeadAnimals(int currentDay);
 
     Boundary getCurrentBounds();
 
@@ -57,10 +48,6 @@ public interface WorldMap extends MoveValidator {
     void removeObserver(MapChangeListener observer);
 
     void addObserver(MapChangeListener observer);
-
-    void removeAnimal(Animal animal);
-
-    void removePlant(Vector2d position);
 
     void mapChanged(WorldMap map, String message);
 
@@ -73,4 +60,6 @@ public interface WorldMap extends MoveValidator {
      * Grow new plants on the map according to the simulation rules.
      * */
     void growPlants(int n);
+
+    MapElementsManager getElementsManager();
 }
