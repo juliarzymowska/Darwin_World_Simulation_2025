@@ -4,11 +4,10 @@ import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.map.WorldMap;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Simulation implements Runnable {
-    private final List<Animal> animals = new ArrayList<>();
+    //    private final List<Animal> animals = new ArrayList<>();
     private final WorldMap map;
     // some error for config file that doesn't let user make a genotypeLength = 0!
     // error for config file when number of grass per day is bigger than map tiles number
@@ -23,7 +22,6 @@ public class Simulation implements Runnable {
         for (Vector2d pos : positions) {
             Animal newAnimal = new Animal(pos);
             map.placeAnimal(newAnimal);
-            animals.add(newAnimal);
         }
     }
 
@@ -40,19 +38,26 @@ public class Simulation implements Runnable {
         int currentDay = 0;
         while (true) {
             currentDay++;
-            performDayCycle(currentDay);
+            if (performDayCycle(currentDay)) {
+                IO.println("Day %d completed.".formatted(currentDay));
+            } else {
+                break;
+            }
         }
     }
 
     // Performs a single day cycle of the simulation.
-    private void performDayCycle(int currentDay) {
+    private boolean performDayCycle(int currentDay) {
         // 1. Remove dead animals
-        removeDeadAnimals(currentDay);
+        map.removeDeadAnimals(currentDay);
+
+        List<Animal> animals = map.getElementsManager().getAnimals();
 
         if (animals.isEmpty()) {
             IO.println("All animals have died. Simulation ending.");
-            return;
+            return false;
         }
+
 
         // 2. Move animals
         for (Animal animal : animals) {
@@ -64,23 +69,10 @@ public class Simulation implements Runnable {
         // 4. TODO: Reproduce animals
         // 5. Grow new plants
         map.growPlants(10); // TODO: apply from config number of new plants per day
-    }
-
-    // TODO: move to MapElementsManager/AbstractWorldMap?
-    private void removeDeadAnimals(int currentDay) {
-        List<Animal> deadAnimals = animals.stream()
-                .filter(animal -> !animal.isAlive())
-                .toList();
-
-        for (Animal animal : deadAnimals) {
-            animal.die(currentDay);
-            map.removeAnimal(animal);
-        }
-
-        animals.removeAll(deadAnimals);
+        return true;
     }
 
     public List<Animal> getAnimals() {
-        return List.copyOf(animals);
+        return List.copyOf(map.getElementsManager().getAnimals());
     }
 }

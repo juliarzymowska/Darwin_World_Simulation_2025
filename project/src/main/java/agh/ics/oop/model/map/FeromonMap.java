@@ -15,6 +15,7 @@ public class FeromonMap extends EarthMap {
     private final int smellRange;
     Random random = new Random();
     ConfigMap configMap = new ConfigMap();
+    private final MapElementsManager elementsManager = super.getElementsManager();
     private final Map<Vector2d, Feromon> feromons = new HashMap<>();
 
     public FeromonMap(ConfigMap configMap) {
@@ -39,14 +40,14 @@ public class FeromonMap extends EarthMap {
                     .max(Comparator.naturalOrder());
 
             if (feromonOpt.isPresent()) {
-                removeAnimal(animal);
+                getElementsManager().removeAnimal(animal);
                 Feromon feromon = feromonOpt.get();
                 Vector2d unitOrientation = new Vector2d(Integer.compare(feromon.getCurrentPosition().getX(), currentPos.getX()), Integer.compare(feromon.getCurrentPosition().getY(), currentPos.getY()));
 
                 Vector2d newPosition = currentPos.add(unitOrientation);
                 MapDirection newDirection = unitOrientation.toMapDirection();
                 animal.move(newPosition, newDirection);
-                updateAnimal(animal);
+                elementsManager.placeAnimal(animal);
             } else {
                 super.moveTo(animal);
             }
