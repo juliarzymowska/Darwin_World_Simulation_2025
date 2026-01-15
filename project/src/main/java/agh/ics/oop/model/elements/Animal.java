@@ -196,6 +196,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
         updateAge(); // increase age on each move
         decreaseEnergy();
 
+//        fix: animals don't die when energy reaches 0 during movement, only if they don't eat and restore energy
         if (currentEnergy <= 0) {
             isAlive = false;
             return false;

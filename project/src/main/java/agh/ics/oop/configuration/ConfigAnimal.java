@@ -7,6 +7,7 @@ package agh.ics.oop.configuration;
  *  genotypeLength > 0, energyToReproduce > 0 and energyToReproduce < maxEnergy, energyConsumedByMove > 0,
  *  energyGainedByEating > 0, etc!!
  * */
+// TODO: make exceptions for invalid config values (like negative energy, zero genotype length, etc.)
 public record ConfigAnimal(
         int initialAnimalCount,
         int initialEnergy, // doesn't have to be equal to maxEnergy! (i think)
