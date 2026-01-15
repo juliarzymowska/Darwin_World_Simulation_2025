@@ -182,10 +182,11 @@ public class Animal implements WorldElement {
         updateAge(); // increase age on each move
         decreaseEnergy();
 
-        if (currentEnergy <= 0) {
-            isAlive = false;
-            return false;
-        }
+//        fix: animals don't die when energy reaches 0 during movement, only if they don't eat and restore energy
+//        if (currentEnergy <= 0) {
+//            isAlive = false;
+//            return false;
+//        }
         this.currentOrientation = orientation;
         this.currentPosition = position;
         genotype.moveToNextGene();

@@ -8,12 +8,15 @@ import agh.ics.oop.model.util.*;
 import java.util.*;
 
 public class EarthMap extends AbstractWorldMap {
-    //Zrobić funkcje nextday() usuwającą zwierzęta, a w feromonmap zmniejszające intensywnośc zapachów.
+    //Zrobić funkcje nextday() usuwającą zwierzęta, a w feromonmap zmniejszające intensywnośc zapachów. (ja bym w
+    // przeniosła removeDeadAnimals (działa tak samo niezależnie od warianty mapy) do MapELemetsManager i wywoływałą
+    // ją w performDayCycle() w Simulation)
 
     public EarthMap(ConfigMap configMap) {
         super(configMap);
     }
 
+    // TODO: rework so animals aren't considered dead yet
     @Override
     public void moveTo(Animal animal) {
         removeAnimal(animal);
@@ -32,6 +35,7 @@ public class EarthMap extends AbstractWorldMap {
         }
     }
 
+    // move to AbstractWorldMap? no difference between maps versions?
     private Vector2d calculateNewPosition(Animal animal) {
         Vector2d currentPosition = animal.getCurrentPosition();
         int currentGene = animal.getGenotype().getActiveGene();
@@ -41,7 +45,7 @@ public class EarthMap extends AbstractWorldMap {
         if (canMoveTo(newPosition)) {
             return newPosition;
         } else {
-            if (currentPosition.getY() == leftDownMapCorner.getY() || currentPosition.getY() == rightUpMapCorner.getY()) {
+            if (isOnVerticalBorder(newPosition)) {
                 return positionOnBorder(currentPosition);
             } else {
                 return new Vector2d(positionOnBorder(currentPosition).getX(), newPosition.getY());
@@ -50,6 +54,7 @@ public class EarthMap extends AbstractWorldMap {
         }
     }
 
+    // same as above
     private MapDirection calculateNewOrientation(Animal animal) {
         int currentGene = animal.getGenotype().getActiveGene();
         MapDirection newOrientation = animal.getCurrentOrientation().turn(currentGene);
@@ -60,10 +65,12 @@ public class EarthMap extends AbstractWorldMap {
         return newOrientation;
     }
 
+    // same as above
     private boolean isOnVerticalBorder(Vector2d position) {
         return position.getY() == leftDownMapCorner.getY() || position.getY() == rightUpMapCorner.getY();
     }
 
+    // same as above
     public Vector2d positionOnBorder(Vector2d position) {
         int minX = leftDownMapCorner.getX();
         int maxX = rightUpMapCorner.getX();
@@ -76,6 +83,7 @@ public class EarthMap extends AbstractWorldMap {
         return new Vector2d(new_x, y);
     }
 
+    // move to AbstractWorldMap? or move to MapDirection?
     public MapDirection directionOnBorder(MapDirection direction) {
         return switch (direction) {
             case NORTH_EAST -> MapDirection.SOUTH_EAST;
@@ -87,6 +95,7 @@ public class EarthMap extends AbstractWorldMap {
         };
     }
 
+    // move to AbstractWorldMap? no difference between maps versions?
     @Override
     public boolean canMoveTo(Vector2d position) {
         return (position.precedes(rightUpMapCorner) && position.follows(leftDownMapCorner));

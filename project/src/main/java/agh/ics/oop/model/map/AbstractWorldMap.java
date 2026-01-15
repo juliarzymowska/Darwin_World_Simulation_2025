@@ -14,6 +14,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/*
+ * AbstractWorldMap class.
+ * Implements common functionality for different types of world maps.
+ * Handles placement and removal of animals and plants, map boundaries, and observers for map changes.
+ * */
 public abstract class AbstractWorldMap implements WorldMap {
     protected final Vector2d leftDownMapCorner = new Vector2d(0, 0);
     protected final Vector2d rightUpMapCorner;
@@ -26,6 +31,43 @@ public abstract class AbstractWorldMap implements WorldMap {
         this.rightUpMapCorner = new Vector2d(configMap.width() - 1, configMap.height() - 1);
         elementsManager.addPlants(configMap.startPlantNumber(), rightUpMapCorner.getX(), rightUpMapCorner.getY());
     }
+
+    /*
+     * PLANTS LOGIC
+     * */
+
+    // here or in ANIMAL LOGIC??
+    //TODO: remake it so in MapElementsManager is only consumePlantAtPosition
+    public void consumePlants() {
+        elementsManager.consumePlants(this);
+    }
+
+    // is it needed here? or maybe just use everywhere elementsManager.getPlants?
+    // boilerplate code?
+    public List<Plant> getPlants() {
+        return elementsManager.getPlants();
+    }
+
+    // same as above
+    @Override
+    public void removePlant(Vector2d position) {
+        elementsManager.removePlant(position);
+    }
+
+    // same as above
+    @Override
+    public Optional<Plant> plantAt(Vector2d position) {
+        return elementsManager.plantAt(position);
+    }
+
+    public void growPlants(int n) {
+        elementsManager.addPlants(n, rightUpMapCorner.getX(), rightUpMapCorner.getY());
+        mapChanged(this, "growing %d plants".formatted(n));
+    }
+
+    /*
+     * ANIMALS LOGIC
+     * */
 
     @Override
     public void placeAnimal(Animal animal) {
@@ -45,6 +87,21 @@ public abstract class AbstractWorldMap implements WorldMap {
         elementsManager.removeAnimal(animal);
     }
 
+
+    @Override
+    public Optional<List<Animal>> animalAt(Vector2d position) {
+        return elementsManager.animalAt(position);
+    }
+
+    @Override
+    public List<Animal> getAnimals() {
+        return elementsManager.getAnimals();
+    }
+
+    /*
+     * OTHERS
+     * */
+
     @Override
     public WorldElement objectAt(Vector2d position) {
         return elementsManager.objectAt(position);
@@ -54,41 +111,6 @@ public abstract class AbstractWorldMap implements WorldMap {
     public boolean isOccupied(Vector2d position) {
         return objectAt(position) != null;
     }
-
-    @Override
-    public Optional<Plant> plantAt(Vector2d position) {
-        return elementsManager.plantAt(position);
-    }
-
-    @Override
-    public Optional<List<Animal>> animalAt(Vector2d position) {
-        return elementsManager.animalAt(position);
-    }
-
-    @Override
-    public void removePlant(Vector2d position) {
-        elementsManager.removePlant(position);
-    }
-
-    @Override
-    public List<Animal> getAnimals() {
-        return elementsManager.getAnimals();
-    }
-
-    public List<Plant> getPlants() {
-        return elementsManager.getPlants();
-
-    }
-
-    public void consumePlants() {
-        elementsManager.consumePlants(this);
-    }
-
-    public void growPlants(int n) {
-        elementsManager.addPlants(n, rightUpMapCorner.getX(), rightUpMapCorner.getY());
-        mapChanged(this, "growing %d plants".formatted(n));
-    }
-
 
     @Override
     public Boundary getCurrentBounds() {
