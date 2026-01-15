@@ -102,6 +102,10 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return dayOfDeath;
     }
 
+    public int getDayOfBirth() {
+        return dayOfBirth;
+    }
+
     public int getNumberOfDescendants() {
         return numberOfDescendants;
     }
