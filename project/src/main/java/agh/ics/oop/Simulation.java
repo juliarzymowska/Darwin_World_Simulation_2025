@@ -74,6 +74,7 @@ public class Simulation implements Runnable {
         // 3. Consume plants
         map.consumePlants();
         // 4. TODO: Reproduce animals
+        map.reproduceAnimals(currentDay);
         // 5. Grow new plants
         map.growPlants(10); // TODO: apply from config number of new plants per day
         return true;

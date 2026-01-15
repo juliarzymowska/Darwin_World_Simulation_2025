@@ -46,9 +46,8 @@ public class MapElementsManager {
         return new ArrayList<>(plants.values());
     }
 
-
     public void consumePlants(WorldMap map) {
-    // TODO: move to AbstractWorldMap, make consumePlantAtPosition here instead
+        // TODO: move to AbstractWorldMap, make consumePlantAtPosition here instead
         Random rand = new Random();
 
         // for each plant, check if there are animals at that position
@@ -111,8 +110,12 @@ public class MapElementsManager {
         if (list.isEmpty()) animals.remove(position);
     }
 
-
-    protected static Optional<Animal> reproduceAtPosition(List<Animal> animalsAtPosition, int currentDay) {
+    // tutaj powstało tak zwane masło-maślane, bo metoda reproduceAtPosition jest wywoływana w EarthMap
+    // to samo z getPositionsWithMultipleAnimals
+    // natomiast mogła to być jedna metoda w MapElementsManager
+    // co teraz?
+    protected Optional<Animal> reproduceAtPosition(Vector2d position, int currentDay) {
+        List<Animal> animalsAtPosition = animals.get(position);
         if (animalsAtPosition.size() < 2) {
             return Optional.empty(); // Not enough animals to reproduce
         }
@@ -143,6 +146,16 @@ public class MapElementsManager {
         return Optional.ofNullable(animals.get(position));
     }
 
+    // get all positions where there are at least 2 animals
+    // used for reproduction
+    protected List<Vector2d> getPositionsWithMultipleAnimals() {
+        return getAnimals().stream()
+                .collect(Collectors.groupingBy(Animal::getCurrentPosition))
+                .entrySet().stream()
+                .filter(entry -> entry.getValue().size() >= 2)
+                .map(Map.Entry::getKey)
+                .toList();
+    }
 
     public List<Animal> getAnimals() {
         return animals.values().stream()

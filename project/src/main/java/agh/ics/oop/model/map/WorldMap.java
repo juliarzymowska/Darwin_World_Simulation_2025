@@ -35,6 +35,8 @@ public interface WorldMap extends MoveValidator {
      */
     void moveTo(Animal animal);
 
+    void reproduceAnimals(int CurrentDay);
+
     WorldElement objectAt(Vector2d position);
 
     boolean isOccupied(Vector2d position);

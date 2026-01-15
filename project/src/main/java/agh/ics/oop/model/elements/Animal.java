@@ -4,6 +4,8 @@ import agh.ics.oop.configuration.ConfigAnimal;
 import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.util.Vector2d;
 
+import java.util.List;
+
 /*
  * Class representing an animal in the simulation.
  * Contains information about the animal's position, orientation, energy, age, genotype, and other statistics.
