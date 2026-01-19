@@ -80,28 +80,12 @@ public class AnimalTest {
         Vector2d newPosition = new Vector2d(2, 3);
 
         // when
-        boolean moved = animal.move(newPosition, MapDirection.NORTH);
+        animal.move(newPosition, MapDirection.NORTH);
 
         // then
-        assertTrue(moved);
         assertEquals(initialEnergy - config.energyConsumedByMove(), animal.getEnergy());
         assertEquals(newPosition, animal.getCurrentPosition());
         assertEquals(1, animal.getAge());
-    }
-
-    @Test
-    public void testAnimalDiesWhenEnergyReachesZero() {
-        // given
-        Animal animal = new Animal(startPosition, config.energyConsumedByMove(), new Genotype(8), MapDirection.NORTH);
-        Vector2d newPosition = new Vector2d(2, 3);
-
-        // when
-        boolean moved = animal.move(newPosition, MapDirection.NORTH);
-
-        // then
-        assertFalse(moved);
-        assertFalse(animal.isAlive());
-        assertEquals(0, animal.getEnergy());
     }
 
     @Test
@@ -175,21 +159,6 @@ public class AnimalTest {
         // then
         assertFalse(animal.isAlive());
         assertEquals(firstDayOfDeath, animal.getDayOfDeath()); // day of death doesn't change
-    }
-
-    @Test
-    public void testMoveWhenDead() {
-        // given
-        Animal animal = new Animal(startPosition, 100, new Genotype(8), MapDirection.NORTH);
-        animal.die(5);
-        Vector2d newPosition = new Vector2d(3, 3);
-
-        // when
-        boolean moved = animal.move(newPosition, MapDirection.EAST);
-
-        // then
-        assertFalse(moved);
-        assertEquals(startPosition, animal.getCurrentPosition()); // position unchanged
     }
 
     @Test
@@ -283,17 +252,15 @@ public class AnimalTest {
         Animal animal = new Animal(startPosition, 1000, new Genotype(8), MapDirection.NORTH);
 
         // when
-        boolean firstMove = animal.move(new Vector2d(2, 3), MapDirection.EAST);
+        animal.move(new Vector2d(2, 3), MapDirection.EAST);
 
         // then
-        assertTrue(firstMove);
         assertEquals(MapDirection.EAST, animal.getCurrentOrientation());
 
         // when
-        boolean secondMove = animal.move(new Vector2d(3, 3), MapDirection.SOUTH);
+        animal.move(new Vector2d(3, 3), MapDirection.SOUTH);
 
         // then
-        assertTrue(secondMove);
         assertEquals(MapDirection.SOUTH, animal.getCurrentOrientation());
     }
 }

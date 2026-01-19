@@ -107,13 +107,14 @@ public class EarthMap implements WorldMap {
     public void removeDeadAnimals(int currentDay) {
         List<Animal> animals = elementsManager.getAnimals();
         List<Animal> deadAnimals = animals.stream()
-                .filter(animal -> !animal.isAlive())
+                .filter(animal -> animal.getEnergy() <= 0)
                 .toList();
 
         for (Animal animal : deadAnimals) {
             animal.die(currentDay);
             elementsManager.removeAnimal(animal);
         }
+        notifyAnimalsRemoved(deadAnimals);
     }
 
     /*
@@ -127,14 +128,10 @@ public class EarthMap implements WorldMap {
         MapDirection newOrientation = calculateNewOrientation(animal);
         Vector2d newPosition = calculateNewPosition(animal);
 
-        boolean isAlive = animal.move(newPosition, newOrientation);
+        animal.move(newPosition, newOrientation);
 
-        if (isAlive) {
-            elementsManager.placeAnimal(animal);
-            mapChanged(this, "moved animal %s to %s".formatted(currentPosition, newPosition));
-        } else {
-            mapChanged(this, "animal died %s at %s".formatted(currentPosition, newPosition));
-        }
+        elementsManager.placeAnimal(animal);
+        mapChanged(this, "moved animal %s to %s".formatted(currentPosition, newPosition));
     }
 
     private Vector2d calculateNewPosition(Animal animal) {
@@ -214,6 +211,12 @@ public class EarthMap implements WorldMap {
     public void mapChanged(WorldMap map, String message) {
         for (MapChangeListener observer : observers) {
             observer.mapChanged(this, message);
+        }
+    }
+
+    protected void notifyAnimalsRemoved(List<Animal> animals) {
+        for (MapChangeListener obs : observers) {
+            obs.handleDeadAnimals(animals);
         }
     }
 

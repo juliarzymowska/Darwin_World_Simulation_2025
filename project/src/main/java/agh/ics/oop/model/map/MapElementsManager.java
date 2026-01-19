@@ -80,10 +80,6 @@ public class MapElementsManager {
         if (list.isEmpty()) animals.remove(position);
     }
 
-    // tutaj powstało tak zwane masło-maślane, bo metoda reproduceAtPosition jest wywoływana w EarthMap
-    // to samo z getPositionsWithMultipleAnimals
-    // natomiast mogła to być jedna metoda w MapElementsManager
-    // co teraz?
     protected Optional<Animal> reproduceAtPosition(Vector2d position, int currentDay) {
         List<Animal> animalsAtPosition = animals.get(position);
         if (animalsAtPosition.size() < 2) {

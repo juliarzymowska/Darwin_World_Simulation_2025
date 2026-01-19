@@ -4,8 +4,6 @@ import agh.ics.oop.configuration.ConfigAnimal;
 import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.util.Vector2d;
 
-import java.util.List;
-
 /*
  * Class representing an animal in the simulation.
  * Contains information about the animal's position, orientation, energy, age, genotype, and other statistics.
@@ -18,8 +16,6 @@ public class Animal implements WorldElement, Comparable<Animal> {
     private int currentEnergy, currentAge = 0, numberOfChildren = 0, numberOfEatenPlants = 0,
             numberOfDescendants = 0, dayOfBirth = 0, dayOfDeath = -1;
     private boolean isAlive = true;
-    //    private final int id = this.hashCode(); // unique identifier for each animal, will it be needed for statistics?
-//    private final List<Animal> children = new ArrayList<>(); // for statistics(?), not used now
     private final Genotype genotype;
 
 
@@ -167,7 +163,20 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     // for movement
     private void decreaseEnergy() {
-        this.currentEnergy -= config.energyConsumedByMove();
+        // uważam, że najniższa możliwa energia powinna wynosić 0
+        this.currentEnergy = max(0, currentEnergy - config.energyConsumedByMove());
+    }
+
+    // for reproduction
+    public void reproduce() {
+        this.currentEnergy -= config.energyToReproduce();
+        this.numberOfChildren += 1;
+//        this.children.add(); // TODO later for statistics
+    }
+
+    // check if animal can reproduce, used in MapElementsManager
+    public boolean validateReproduction() {
+        return this.isAlive && this.currentEnergy >= config.energyToReproduce();
     }
 
     // for reproduction
@@ -196,21 +205,13 @@ public class Animal implements WorldElement, Comparable<Animal> {
         this.dayOfDeath = currentDay;
     }
 
-    public boolean move(Vector2d position, MapDirection orientation) {
-        if (!isAlive)
-            return false;
+    public void move(Vector2d position, MapDirection orientation) {
         updateAge(); // increase age on each move
         decreaseEnergy();
 
-//        fix: animals don't die when energy reaches 0 during movement, only if they don't eat and restore energy
-        if (currentEnergy <= 0) {
-            isAlive = false;
-            return false;
-        }
         this.currentOrientation = orientation;
         this.currentPosition = position;
         genotype.moveToNextGene();
-        return true;
     }
 
     @Override
