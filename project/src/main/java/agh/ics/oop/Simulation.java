@@ -1,5 +1,7 @@
 package agh.ics.oop;
 
+import agh.ics.oop.configuration.ConfigAnimal;
+import agh.ics.oop.configuration.ConfigMap;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.stats.CSVSaver;
 import agh.ics.oop.model.stats.SimulationStatsTracker;
@@ -9,14 +11,11 @@ import agh.ics.oop.model.map.WorldMap;
 import java.util.List;
 
 public class Simulation implements Runnable {
-    //    private final List<Animal> animals = new ArrayList<>();
     private final WorldMap map;
     private final SimulationStatsTracker statsTracker;
-    // some error for config file that doesn't let user make a genotypeLength = 0!
-    // error for config file when number of grass per day is bigger than map tiles number
-    // random animal position generation
+    // TODO: some error for config file that doesn't let user make a genotypeLength = 0!
+    // TODO: error for config file when number of grass per day is bigger than map tiles number
 
-    // TODO: make new Simulation with ConfigAnimal (and random animal placement on map) and ConfigMap!
 
     // (for testing) Constructor of Simulation class.
     public Simulation(List<Vector2d> positions, WorldMap map) {
@@ -33,13 +32,21 @@ public class Simulation implements Runnable {
 
     }
 
+    public Simulation(ConfigAnimal configAnimal, ConfigMap configMap, WorldMap map) {
+        this.map = map;
+        this.statsTracker = new SimulationStatsTracker(map);
+        map.addObserver(statsTracker);
+        statsTracker.addObserver(new CSVSaver());
+        generateAnimalsOnMap(configAnimal, configMap, map);
+    }
+
     /*
      * Runs the simulation until all animals are dead.
      * Each day consists of the following steps:
      * 1. Remove dead animals from the map.
      * 2. Move all animals to new positions.
      * 3. Animals consume plants at their new positions.
-     * 4. (TODO) Animals reproduce if they have enough energy.
+     * 4. Animals reproduce if they have enough energy.
      * 5. Grow new plants on the map.
      * */
     public void run() {
@@ -67,9 +74,10 @@ public class Simulation implements Runnable {
 
         // 3. Consume plants
         map.consumePlants();
-        // 4. TODO: Reproduce animals
+        // 4. Reproduce animals
+        map.reproduceAnimals(currentDay);
         // 5. Grow new plants
-        map.growPlants(10); // TODO: apply from config number of new plants per day
+        map.growPlants(0); // TODO: apply from config number of new plants per day
 
         statsTracker.printStats(currentDay);
         if (animals.isEmpty()) {
@@ -78,6 +86,24 @@ public class Simulation implements Runnable {
         }
 
         return true;
+    }
+
+
+    private void generateAnimalsOnMap(ConfigAnimal configAnimal, ConfigMap configMap, WorldMap map) {
+        for (int i = 0; i < configAnimal.initialAnimalCount(); i++) {
+            // Random position generation, could lead to infinite loop if map is full
+            // Can place multiple animals on the same position
+            Vector2d position = new Vector2d(
+                    (int) (Math.random() * configMap.width()),
+                    (int) (Math.random() * configMap.height())
+            );
+            Animal newAnimal = new Animal(position);
+            try {
+                map.placeAnimal(newAnimal);
+            } catch (Exception e) {
+                System.err.println("Failed to place animal: " + e.getMessage());
+            }
+        }
     }
 
     public List<Animal> getAnimals() {

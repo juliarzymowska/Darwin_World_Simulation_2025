@@ -23,8 +23,6 @@ public class MapElementsManager {
      * PLANTS LOGIC
      * */
 
-    // move to maps? depends on map variant (unless pheromone can be placed at plant position)
-    // instead make a addPant method here that will be called from maps?
     public void addPlants(int n, int x, int y) {
         NormalPositionGenerator randomPositionGenerator = new NormalPositionGenerator(n, x, y);
         for (Vector2d v : randomPositionGenerator) {
@@ -46,43 +44,14 @@ public class MapElementsManager {
         return new ArrayList<>(plants.values());
     }
 
-
-    // TODO: move to AbstractWorldMap, make consumePlantAtPosition here instead
-    public void consumePlants(WorldMap map) {
-        Random rand = new Random();
-
-        // for each plant, check if there are animals at that position
-        List<Plant> plants = getPlants();
-        for (Plant plant : plants) {
-            Vector2d position = plant.getCurrentPosition();
-            Optional<List<Animal>> animalsAtPosition = animalAt(position); // get animals at the plant's position
-
-            if (animalsAtPosition.isPresent()) {
-                List<Animal> animalList = animalsAtPosition.get();
-                if (!animalList.isEmpty()) {
-                    // find the highest energy level among the animals
-                    int maxEnergy = animalList.stream()
-                            .mapToInt(Animal::getEnergy)
-                            .max()
-                            .orElse(0);
-
-                    // filter animals that have the highest energy
-                    List<Animal> strongestAnimals = animalList.stream()
-                            .filter(animal -> animal.getEnergy() == maxEnergy)
-                            .toList();
-
-                    // randomly select one of the strongest animals to eat the plant
-                    Animal eater = strongestAnimals.get(rand.nextInt(strongestAnimals.size()));
-                    eater.gainEnergy();
-
-                    // remove the plant from the map
-                    removePlant(position);
-
-                    map.mapChanged(map, "plant at %s eaten by animal".formatted(position));
-                }
-            }
-        }
+    // get all positions where there are both animals and plants
+    // used in EarthMap.consumePlants()
+    public List<Vector2d> getPositionsWithAnimalsAndPlants() {
+        return animals.keySet().stream()
+                .filter(plants::containsKey)
+                .toList();
     }
+
 
     /*
      * ANIMAL LOGIC
@@ -111,10 +80,48 @@ public class MapElementsManager {
         if (list.isEmpty()) animals.remove(position);
     }
 
+    protected Optional<Animal> reproduceAtPosition(Vector2d position, int currentDay) {
+        List<Animal> animalsAtPosition = animals.get(position);
+        if (animalsAtPosition.size() < 2) {
+            return Optional.empty(); // Not enough animals to reproduce
+        }
+
+        // Filter animals with enough energy to reproduce
+        List<Animal> eligibleAnimals = animalsAtPosition.stream()
+                .filter(Animal::validateReproduction) // alive and enough energy
+                .sorted() // Uses compareTo for priority
+                .toList();
+
+        if (eligibleAnimals.size() < 2) {
+            return Optional.empty();
+        }
+
+        // Take top 2 animals
+        Animal father = eligibleAnimals.get(0);
+        Animal mother = eligibleAnimals.get(1);
+
+        // Remove energy and update stats
+        father.reproduce();
+        mother.reproduce();
+
+        return Optional.of(new Animal(father, mother, currentDay));
+    }
+
+
     public Optional<List<Animal>> animalAt(Vector2d position) {
         return Optional.ofNullable(animals.get(position));
     }
 
+    // get all positions where there are at least 2 animals
+    // used for reproduction
+    protected List<Vector2d> getPositionsWithMultipleAnimals() {
+        return getAnimals().stream()
+                .collect(Collectors.groupingBy(Animal::getCurrentPosition))
+                .entrySet().stream()
+                .filter(entry -> entry.getValue().size() >= 2)
+                .map(Map.Entry::getKey)
+                .toList();
+    }
 
     public List<Animal> getAnimals() {
         return animals.values().stream()
