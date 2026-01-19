@@ -1,8 +1,11 @@
 package agh.ics.oop.model.elements;
 
+import agh.ics.oop.configuration.ConfigAnimal;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 
 public class Genotype {
@@ -15,7 +18,6 @@ public class Genotype {
      * For animals to be placed on map at the beginning of simulation.
      * @param genotypeLength - length of genotype
      * @return new random genotype
-     * TODO: move to RandomGenotypeGenerator???
      * */
     public Genotype(int genotypeLength) {
         for (int i = 0; i < genotypeLength; i++) {
@@ -40,9 +42,8 @@ public class Genotype {
      * @param father - father animal
      * @param mother - mother animal
      * @return new genotype created from parents' genotypes
-     * TODO: move to RandomGenotypeGenerator???
      * */
-    public Genotype(Animal father, Animal mother) {
+    public Genotype(Animal father, Animal mother, int minMutations, int maxMutations) {
         int genotypeLength = father.getGenotype().getGenotypeList().size();
 
         // Calculate energy proportions
@@ -60,6 +61,7 @@ public class Genotype {
         // Randomly choose side: true = right, false = left
         boolean rightSide = random.nextBoolean();
 
+        // TODO: change from loops to addAll with subList
         if (rightSide) {
             // Stronger parent contributes from right side
             for (int i = 0; i < genotypeLength - strongerGeneCount; i++) {
@@ -77,8 +79,9 @@ public class Genotype {
                 this.genotype.add(weaker.getGenotype().getGenotypeList().get(i));
             }
         }
+        int mutationsNumber = random.nextInt(minMutations, maxMutations + 1);
         // Apply mutations
-        genotype = mutateGenotype(this.genotype, random.nextInt(8));
+        mutateGenotype(this.genotype, mutationsNumber);
         // Set random active gene index
         activeGeneIndex = random.nextInt(genotypeLength);
     }
@@ -101,10 +104,9 @@ public class Genotype {
         activeGeneIndex = (activeGeneIndex + 1) % genotype.size();
     }
 
-    // Methods
-    private List<Integer> mutateGenotype(List<Integer> genotype, int mutationsNumber) {
+    private void mutateGenotype(List<Integer> genotype, int mutationsNumber) {
         // Create a list of indices from 0 to genotype length - 1
-        List<Integer> indexes = java.util.stream.IntStream.range(0, genotype.size())
+        List<Integer> indexes = IntStream.range(0, genotype.size())
                 .boxed()
                 .toList();
 
@@ -114,7 +116,9 @@ public class Genotype {
             int mutatedGene = (currentGene + random.nextInt(1, 8)) % 8;
             genotype.set(indexToMutate, mutatedGene);
         }
+    }
 
-        return genotype;
+    public String toString(){
+        return genotype.toString();
     }
 }

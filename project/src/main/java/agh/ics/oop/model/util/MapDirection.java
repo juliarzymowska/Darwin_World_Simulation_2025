@@ -73,16 +73,14 @@ public enum MapDirection {
         };
     }
 
-    public int toInt() {
-        return switch (this) {
-            case NORTH -> 0;
-            case NORTH_EAST -> 1;
-            case EAST -> 2;
-            case SOUTH_EAST -> 3;
-            case SOUTH -> 4;
-            case SOUTH_WEST -> 5;
-            case WEST -> 6;
-            case NORTH_WEST -> 7;
+    public static MapDirection directionOnBorder(MapDirection direction) {
+        return switch (direction) {
+            case NORTH_EAST -> MapDirection.SOUTH_EAST;
+            case EAST, WEST -> direction;
+            case SOUTH_EAST -> MapDirection.NORTH_EAST;
+            case NORTH, SOUTH -> direction.turn(4);
+            case SOUTH_WEST -> MapDirection.NORTH_WEST;
+            case NORTH_WEST -> MapDirection.SOUTH_WEST;
         };
     }
 }

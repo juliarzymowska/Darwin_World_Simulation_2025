@@ -4,18 +4,20 @@ import agh.ics.oop.configuration.ConfigAnimal;
 import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.util.Vector2d;
 
+import static java.lang.Math.max;
+
 /*
  * Class representing an animal in the simulation.
  * Contains information about the animal's position, orientation, energy, age, genotype, and other statistics.
  * */
-public class Animal implements WorldElement {
+public class Animal implements WorldElement, Comparable<Animal> {
     private MapDirection currentOrientation;
     private Vector2d currentPosition;
-    private final ConfigAnimal config = new ConfigAnimal();
+    protected final static ConfigAnimal config = new ConfigAnimal(); // for testing purposes, later should be passed from outside
 
     private int currentEnergy, currentAge = 0, numberOfChildren = 0, numberOfEatenPlants = 0,
             numberOfDescendants = 0, dayOfBirth = 0, dayOfDeath = -1;
-    protected boolean isAlive = true;
+    private boolean isAlive = true;
     private final Genotype genotype;
 
 
@@ -39,7 +41,7 @@ public class Animal implements WorldElement {
      * */
     public Animal(Animal father, Animal mother, int currentDay) {
         this.currentPosition = new Vector2d(father.getCurrentPosition().getX(), father.getCurrentPosition().getY());
-        this.genotype = new Genotype(father, mother);
+        this.genotype = new Genotype(father, mother, config.minMutations(), config.maxMutations());
         this.currentOrientation = MapDirection.getRandomDirection();
         this.currentEnergy = 2 * config.energyToReproduce(); // energy from parents, apply reproduction cost from config
         this.dayOfBirth = currentDay;
@@ -98,12 +100,16 @@ public class Animal implements WorldElement {
         return dayOfDeath;
     }
 
+    public int getDayOfBirth() {
+        return dayOfBirth;
+    }
+
     public int getNumberOfDescendants() {
         return numberOfDescendants;
     }
 
     /*
-     * Setters
+     * Setters (mostly for testing)
      * */
     public void setCurrentEnergy(int energy) {
         this.currentEnergy = energy;
@@ -125,11 +131,11 @@ public class Animal implements WorldElement {
         this.currentAge = currentAge;
     }
 
-    // (for tests)
     public void setOrientation(MapDirection mapDirection) {
         this.currentOrientation = mapDirection;
     }
 
+    // visual representation of the animal based on its orientation
     @Override
     public String toString() {
         return switch (currentOrientation) {
@@ -143,14 +149,42 @@ public class Animal implements WorldElement {
             case NORTH_WEST -> "↖";
         };
     }
+// not needed now
+//    public boolean isAt(Vector2d position) {
+//        return currentPosition.equals(position);
+//    }
+    /*
+     * Methods
+     * */
 
-    public boolean isAt(Vector2d position) {
-        return currentPosition.equals(position);
+    public void updateAge() {
+        if (isAlive) {
+            this.currentAge += 1;
+        }
     }
 
     // for movement
     private void decreaseEnergy() {
-        this.currentEnergy -= config.energyConsumedByMove();
+        // uważam, że najniższa możliwa energia powinna wynosić 0
+        this.currentEnergy = max(0,currentEnergy- config.energyConsumedByMove());
+    }
+
+    // for reproduction
+    public void reproduce() {
+        this.currentEnergy -= config.energyToReproduce();
+        this.numberOfChildren += 1;
+//        this.children.add(); // TODO later for statistics
+    }
+
+    // check if animal can reproduce, used in MapElementsManager
+    public boolean validateReproduction() {
+        return this.isAlive && this.currentEnergy >= config.energyToReproduce();
+    }
+
+    // for eating
+    public void gainEnergy() {
+        this.currentEnergy += config.energyGainedByEating();
+        numberOfEatenPlants += 1;
     }
 
     public void die(int currentDay) {
@@ -161,19 +195,36 @@ public class Animal implements WorldElement {
         this.dayOfDeath = currentDay;
     }
 
-    public boolean move(Vector2d position, MapDirection orientation) {
-        if (!isAlive)
-            return false;
+    public void move(Vector2d position, MapDirection orientation) {
+        updateAge(); // increase age on each move
         decreaseEnergy();
 
-        if (currentEnergy <= 0) {
-            isAlive = false;
-            return false;
-        }
         this.currentOrientation = orientation;
         this.currentPosition = position;
         genotype.moveToNextGene();
-        return true;
     }
 
+    @Override
+    public int compareTo(Animal other) {
+        // 1. Higher energy has priority
+        int energyComparison = Integer.compare(other.currentEnergy, this.currentEnergy);
+        if (energyComparison != 0) {
+            return energyComparison;
+        }
+
+        // 2. Older animals have priority
+        int ageComparison = Integer.compare(other.currentAge, this.currentAge);
+        if (ageComparison != 0) {
+            return ageComparison;
+        }
+
+        // 3. Animals with more children have priority
+        int childrenComparison = Integer.compare(other.numberOfChildren, this.numberOfChildren);
+        if (childrenComparison != 0) {
+            return childrenComparison;
+        }
+
+        // 4. Random tie-breaking (using hash codes for pseudo-randomness)
+        return Integer.compare(System.identityHashCode(other), System.identityHashCode(this));
+    }
 }
