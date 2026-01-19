@@ -1,6 +1,7 @@
 package agh.ics.oop.model.map;
 
 import agh.ics.oop.configuration.ConfigMap;
+import agh.ics.oop.model.elements.Plant;
 import agh.ics.oop.model.elements.WorldElement;
 import agh.ics.oop.model.observators.MapChangeListener;
 import agh.ics.oop.model.util.MapDirection;
@@ -34,9 +35,42 @@ public class EarthMap implements WorldMap {
      * PLANTS LOGIC
      * */
 
-    //TODO: remake it so in MapElementsManager is only consumePlantAtPosition
     public void consumePlants() {
-        elementsManager.consumePlants(this);
+        List<Vector2d> positionsWithAnimalsAndPlants = elementsManager.getPositionsWithAnimalsAndPlants();
+
+        for (Vector2d position : positionsWithAnimalsAndPlants) {
+            Optional<List<Animal>> animalsAtPosition = elementsManager.animalAt(position);
+            Optional<Plant> plantAtPosition = elementsManager.plantAt(position);
+
+            if (animalsAtPosition.isPresent() && plantAtPosition.isPresent()) {
+                List<Animal> animalList = animalsAtPosition.get();
+                List<Animal> sortedAnimals = animalList.stream()
+                        .sorted()
+                        .toList();
+
+                // Get the strongest animal (first in sorted list)
+                Animal strongest = sortedAnimals.get(0);
+                strongest.gainEnergy();
+
+                /* TODO: Is it needed to randomly select one of the strongest animals? Isn't it already random taking
+                     it from the sorted list?
+                // Find all animals with same priority as the strongest
+                List<Animal> strongestAnimals = sortedAnimals.stream()
+                        .filter(animal -> animal.compareTo(strongest) == 0)
+                        .toList();
+
+                // randomly select one of the strongest animals to eat the plant
+                Animal eater = strongestAnimals.get(rand.nextInt(strongestAnimals.size()));
+                eater.gainEnergy();
+                */
+
+
+                // remove the plant from the map
+                elementsManager.removePlant(position);
+
+                mapChanged(this, "plant at %s eaten by animal".formatted(position));
+            }
+        }
     }
 
     public void growPlants(int n) {
