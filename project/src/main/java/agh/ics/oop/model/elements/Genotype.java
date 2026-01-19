@@ -117,4 +117,8 @@ public class Genotype {
             genotype.set(indexToMutate, mutatedGene);
         }
     }
+
+    public String toString(){
+        return genotype.toString();
+    }
 }

@@ -1,9 +1,6 @@
 package agh.ics.oop.model.map;
 
-import agh.ics.oop.Simulation;
-import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.elements.Animal;
-import agh.ics.oop.model.elements.Plant;
 import agh.ics.oop.model.elements.WorldElement;
 import agh.ics.oop.model.observators.MapChangeListener;
 import agh.ics.oop.model.util.Boundary;
@@ -11,7 +8,6 @@ import agh.ics.oop.model.util.MoveValidator;
 import agh.ics.oop.model.util.Vector2d;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
