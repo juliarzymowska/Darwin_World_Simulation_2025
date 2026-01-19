@@ -4,6 +4,8 @@ import agh.ics.oop.configuration.ConfigAnimal;
 import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.util.Vector2d;
 
+import static java.lang.Math.max;
+
 /*
  * Class representing an animal in the simulation.
  * Contains information about the animal's position, orientation, energy, age, genotype, and other statistics.
@@ -160,7 +162,8 @@ public class Animal implements WorldElement {
 
     // for movement
     private void decreaseEnergy() {
-        this.currentEnergy -= config.energyConsumedByMove();
+        // uważam, że najniższa możliwa energia powinna wynosić 0
+        this.currentEnergy = max(0,currentEnergy- config.energyConsumedByMove());
     }
 
     // for eating
@@ -176,21 +179,13 @@ public class Animal implements WorldElement {
         this.dayOfDeath = currentDay;
     }
 
-    public boolean move(Vector2d position, MapDirection orientation) {
-        if (!isAlive)
-            return false;
+    public void move(Vector2d position, MapDirection orientation) {
         updateAge(); // increase age on each move
         decreaseEnergy();
 
-//        fix: animals don't die when energy reaches 0 during movement, only if they don't eat and restore energy
-        if (currentEnergy <= 0) {
-            isAlive = false;
-            return false;
-        }
         this.currentOrientation = orientation;
         this.currentPosition = position;
         genotype.moveToNextGene();
-        return true;
     }
 
 }

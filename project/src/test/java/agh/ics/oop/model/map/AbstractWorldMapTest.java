@@ -34,7 +34,7 @@ public class AbstractWorldMapTest {
 
     @Test
     void shouldPlaceInitialPlants() {
-        List<Plant> plants = map.getPlants();
+        List<Plant> plants = map.getElementsManager().getPlants();
         assertEquals(5, plants.size());
     }
 
@@ -58,13 +58,13 @@ public class AbstractWorldMapTest {
         Animal animal = new Animal(new Vector2d(5, 5));
         animal.setCurrentEnergy(100);
         map.placeAnimal(animal);
-        map.removeAnimal(animal);
+        map.getElementsManager().removeAnimal(animal);
         assertFalse(map.isOccupied(new Vector2d(5, 5)));
     }
 
     @Test
     void shouldHandleRemovingNullAnimal() {
-        assertDoesNotThrow(() -> map.removeAnimal(null));
+        assertDoesNotThrow(() -> map.getElementsManager().removeAnimal(null));
     }
 
     @Test
@@ -84,22 +84,22 @@ public class AbstractWorldMapTest {
     void shouldReturnAnimalAtPosition() {
         Animal animal = new Animal(new Vector2d(5, 5));
         map.placeAnimal(animal);
-        Optional<List<Animal>> animals = map.animalAt(new Vector2d(5, 5));
+        Optional<List<Animal>> animals = map.getElementsManager().animalAt(new Vector2d(5, 5));
         assertTrue(animals.isPresent());
         assertEquals(1, animals.get().size());
     }
 
     @Test
     void shouldReturnEmptyForPositionWithNoAnimals() {
-        Optional<List<Animal>> animals = map.animalAt(new Vector2d(3, 3));
+        Optional<List<Animal>> animals = map.getElementsManager().animalAt(new Vector2d(3, 3));
         assertTrue(animals.isEmpty() || animals.get().isEmpty());
     }
 
     @Test
     void shouldRemovePlant() {
         Plant plant = new Plant(new Vector2d(2, 2));
-        map.removePlant(new Vector2d(2, 2));
-        assertFalse(map.plantAt(new Vector2d(2, 2)).isPresent());
+        map.getElementsManager().removePlant(new Vector2d(2, 2));
+        assertFalse(map.getElementsManager().plantAt(new Vector2d(2, 2)).isPresent());
     }
 
     @Test
@@ -110,7 +110,7 @@ public class AbstractWorldMapTest {
         animal2.setCurrentEnergy(100);
         map.placeAnimal(animal1);
         map.placeAnimal(animal2);
-        assertEquals(2, map.getAnimals().size());
+        assertEquals(2, map.getElementsManager().getAnimals().size());
     }
 
     @Test
@@ -121,7 +121,7 @@ public class AbstractWorldMapTest {
         animal2.setCurrentEnergy(100);
         map.placeAnimal(animal1);
         map.placeAnimal(animal2);
-        Optional<List<Animal>> animals = map.animalAt(new Vector2d(5, 5));
+        Optional<List<Animal>> animals = map.getElementsManager().animalAt(new Vector2d(5, 5));
         assertTrue(animals.isPresent());
         assertEquals(2, animals.get().size());
     }
@@ -144,6 +144,6 @@ public class AbstractWorldMapTest {
     @Test
     void shouldHandleZeroInitialPlants() {
         EarthMap emptyMap = new EarthMap(createDefaultConfig(10,10,0));
-        assertEquals(0, emptyMap.getPlants().size());
+        assertEquals(0, emptyMap.getElementsManager().getPlants().size());
     }
 }
