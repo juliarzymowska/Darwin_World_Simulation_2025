@@ -10,6 +10,10 @@ import agh.ics.oop.model.util.*;
 
 import java.util.*;
 
+import static agh.ics.oop.model.util.MapDirection.directionOnBorder;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 public class EarthMap implements WorldMap {
     //Zrobić funkcje nextday() usuwającą zwierzęta, a w feromonmap zmniejszające intensywnośc zapachów. (ja bym w
     // przeniosła removeDeadAnimals (działa tak samo niezależnie od warianty mapy) do MapELemetsManager i wywoływałą
@@ -52,20 +56,6 @@ public class EarthMap implements WorldMap {
                 Animal strongest = sortedAnimals.get(0);
                 strongest.gainEnergy();
 
-                /* TODO: Is it needed to randomly select one of the strongest animals? Isn't it already random taking
-                     it from the sorted list?
-                // Find all animals with same priority as the strongest
-                List<Animal> strongestAnimals = sortedAnimals.stream()
-                        .filter(animal -> animal.compareTo(strongest) == 0)
-                        .toList();
-
-                // randomly select one of the strongest animals to eat the plant
-                Animal eater = strongestAnimals.get(rand.nextInt(strongestAnimals.size()));
-                eater.gainEnergy();
-                */
-
-
-                // remove the plant from the map
                 elementsManager.removePlant(position);
 
                 mapChanged(this, "plant at %s eaten by animal".formatted(position));
@@ -137,33 +127,38 @@ public class EarthMap implements WorldMap {
     private Vector2d calculateNewPosition(Animal animal) {
         Vector2d currentPosition = animal.getCurrentPosition();
         int currentGene = animal.getGenotype().getActiveGene();
-        MapDirection newOrientation = animal.getCurrentOrientation().turn(currentGene);
-        Vector2d newPosition = currentPosition.add(newOrientation.toUnitVector());
+        MapDirection nextOrientation = animal.getCurrentOrientation().turn(currentGene);
+        Vector2d targetPosition = currentPosition.add(nextOrientation.toUnitVector());
 
-        if (canMoveTo(newPosition)) {
-            return newPosition;
-        } else {
-            if (isOnVerticalBorder(newPosition)) {
-                return positionOnBorder(currentPosition);
-            } else {
-                return new Vector2d(positionOnBorder(currentPosition).getX(), newPosition.getY());
-            }
-
+        // 1. Obsługa BIEGUNÓW (Północ/Południe)
+        if (targetPosition.getY() > rightUpMapCorner.getY() || targetPosition.getY() < leftDownMapCorner.getY()) {
+            return positionOnBorder(currentPosition);
         }
+
+        // 2. Obsługa WSCHÓD/ZACHÓD
+        int newX = targetPosition.getX();
+        int minX = leftDownMapCorner.getX();
+        int maxX = rightUpMapCorner.getX();
+
+        if (newX > maxX) {
+            newX = minX;
+        } else if (newX < minX) {
+            newX = maxX;
+        }
+
+        return new Vector2d(newX, targetPosition.getY());
     }
 
     private MapDirection calculateNewOrientation(Animal animal) {
         int currentGene = animal.getGenotype().getActiveGene();
-        MapDirection newOrientation = animal.getCurrentOrientation().turn(currentGene);
+        MapDirection nextOrientation = animal.getCurrentOrientation().turn(currentGene);
+        Vector2d targetPosition = animal.getCurrentPosition().add(nextOrientation.toUnitVector());
 
-        if (isOnVerticalBorder(animal.getCurrentPosition())) {
-            return newOrientation.directionOnBorder(newOrientation);
+        if (targetPosition.getY() > rightUpMapCorner.getY() || targetPosition.getY() < leftDownMapCorner.getY()) {
+            return directionOnBorder(nextOrientation);
         }
-        return newOrientation;
-    }
 
-    private boolean isOnVerticalBorder(Vector2d position) {
-        return position.getY() == leftDownMapCorner.getY() || position.getY() == rightUpMapCorner.getY();
+        return nextOrientation;
     }
 
     public Vector2d positionOnBorder(Vector2d position) {

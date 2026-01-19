@@ -73,7 +73,7 @@ public enum MapDirection {
         };
     }
 
-    public MapDirection directionOnBorder(MapDirection direction) {
+    public static MapDirection directionOnBorder(MapDirection direction) {
         return switch (direction) {
             case NORTH_EAST -> MapDirection.SOUTH_EAST;
             case EAST, WEST -> direction;
