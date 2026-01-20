@@ -1,8 +1,6 @@
 package agh.ics.oop.model.map;
 
-import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.elements.Animal;
-import agh.ics.oop.model.elements.Plant;
 import agh.ics.oop.model.elements.WorldElement;
 import agh.ics.oop.model.observators.MapChangeListener;
 import agh.ics.oop.model.util.Boundary;
@@ -10,7 +8,6 @@ import agh.ics.oop.model.util.MoveValidator;
 import agh.ics.oop.model.util.Vector2d;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -34,21 +31,13 @@ public interface WorldMap extends MoveValidator {
      */
     void moveTo(Animal animal);
 
-    /**
-     * Return an animal at a given position.
-     *
-     * @param position The position of the animal.
-     * @return animal or null if the position is not occupied.
-     */
+    void reproduceAnimals(int CurrentDay);
+
     WorldElement objectAt(Vector2d position);
 
     boolean isOccupied(Vector2d position);
 
-    Optional<Plant> plantAt(Vector2d position);
-
-    Optional<List<Animal>> animalAt(Vector2d position);
-
-    List<Animal> getAnimals();
+    void removeDeadAnimals(int currentDay);
 
     Boundary getCurrentBounds();
 
@@ -58,9 +47,17 @@ public interface WorldMap extends MoveValidator {
 
     void addObserver(MapChangeListener observer);
 
-    void removeAnimal(Animal animal);
-
-    void removePlant(Vector2d position);
-
     void mapChanged(WorldMap map, String message);
+
+    /*
+     * Remove plants that are eaten by animals according to the simulation rules.
+     * */
+    void consumePlants();
+
+    /*
+     * Grow new plants on the map according to the simulation rules.
+     * */
+    void growDailyPlants();
+
+    MapElementsManager getElementsManager();
 }
