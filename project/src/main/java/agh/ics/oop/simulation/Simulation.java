@@ -1,4 +1,4 @@
-package agh.ics.oop;
+package agh.ics.oop.simulation;
 
 import agh.ics.oop.configuration.ConfigAnimal;
 import agh.ics.oop.configuration.ConfigMap;
@@ -40,7 +40,7 @@ public class Simulation implements Runnable {
     }
 
     public Simulation(ConfigAnimal configAnimal, ConfigMap configMap) {
-        this.map = (configMap.mapType() == MapType.EARTH_MAP) ? new EarthMap(configMap): new FeromonMap(configMap);
+        this.map = (configMap.mapType() == MapType.EARTH_MAP) ? new EarthMap(configMap) : new FeromonMap(configMap);
         this.consoleMapDisplay = new ConsoleMapDisplay();
         map.addObserver(consoleMapDisplay);
         this.statsTracker = new SimulationStatsTracker(map);

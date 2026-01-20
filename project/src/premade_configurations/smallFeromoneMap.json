@@ -1,0 +1,19 @@
+{
+  "initialAnimalCount": 3,
+  "initialEnergy": 100,
+  "maxEnergy": 200,
+  "energyToReproduce": 50,
+  "energyConsumedByMove": 5,
+  "energyGainedByEating": 20,
+  "minMutations": 0,
+  "maxMutations": 3,
+  "genotypeLength": 8,
+  "width": 5,
+  "height": 5,
+  "startPlantNumber": 7,
+  "dailyPlantNumber": 5,
+  "mapType": "EARTH_MAP",
+  "moveToFeromonProbability": 0.0,
+  "daysToDecreaseFeromon": 0,
+  "smellRange": 0
+}
