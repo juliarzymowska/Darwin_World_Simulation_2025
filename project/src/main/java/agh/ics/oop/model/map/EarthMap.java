@@ -80,16 +80,21 @@ public class EarthMap implements WorldMap {
         mapChanged(this, "placed animal %s".formatted(position));
     }
 
+    @Override
     public void reproduceAnimals(int currentDay) {
         List<Vector2d> positionsWithMultipleAnimals = elementsManager.getPositionsWithMultipleAnimals();
         for (Vector2d position : positionsWithMultipleAnimals) {
-            Optional<Animal> child = elementsManager.reproduceAtPosition(position, currentDay);
-            if (child.isPresent()) {
-                elementsManager.placeAnimal(child.get());
-                mapChanged(this, "reproduced animals at %s".formatted(position));
-            } else {
-                mapChanged(this, "no reproduction at %s due to insufficient energy".formatted(position));
-            }
+            handleReproductionAtPosition(position, currentDay);
+        }
+    }
+
+    protected void handleReproductionAtPosition(Vector2d position, int currentDay) {
+        Optional<Animal> child = elementsManager.reproduceAtPosition(position, currentDay);
+        if (child.isPresent()) {
+            elementsManager.placeAnimal(child.get());
+            mapChanged(this, "reproduced animals at %s".formatted(position));
+        } else {
+            mapChanged(this, "no reproduction at %s due to insufficient energy".formatted(position));
         }
     }
 

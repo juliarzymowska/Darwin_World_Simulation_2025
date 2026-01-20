@@ -3,6 +3,7 @@ package agh.ics.oop;
 import agh.ics.oop.configuration.ConfigAnimal;
 import agh.ics.oop.configuration.ConfigMap;
 import agh.ics.oop.model.elements.Animal;
+import agh.ics.oop.model.map.FeromonMap;
 import agh.ics.oop.model.stats.CSVSaver;
 import agh.ics.oop.model.stats.SimulationStatsTracker;
 import agh.ics.oop.model.util.Vector2d;
@@ -78,6 +79,10 @@ public class Simulation implements Runnable {
         map.reproduceAnimals(currentDay);
         // 5. Grow new plants
         map.growPlants(0); // TODO: apply from config number of new plants per day
+
+        if (map instanceof FeromonMap feromonMap) {
+            feromonMap.decreaseFeromons();
+        }
 
         statsTracker.printStats(currentDay);
         if (animals.isEmpty()) {
