@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="agh.ics.oop.simulationGUI.StartWindowPresenter">
+
+    <center>
+        <VBox spacing="20"
+              alignment="CENTER"
+              style="-fx-background-color: lightgray;">
+
+            <Button text="Start Simulation"
+                    fx:id="startButton"
+                    prefWidth="200"
+                    onAction="#handleStartSimulation"/>
+
+            <Button text="Load from JSON"
+                    fx:id="loadFromJSON"
+                    prefWidth="200"
+                    onAction="#handleLoadFromJson"/>
+
+            <Button text="Close"
+                    fx:id="closeButton"
+                    prefWidth="200"
+                    onAction="#handleClose"/>
+        </VBox>
+    </center>
+
+</BorderPane>

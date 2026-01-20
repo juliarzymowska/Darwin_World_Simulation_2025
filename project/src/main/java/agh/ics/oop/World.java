@@ -2,11 +2,8 @@ package agh.ics.oop;
 
 import agh.ics.oop.configuration.ConfigAnimal;
 import agh.ics.oop.configuration.ConfigMap;
-import agh.ics.oop.model.*;
-import agh.ics.oop.model.map.EarthMap;
-import agh.ics.oop.model.map.FeromonMap;
-import agh.ics.oop.model.map.WorldMap;
 import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.simulation.Simulation;
 
 import java.util.List;
 
