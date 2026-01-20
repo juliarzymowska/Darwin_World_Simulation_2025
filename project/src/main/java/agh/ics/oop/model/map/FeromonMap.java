@@ -9,8 +9,6 @@ import agh.ics.oop.model.util.Vector2d;
 
 import java.util.*;
 
-import static agh.ics.oop.model.util.MapDirection.getRandomDirection;
-
 
 public class FeromonMap extends EarthMap {
     private final double probability;
@@ -76,14 +74,18 @@ public class FeromonMap extends EarthMap {
     }
 
     public void decreaseFeromons() {
+        List<Feromon> toRemove = new ArrayList<>();
         for (Feromon feromon : feromons.values()) {
             if (feromon.getFeromonDay() % daysToDecrease == 0) {
                 feromon.decreseFeromonValue();
                 if (feromon.getFeromonValue() == 0) {
-                    feromons.remove(feromon);
+                    toRemove.add(feromon);
                 }
             }
             feromon.increaseFeromonDay();
+        }
+        for (Feromon feromon : toRemove){
+            feromons.remove(feromon.getCurrentPosition());
         }
     }
 
