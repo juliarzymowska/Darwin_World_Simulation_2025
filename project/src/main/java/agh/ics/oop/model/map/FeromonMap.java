@@ -3,10 +3,13 @@ package agh.ics.oop.model.map;
 import agh.ics.oop.configuration.ConfigMap;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.elements.Feromon;
+import agh.ics.oop.model.elements.WorldElement;
 import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.util.Vector2d;
 
 import java.util.*;
+
+import static agh.ics.oop.model.util.MapDirection.getRandomDirection;
 
 
 public class FeromonMap extends EarthMap {
@@ -14,7 +17,6 @@ public class FeromonMap extends EarthMap {
     private final int daysToDecrease;
     private final int smellRange;
     Random random = new Random();
-    ConfigMap configMap = new ConfigMap();
     private final MapElementsManager elementsManager = super.getElementsManager();
     private final Map<Vector2d, Feromon> feromons = new HashMap<>();
 
@@ -35,6 +37,7 @@ public class FeromonMap extends EarthMap {
         // Do poprawienia na lepszą złożoność, narazie O(n^2), obsługa zapachów na granicach mapy
         if (random.nextDouble() < probability) {
             Optional<Feromon> feromonOpt = feromons.entrySet().stream()
+                    .filter(e -> !e.getKey().equals(currentPos))
                     .filter(e -> e.getKey().manhattanMetricDistance(currentPos) <= smellRange)
                     .map(Map.Entry::getValue)
                     .max(Comparator.naturalOrder());
@@ -43,7 +46,6 @@ public class FeromonMap extends EarthMap {
                 getElementsManager().removeAnimal(animal);
                 Feromon feromon = feromonOpt.get();
                 Vector2d unitOrientation = new Vector2d(Integer.compare(feromon.getCurrentPosition().getX(), currentPos.getX()), Integer.compare(feromon.getCurrentPosition().getY(), currentPos.getY()));
-
                 Vector2d newPosition = currentPos.add(unitOrientation);
                 MapDirection newDirection = unitOrientation.toMapDirection();
                 animal.move(newPosition, newDirection);
@@ -55,6 +57,11 @@ public class FeromonMap extends EarthMap {
         } else {
             super.moveTo(animal);
         }
+    }
+    @Override
+    protected void handleReproductionAtPosition(Vector2d position, int currentDay) {
+        super.handleReproductionAtPosition(position, currentDay);
+        addFeromon(position);
     }
 
     /*
@@ -77,7 +84,14 @@ public class FeromonMap extends EarthMap {
                 }
             }
             feromon.increaseFeromonDay();
-
         }
+    }
+
+    @Override
+    public WorldElement objectAt(Vector2d pos){
+        if (super.objectAt(pos) != null){
+            return super.objectAt(pos);
+        }
+        return feromons.get(pos);
     }
 }

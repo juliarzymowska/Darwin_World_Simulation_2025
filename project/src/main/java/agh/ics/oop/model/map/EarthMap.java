@@ -21,6 +21,7 @@ public class EarthMap implements WorldMap {
 
     protected final Vector2d leftDownMapCorner = new Vector2d(0, 0);
     protected final Vector2d rightUpMapCorner;
+    private final int dailyPlantNumber;
     private final MapElementsManager elementsManager = new MapElementsManager();
     protected final MapVisualizer vis = new MapVisualizer(this);
     private final List<MapChangeListener> observers = new ArrayList<>();
@@ -28,6 +29,7 @@ public class EarthMap implements WorldMap {
 
     public EarthMap(ConfigMap configMap) {
         this.rightUpMapCorner = new Vector2d(configMap.width() - 1, configMap.height() - 1);
+        this.dailyPlantNumber = configMap.dailyPlantNumber();
         elementsManager.addPlants(configMap.startPlantNumber(), rightUpMapCorner.getX(), rightUpMapCorner.getY());
     }
 
@@ -63,9 +65,9 @@ public class EarthMap implements WorldMap {
         }
     }
 
-    public void growPlants(int n) {
-        elementsManager.addPlants(n, rightUpMapCorner.getX(), rightUpMapCorner.getY());
-        mapChanged(this, "growing %d plants".formatted(n));
+    public void growDailyPlants(){
+        elementsManager.addPlants(dailyPlantNumber, rightUpMapCorner.getX(), rightUpMapCorner.getY());
+        mapChanged(this, "growing %d plants".formatted(dailyPlantNumber));
     }
 
     /*
@@ -80,16 +82,21 @@ public class EarthMap implements WorldMap {
         mapChanged(this, "placed animal %s".formatted(position));
     }
 
+    @Override
     public void reproduceAnimals(int currentDay) {
         List<Vector2d> positionsWithMultipleAnimals = elementsManager.getPositionsWithMultipleAnimals();
         for (Vector2d position : positionsWithMultipleAnimals) {
-            Optional<Animal> child = elementsManager.reproduceAtPosition(position, currentDay);
-            if (child.isPresent()) {
-                elementsManager.placeAnimal(child.get());
-                mapChanged(this, "reproduced animals at %s".formatted(position));
-            } else {
-                mapChanged(this, "no reproduction at %s due to insufficient energy".formatted(position));
-            }
+            handleReproductionAtPosition(position, currentDay);
+        }
+    }
+
+    protected void handleReproductionAtPosition(Vector2d position, int currentDay) {
+        Optional<Animal> child = elementsManager.reproduceAtPosition(position, currentDay);
+        if (child.isPresent()) {
+            elementsManager.placeAnimal(child.get());
+            mapChanged(this, "reproduced animals at %s".formatted(position));
+        } else {
+            mapChanged(this, "no reproduction at %s due to insufficient energy".formatted(position));
         }
     }
 
