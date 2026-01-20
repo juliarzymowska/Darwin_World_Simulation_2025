@@ -51,7 +51,7 @@ public class NormalPositionGenerator implements Iterable<Vector2d>{
             do {
                 y = (int) Math.round(meanY + rand.nextGaussian() * sigmaY);
             } while (y > y_range || y < 0);
-            int x = rand.nextInt(x_range);
+            int x = rand.nextInt(x_range+1);
             Vector2d pos = new Vector2d(x, y);
             if (!used_positions.contains(pos)){
                 used_positions.add(pos);
