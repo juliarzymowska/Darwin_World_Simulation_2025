@@ -4,6 +4,7 @@ import agh.ics.oop.configuration.ConfigAnimal;
 import agh.ics.oop.configuration.ConfigMap;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.map.EarthMap;
+import agh.ics.oop.model.map.FeromonMap;
 import agh.ics.oop.model.map.WorldMap;
 import agh.ics.oop.model.util.Vector2d;
 
@@ -14,13 +15,10 @@ public class World {
 //        List<MapDirection> directions = List.of(MapDirection.NORTH, MapDirection.NORTH_WEST, MapDirection.NORTH,
 //                MapDirection.SOUTH_WEST, MapDirection.WEST);
         List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(1, 1), new Vector2d(0, 0));
-        ConsoleMapDisplay consoleMapDisplay = new ConsoleMapDisplay();
         ConfigMap configMap = new ConfigMap();
         ConfigAnimal configAnimal = new ConfigAnimal();
-        WorldMap map = new EarthMap(configMap);
-        map.addObserver(consoleMapDisplay);
-//        Simulation simulation = new Simulation(configAnimal, configMap, map);
-        Simulation simulation = new Simulation(positions, map);
+        Simulation simulation = new Simulation(configAnimal, configMap);
+//        Simulation simulation = new Simulation(positions, map);
         simulation.run();
         /*
         List<MoveDirection> directions = OptionParser.parse(args);
