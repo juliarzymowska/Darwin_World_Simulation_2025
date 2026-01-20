@@ -37,6 +37,7 @@ public class FeromonMap extends EarthMap {
         // Do poprawienia na lepszą złożoność, narazie O(n^2), obsługa zapachów na granicach mapy
         if (random.nextDouble() < probability) {
             Optional<Feromon> feromonOpt = feromons.entrySet().stream()
+                    .filter(e -> !e.getKey().equals(currentPos))
                     .filter(e -> e.getKey().manhattanMetricDistance(currentPos) <= smellRange)
                     .map(Map.Entry::getValue)
                     .max(Comparator.naturalOrder());
@@ -45,9 +46,6 @@ public class FeromonMap extends EarthMap {
                 getElementsManager().removeAnimal(animal);
                 Feromon feromon = feromonOpt.get();
                 Vector2d unitOrientation = new Vector2d(Integer.compare(feromon.getCurrentPosition().getX(), currentPos.getX()), Integer.compare(feromon.getCurrentPosition().getY(), currentPos.getY()));
-                if (unitOrientation.getX() == 0 && unitOrientation.getY() == 0) {
-                    unitOrientation = getRandomDirection().toUnitVector();
-                }
                 Vector2d newPosition = currentPos.add(unitOrientation);
                 MapDirection newDirection = unitOrientation.toMapDirection();
                 animal.move(newPosition, newDirection);
