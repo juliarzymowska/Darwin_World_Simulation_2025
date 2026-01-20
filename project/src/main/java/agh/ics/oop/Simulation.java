@@ -2,8 +2,11 @@ package agh.ics.oop;
 
 import agh.ics.oop.configuration.ConfigAnimal;
 import agh.ics.oop.configuration.ConfigMap;
+import agh.ics.oop.model.ConsoleMapDisplay;
 import agh.ics.oop.model.elements.Animal;
+import agh.ics.oop.model.map.EarthMap;
 import agh.ics.oop.model.map.FeromonMap;
+import agh.ics.oop.model.map.MapType;
 import agh.ics.oop.model.stats.CSVSaver;
 import agh.ics.oop.model.stats.SimulationStatsTracker;
 import agh.ics.oop.model.util.Vector2d;
@@ -14,6 +17,7 @@ import java.util.List;
 public class Simulation implements Runnable {
     private final WorldMap map;
     private final SimulationStatsTracker statsTracker;
+    private final ConsoleMapDisplay consoleMapDisplay;
     // TODO: some error for config file that doesn't let user make a genotypeLength = 0!
     // TODO: error for config file when number of grass per day is bigger than map tiles number
 
@@ -22,6 +26,8 @@ public class Simulation implements Runnable {
     public Simulation(List<Vector2d> positions, WorldMap map) {
         this.map = map;
         this.statsTracker = new SimulationStatsTracker(map);
+        this.consoleMapDisplay = new ConsoleMapDisplay();
+        map.addObserver(consoleMapDisplay);
         map.addObserver(statsTracker);
 
         for (Vector2d pos : positions) {
@@ -33,8 +39,10 @@ public class Simulation implements Runnable {
 
     }
 
-    public Simulation(ConfigAnimal configAnimal, ConfigMap configMap, WorldMap map) {
-        this.map = map;
+    public Simulation(ConfigAnimal configAnimal, ConfigMap configMap) {
+        this.map = (configMap.mapType() == MapType.EARTH_MAP) ? new EarthMap(configMap): new FeromonMap(configMap);
+        this.consoleMapDisplay = new ConsoleMapDisplay();
+        map.addObserver(consoleMapDisplay);
         this.statsTracker = new SimulationStatsTracker(map);
         map.addObserver(statsTracker);
         statsTracker.addObserver(new CSVSaver());
