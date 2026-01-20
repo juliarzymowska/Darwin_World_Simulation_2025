@@ -78,7 +78,7 @@ public class Simulation implements Runnable {
         // 4. Reproduce animals
         map.reproduceAnimals(currentDay);
         // 5. Grow new plants
-        map.growPlants(0); // TODO: apply from config number of new plants per day
+        map.growDailyPlants();
 
         if (map instanceof FeromonMap feromonMap) {
             feromonMap.decreaseFeromons();

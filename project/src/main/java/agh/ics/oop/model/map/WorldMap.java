@@ -57,7 +57,7 @@ public interface WorldMap extends MoveValidator {
     /*
      * Grow new plants on the map according to the simulation rules.
      * */
-    void growPlants(int n);
+    void growDailyPlants();
 
     MapElementsManager getElementsManager();
 }
