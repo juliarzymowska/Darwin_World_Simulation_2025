@@ -1,0 +1,8 @@
+package agh.ics.oop.model.exception;
+
+public class IllegalNumberOfPlantsException extends Exception {
+    private static final String ERROR_MESSAGE = "Number of plants for map of size: %d x %d cannot exceed %d and must be greater than %d";
+    public IllegalNumberOfPlantsException(int mapWidth, int mapHeight) {
+        super(ERROR_MESSAGE.formatted(mapWidth, mapHeight, mapWidth*mapHeight, 0));
+    }
+}

@@ -8,7 +8,7 @@ public record ConfigMap(
         int startPlantNumber,
         int dailyPlantNumber,
         MapType mapType,
-        double moveToFeromonProbability, //wprowadzać jako int w procentach, czy double?
+        double moveToFeromonProbability,
         int daysToDecreaseFeromon,
         int smellRange
 ) {
