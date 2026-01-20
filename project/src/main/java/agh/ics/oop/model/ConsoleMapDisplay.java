@@ -1,5 +1,11 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.elements.Animal;
+import agh.ics.oop.model.map.WorldMap;
+import agh.ics.oop.model.observators.MapChangeListener;
+
+import java.util.List;
+
 public class ConsoleMapDisplay implements MapChangeListener {
     private int actionCounter = 1;
 
@@ -11,5 +17,10 @@ public class ConsoleMapDisplay implements MapChangeListener {
         System.out.println("Even counter: " + actionCounter + "!\n");
         System.out.println("===============");
         actionCounter++;
+    }
+
+    @Override
+    public void handleDeadAnimals(List<Animal> animals) {
+
     }
 }

@@ -1,6 +1,8 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.util;
 
 import java.util.Objects;
+
+import static java.lang.Math.abs;
 
 public class Vector2d {
     private final int x;
@@ -50,6 +52,22 @@ public class Vector2d {
 
     public Vector2d opposite() {
         return new Vector2d(-x, -y);
+    }
+
+    public int manhattanMetricDistance(Vector2d other){
+        return abs(this.x - other.getX()) + abs(this.y - other.getY());
+    }
+
+    public MapDirection toMapDirection(){
+        if (this.x == 0 && this.y == 1) return MapDirection.NORTH;
+        if (this.x == 0 && this.y == -1) return MapDirection.SOUTH;
+        if (this.x == 1 && this.y == 0) return MapDirection.EAST;
+        if (this.x == -1 && this.y == 0) return MapDirection.WEST;
+        if (this.x == 1 && this.y == -1) return MapDirection.SOUTH_EAST;
+        if (this.x == -1 && this.y == -1) return MapDirection.SOUTH_WEST;
+        if (this.x == -1 && this.y == 1) return MapDirection.NORTH_WEST;
+        if (this.x == 1 && this.y == 1) return MapDirection.NORTH_EAST;
+        return null;
     }
 
     @Override
