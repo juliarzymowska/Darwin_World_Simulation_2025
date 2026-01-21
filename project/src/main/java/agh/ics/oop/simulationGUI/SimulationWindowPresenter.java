@@ -22,6 +22,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.chart.LineChart;
+import javafx.scene.control.ChoiceBox;
 
 import java.util.HashSet;
 import java.util.List;
@@ -46,6 +48,13 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     @FXML
     private Label trackedAnimalStatusLabel, trackedGenotypeLabel, trackedActiveGeneLabel, trackedEnergyLabel, trackedEatenLabel, trackedChildrenLabel, trackedDescendantsLabel, trackedAgeLabel, trackedDeathDayLabel;
 
+    @FXML
+    private ChoiceBox<String> statChoiceBox;
+
+    @FXML
+    private LineChart<Number, Number> statsChart;
+    private ChartManager chartManager;
+
     private WorldMap worldMap;
     private Simulation simulation;
     private Animal trackedAnimal = null;
@@ -68,6 +77,23 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
         mapCanvas.setOnMouseClicked(this::handleMapClick);
 
         stopTrackingButton.setDisable(true);
+
+        // ChoiceBox for statistic
+        statChoiceBox.getItems().addAll(
+                "Animal Count",
+                "Plant Count",
+                "Free Tiles",
+                "Avg Energy",
+                "Avg Lifespan",
+                "Avg Children"
+        );
+        statChoiceBox.setValue("Animal Count");
+
+        statChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && chartManager != null) {
+                chartManager.setObservedStat(newVal);
+            }
+        });
     }
 
     private void handleMapClick(MouseEvent event) {
@@ -132,6 +158,7 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
         this.worldMap = simulation.getMap();
         this.mapWidth = worldMap.getCurrentBounds().rightUpMapCorner().getX() + 1;
         this.mapHeight = worldMap.getCurrentBounds().rightUpMapCorner().getY() + 1;
+        this.chartManager = new ChartManager(statsChart);
 
         mapCanvas.setWidth(mapWidth * CELL_SIZE);
         mapCanvas.setHeight(mapHeight * CELL_SIZE);
@@ -272,6 +299,10 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
 
             // Update Tracked Animal
             updateTrackedAnimalStats();
+
+            if (chartManager != null) {
+                chartManager.updateChart(stats);
+            }
         });
     }
 
