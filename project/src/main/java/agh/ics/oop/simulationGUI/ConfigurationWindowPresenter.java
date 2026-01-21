@@ -4,6 +4,8 @@ import agh.ics.oop.configuration.ConfigBuilder;
 import agh.ics.oop.model.exception.ConfigurationException;
 import agh.ics.oop.model.map.MapType;
 import agh.ics.oop.simulation.Simulation;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -55,6 +57,9 @@ public class ConfigurationWindowPresenter {
 
     @FXML
     private Button startSimulationButton;
+
+    @FXML
+    private Button stopSimulationButton;
 
     @FXML
     private Button closeButton;
@@ -140,7 +145,43 @@ public class ConfigurationWindowPresenter {
     }
 
     @FXML
+    private void handleSaveConfiguration() {
+        try {
+            updateConfigFromUI();
+
+            javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+            fileChooser.setTitle("Save Configuration");
+            fileChooser.getExtensionFilters().add(
+                    new javafx.stage.FileChooser.ExtensionFilter("JSON files", "*.json")
+            );
+
+            java.io.File file = fileChooser.showSaveDialog(maxEnergySpinner.getScene().getWindow());
+
+            if (file != null) {
+                saveToFile(file, configBuilder);
+
+                System.out.println("Configuration saved to: " + file.getAbsolutePath());
+            }
+        } catch (java.io.IOException e){
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+            alert.setTitle("Save Error");
+            alert.setHeaderText("Failed to save the file to disk");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+            return;
+        }
+    }
+
+    @FXML
     private void handleStartSimulation() {
+        updateConfigFromUI();
+        if (onStartSimulation != null) {
+            onStartSimulation.accept(configBuilder);
+        }
+        handleClose();
+    }
+
+    private void updateConfigFromUI(){
         try {
             // 1. Update the builder with values from spinners
             configBuilder.setMaxEnergy(maxEnergySpinner.getValue());
@@ -179,7 +220,11 @@ public class ConfigurationWindowPresenter {
         // 3. Close this configuration window
         handleClose();
     }
-
+    private void saveToFile(java.io.File file, ConfigBuilder config) throws java.io.IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.writeValue(file, config);
+        }
     /**
      * Metoda pomocnicza konfigurująca Spinner
      */
