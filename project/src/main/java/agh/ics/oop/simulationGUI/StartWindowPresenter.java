@@ -44,9 +44,6 @@ public class StartWindowPresenter {
                 ConfigBuilder builder = parser.loadConfig();
                 System.out.println("Configuration loaded successfully!");
 
-                ConfigLoadFromJSON configLoadFromJSON = new ConfigLoadFromJSON(selectedFile.getAbsolutePath());
-
-                ConfigBuilder configBuilder = configLoadFromJSON.loadConfig();
                 openConfigurationWindow(builder);
             } catch (Exception e) {
                 // TODO: Show exception message in alert (after merge with exceptions branch and adding custom
@@ -80,23 +77,41 @@ public class StartWindowPresenter {
             );
 
             presenter.setStartSimulation(finalBuilder -> {
-                System.out.println("Simulation started!");
-                System.out.println(finalBuilder);
+                openSimulationWindow(builder);
             });
 
             Stage stage = new Stage();
             stage.setScene(scene);
             stage.setTitle("Configuration");
             stage.show();
-
-            // close start window
-//            closeButton.getScene().getWindow().hide();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
+    private void openSimulationWindow(ConfigBuilder builder) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getClassLoader().getResource(
+                            "simulationWindow/simulation-window.fxml"
+                    )
+            );
+            Parent root = loader.load();
+
+            SimulationWindowPresenter presenter = loader.getController();
+            presenter.setConfig(builder);
+
+
+            Stage stage = new Stage();
+            stage.setTitle("Simulation");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     private void handleClose() {
