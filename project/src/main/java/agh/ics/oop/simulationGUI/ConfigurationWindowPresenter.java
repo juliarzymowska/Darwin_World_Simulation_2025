@@ -1,6 +1,7 @@
 package agh.ics.oop.simulationGUI;
 
 import agh.ics.oop.configuration.ConfigBuilder;
+import agh.ics.oop.model.exception.ConfigurationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -55,12 +56,16 @@ public class ConfigurationWindowPresenter {
     @FXML
     private void handleStartSimulation() {
         // Update builder from fields (no validation yet)
-        configBuilder.setInitialAnimalCount(
-                Integer.parseInt(initialAnimalCountField.getText())
-        );
-        configBuilder.setInitialEnergy(
-                Integer.parseInt(initialEnergyField.getText())
-        );
+        try {
+            configBuilder.setInitialAnimalCount(
+                    Integer.parseInt(initialAnimalCountField.getText())
+            );
+            configBuilder.setInitialEnergy(
+                    Integer.parseInt(initialEnergyField.getText())
+            );
+        } catch (ConfigurationException e){
+            e.printStackTrace();
+        }
 
         System.out.println("Config ready, starting simulation...");
         System.out.println(configBuilder);

@@ -1,5 +1,7 @@
 package agh.ics.oop.configuration;
 
+import agh.ics.oop.model.exception.ConfigurationException;
+import agh.ics.oop.model.exception.EarthClassException;
 import agh.ics.oop.model.map.MapType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +18,7 @@ public class ConfigLoadFromJSON {
         this.objectMapper = new ObjectMapper();
     }
 
-    public ConfigBuilder loadConfig() throws IOException {
+    public ConfigBuilder loadConfig() throws IOException, ConfigurationException {
         File file = new File(filePath);
         JsonNode jsonNode = objectMapper.readTree(file);
 
@@ -24,14 +26,15 @@ public class ConfigLoadFromJSON {
 
         // Load Animal config
         builder.setInitialAnimalCount(jsonNode.get("initialAnimalCount").asInt());
-        builder.setInitialEnergy(jsonNode.get("initialEnergy").asInt());
         builder.setMaxEnergy(jsonNode.get("maxEnergy").asInt());
+        builder.setInitialEnergy(jsonNode.get("initialEnergy").asInt());
         builder.setEnergyToReproduce(jsonNode.get("energyToReproduce").asInt());
         builder.setEnergyConsumedByMove(jsonNode.get("energyConsumedByMove").asInt());
         builder.setEnergyGainedByEating(jsonNode.get("energyGainedByEating").asInt());
-        builder.setMinMutations(jsonNode.get("minMutations").asInt());
-        builder.setMaxMutations(jsonNode.get("maxMutations").asInt());
         builder.setGenotypeLength(jsonNode.get("genotypeLength").asInt());
+        builder.setMaxMutations(jsonNode.get("maxMutations").asInt());
+        builder.setMinMutations(jsonNode.get("minMutations").asInt());
+
 
         // Load Map config
         builder.setWidth(jsonNode.get("width").asInt());
@@ -48,7 +51,7 @@ public class ConfigLoadFromJSON {
         // Walidacja dla mapy EARTH
         if (mapType == MapType.EARTH_MAP) {
             if (moveToFeromonProbability != 0.0 || daysToDecreaseFeromon != 0 || smellRange != 0) {
-                throw new IllegalArgumentException("Parametry feromonowe muszą być równe 0 dla mapy EARTH");
+                throw new EarthClassException();
             }
         }
         builder.setMoveToFeromonProbability(jsonNode.get("moveToFeromonProbability").asDouble());

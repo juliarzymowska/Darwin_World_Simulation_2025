@@ -2,6 +2,7 @@ package agh.ics.oop.simulationGUI;
 
 import agh.ics.oop.configuration.ConfigBuilder;
 import agh.ics.oop.configuration.ConfigLoadFromJSON;
+import agh.ics.oop.model.exception.ConfigurationException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -45,7 +46,7 @@ public class StartWindowPresenter {
                 System.out.println("Configuration loaded successfully!");
 
                 openConfigurationWindow(builder);
-            } catch (Exception e) {
+            } catch (ConfigurationException | IOException e) {
                 // TODO: Show exception message in alert (after merge with exceptions branch and adding custom
                 //  exceptions to ConfigBuilder and ConfigLoadFromJSON)
                 javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);

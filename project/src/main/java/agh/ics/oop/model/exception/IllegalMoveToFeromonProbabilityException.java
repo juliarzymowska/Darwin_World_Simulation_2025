@@ -1,8 +1,8 @@
 package agh.ics.oop.model.exception;
 
-public class IllegalMoveToFeromonProbabilityException extends Exception{
+public class IllegalMoveToFeromonProbabilityException extends ConfigurationException{
     public IllegalMoveToFeromonProbabilityException() {
-        super("Probability of animal moving to feromon must be between %d and %d"
+        super("Probability of animal moving to feromon must be between %f and %f"
                 .formatted(0, 1));
     }
 }
