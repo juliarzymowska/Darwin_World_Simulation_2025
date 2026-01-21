@@ -163,14 +163,14 @@ public class ConfigBuilder {
     }
 
     public void setStartPlantNumber(int startPlantNumber) throws IllegalNumberOfPlantsException {
-        if (startPlantNumber < 0 || startPlantNumber > 100) {
+        if (startPlantNumber < 0 || startPlantNumber > width*height) {
             throw new IllegalNumberOfPlantsException(width, height);
         }
         this.startPlantNumber = startPlantNumber;
     }
 
     public void setDailyPlantNumber(int dailyPlantNumber) throws IllegalNumberOfPlantsException {
-        if (dailyPlantNumber < 0 || dailyPlantNumber > 100) {
+        if (dailyPlantNumber < 0 || dailyPlantNumber > width*height) {
             throw new IllegalNumberOfPlantsException(width, height);
         }
         this.dailyPlantNumber = dailyPlantNumber;
@@ -195,7 +195,7 @@ public class ConfigBuilder {
     }
 
     public void setSmellRange(int smellRange) throws IllegalSmellRangeException {
-        if (smellRange < 0 || smellRange > 100) {
+        if (smellRange < 0) {
             throw new IllegalSmellRangeException();
         }
         this.smellRange = smellRange;
