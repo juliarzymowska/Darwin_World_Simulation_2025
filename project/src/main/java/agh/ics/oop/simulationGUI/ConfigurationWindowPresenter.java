@@ -6,7 +6,8 @@ import agh.ics.oop.model.map.MapType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.stage.Stage;
 
 import java.util.function.Consumer;
@@ -14,41 +15,41 @@ import java.util.function.Consumer;
 public class ConfigurationWindowPresenter {
     // TODO: change TextField to Spinner
     @FXML
-    private TextField maxEnergyField;
+    private Spinner<Integer> maxEnergySpinner;
     @FXML
-    private TextField energyToReproduceField;
+    private Spinner<Integer> energyToReproduceSpinner;
     @FXML
-    private TextField energyConsumedByMoveField;
+    private Spinner<Integer> energyConsumedByMoveSpinner;
     @FXML
-    private TextField energyGainedByEatingField;
+    private Spinner<Integer> energyGainedByEatingSpinner;
     @FXML
-    private TextField minMutationsField;
+    private Spinner<Integer> minMutationsSpinner;
     @FXML
-    private TextField maxMutationsField;
+    private Spinner<Integer> maxMutationsSpinner;
     @FXML
-    private TextField genotypeLengthField;
+    private Spinner<Integer> genotypeLengthSpinner;
 
     @FXML
-    private TextField widthField;
+    private Spinner<Integer> widthSpinner;
     @FXML
-    private TextField heightField;
+    private Spinner<Integer> heightSpinner;
     @FXML
-    private TextField startPlantNumberField;
+    private Spinner<Integer> startPlantNumberSpinner;
     @FXML
-    private TextField dailyPlantNumberField;
+    private Spinner<Integer> dailyPlantNumberSpinner;
     @FXML
     private ChoiceBox<MapType> mapTypeChoiceBox;
     @FXML
-    private TextField moveToFeromonProbabilityField;
+    private Spinner<Double> moveToFeromonProbabilitySpinner;
     @FXML
-    private TextField daysToDecreaseFeromonField;
+    private Spinner<Integer> daysToDecreaseFeromonSpinner;
     @FXML
-    private TextField smellRangeField;
+    private Spinner<Integer> smellRangeSpinner;
     @FXML
-    private TextField initialAnimalCountField;
+    private Spinner<Integer> initialAnimalCountSpinner;
 
     @FXML
-    private TextField initialEnergyField;
+    private Spinner<Integer> initialEnergySpinner;
 
     @FXML
     private Button startSimulationButton;
@@ -67,25 +68,59 @@ public class ConfigurationWindowPresenter {
     public void setConfigBuilder(ConfigBuilder builder) {
         this.configBuilder = builder;
 
-        maxEnergyField.setText(String.valueOf(builder.getMaxEnergy()));
-        initialAnimalCountField.setText(String.valueOf(builder.getInitialAnimalCount()));
-        initialEnergyField.setText(String.valueOf(builder.getInitialEnergy()));
-        energyToReproduceField.setText(String.valueOf(builder.getEnergyToReproduce()));
-        energyConsumedByMoveField.setText(String.valueOf(builder.getEnergyConsumedByMove()));
-        energyGainedByEatingField.setText(String.valueOf(builder.getEnergyGainedByEating()));
-        minMutationsField.setText(String.valueOf(builder.getMinMutations()));
-        maxMutationsField.setText(String.valueOf(builder.getMaxMutations()));
-        genotypeLengthField.setText(String.valueOf(builder.getGenotypeLength()));
+        // Ustawianie fabryk i konfiguracja
+        maxEnergySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, builder.getMaxEnergy()));
+        configureSpinner(maxEnergySpinner);
 
-        widthField.setText(String.valueOf(builder.getWidth()));
-        heightField.setText(String.valueOf(builder.getHeight()));
-        startPlantNumberField.setText(String.valueOf(builder.getStartPlantNumber()));
-        dailyPlantNumberField.setText(String.valueOf(builder.getDailyPlantNumber()));
+        initialAnimalCountSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000, builder.getInitialAnimalCount()));
+        configureSpinner(initialAnimalCountSpinner);
+
+        initialEnergySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, builder.getInitialEnergy()));
+        configureSpinner(initialEnergySpinner);
+
+        energyToReproduceSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, builder.getEnergyToReproduce()));
+        configureSpinner(energyToReproduceSpinner);
+
+        energyConsumedByMoveSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000, builder.getEnergyConsumedByMove()));
+        configureSpinner(energyConsumedByMoveSpinner);
+
+        energyGainedByEatingSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000, builder.getEnergyGainedByEating()));
+        configureSpinner(energyGainedByEatingSpinner);
+
+        minMutationsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, builder.getMinMutations()));
+        configureSpinner(minMutationsSpinner);
+
+        maxMutationsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, builder.getMaxMutations()));
+        configureSpinner(maxMutationsSpinner);
+
+        genotypeLengthSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, builder.getGenotypeLength()));
+        configureSpinner(genotypeLengthSpinner);
+
+        widthSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, builder.getWidth()));
+        configureSpinner(widthSpinner);
+
+        heightSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, builder.getHeight()));
+        configureSpinner(heightSpinner);
+
+        startPlantNumberSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, builder.getStartPlantNumber()));
+        configureSpinner(startPlantNumberSpinner);
+
+        dailyPlantNumberSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000, builder.getDailyPlantNumber()));
+        configureSpinner(dailyPlantNumberSpinner);
+
+        daysToDecreaseFeromonSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000, builder.getDaysToDecreaseFeromon()));
+        configureSpinner(daysToDecreaseFeromonSpinner);
+
+        smellRangeSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, builder.getSmellRange()));
+        configureSpinner(smellRangeSpinner);
+
+        moveToFeromonProbabilitySpinner.setValueFactory(
+                new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0, 1.0, builder.getMoveToFeromonProbability(), 0.05)
+        );
+        configureSpinner(moveToFeromonProbabilitySpinner);
+
         mapTypeChoiceBox.getItems().setAll(MapType.values());
         mapTypeChoiceBox.setValue(builder.getMapType());
-        moveToFeromonProbabilityField.setText(String.valueOf(builder.getMoveToFeromonProbability()));
-        daysToDecreaseFeromonField.setText(String.valueOf(builder.getDaysToDecreaseFeromon()));
-        smellRangeField.setText(String.valueOf(builder.getSmellRange()));
     }
 
     public void setStartSimulation(Consumer<ConfigBuilder> callback) {
@@ -101,27 +136,27 @@ public class ConfigurationWindowPresenter {
     @FXML
     private void handleStartSimulation() {
         try {
-            int maxEnergy = parseOrDefault(maxEnergyField.getText(), configBuilder.getMaxEnergy());
-            int initialEnergy = parseOrDefault(initialEnergyField.getText(), configBuilder.getInitialEnergy());
+            int maxEnergy = maxEnergySpinner.getValue();
+            int initialEnergy = initialEnergySpinner.getValue();
 
             configBuilder.setMaxEnergy(maxEnergy);
-            configBuilder.setInitialAnimalCount(parseOrDefault(initialAnimalCountField.getText(), configBuilder.getInitialAnimalCount()));
+            configBuilder.setInitialAnimalCount(initialAnimalCountSpinner.getValue());
             configBuilder.setInitialEnergy(initialEnergy);
 
-            configBuilder.setEnergyToReproduce(parseOrDefault(energyToReproduceField.getText(), configBuilder.getEnergyToReproduce()));
-            configBuilder.setEnergyConsumedByMove(parseOrDefault(energyConsumedByMoveField.getText(), configBuilder.getEnergyConsumedByMove()));
-            configBuilder.setEnergyGainedByEating(parseOrDefault(energyGainedByEatingField.getText(), configBuilder.getEnergyGainedByEating()));
-            configBuilder.setGenotypeLength(parseOrDefault(genotypeLengthField.getText(), configBuilder.getGenotypeLength()));
-            configBuilder.setMaxMutations(parseOrDefault(maxMutationsField.getText(), configBuilder.getMaxMutations()));
-            configBuilder.setMinMutations(parseOrDefault(minMutationsField.getText(), configBuilder.getMinMutations()));
-            configBuilder.setWidth(parseOrDefault(widthField.getText(), configBuilder.getWidth()));
-            configBuilder.setHeight(parseOrDefault(heightField.getText(), configBuilder.getHeight()));
-            configBuilder.setStartPlantNumber(parseOrDefault(startPlantNumberField.getText(), configBuilder.getStartPlantNumber()));
-            configBuilder.setDailyPlantNumber(parseOrDefault(dailyPlantNumberField.getText(), configBuilder.getDailyPlantNumber()));
+            configBuilder.setEnergyToReproduce(energyToReproduceSpinner.getValue());
+            configBuilder.setEnergyConsumedByMove(energyConsumedByMoveSpinner.getValue());
+            configBuilder.setEnergyGainedByEating(energyGainedByEatingSpinner.getValue());
+            configBuilder.setGenotypeLength(genotypeLengthSpinner.getValue());
+            configBuilder.setMaxMutations(maxMutationsSpinner.getValue());
+            configBuilder.setMinMutations(minMutationsSpinner.getValue());
+            configBuilder.setWidth(widthSpinner.getValue());
+            configBuilder.setHeight(heightSpinner.getValue());
+            configBuilder.setStartPlantNumber(startPlantNumberSpinner.getValue());
+            configBuilder.setDailyPlantNumber(dailyPlantNumberSpinner.getValue()); // Zmienione z Field na Spinner
             configBuilder.setMapType(mapTypeChoiceBox.getValue());
-            configBuilder.setMoveToFeromonProbability(parseOrDefaultDouble(moveToFeromonProbabilityField.getText(), configBuilder.getMoveToFeromonProbability()));
-            configBuilder.setDaysToDecreaseFeromon(parseOrDefault(daysToDecreaseFeromonField.getText(), configBuilder.getDaysToDecreaseFeromon()));
-            configBuilder.setSmellRange(parseOrDefault(smellRangeField.getText(), configBuilder.getSmellRange()));
+            configBuilder.setMoveToFeromonProbability(moveToFeromonProbabilitySpinner.getValue());
+            configBuilder.setDaysToDecreaseFeromon(daysToDecreaseFeromonSpinner.getValue());
+            configBuilder.setSmellRange(smellRangeSpinner.getValue());
 
         } catch (ConfigurationException e) {
             javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
@@ -138,21 +173,18 @@ public class ConfigurationWindowPresenter {
         handleClose();
     }
 
-    // helper methods
-    private int parseOrDefault(String text, int defaultValue) {
-        try {
-            return Integer.parseInt(text);
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
-    }
+    /**
+     * Metoda pomocnicza konfigurująca Spinner
+     */
+    private void configureSpinner(Spinner<?> spinner) {
+        spinner.setEditable(true);
 
-    private double parseOrDefaultDouble(String text, double defaultValue) {
-        try {
-            return Double.parseDouble(text);
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
+        // Fix dla JavaFX: zatwierdzanie tekstu przy utracie fokusu (bez klikania Enter)
+        spinner.focusedProperty().addListener((observable, wasFocused, isNowFocused) -> {
+            if (!isNowFocused) {
+                spinner.increment(0);
+            }
+        });
     }
 
 }
