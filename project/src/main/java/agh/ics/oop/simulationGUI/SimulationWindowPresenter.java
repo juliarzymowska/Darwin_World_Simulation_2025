@@ -98,7 +98,7 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
             for (int y = 0; y < mapHeight; y++) {
                 Vector2d position = new Vector2d(x, y);
                 // Cast to EarthMap or FeromonMap depending on what you use
-                WorldElement object = ((agh.ics.oop.model.map.EarthMap) worldMap).objectAt(position);
+                WorldElement object = worldMap.objectAt(position);
 
                 if (object != null) {
                     drawObject(gc, object, x, y);
@@ -173,9 +173,7 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
         // Run on JavaFX Thread
-        Platform.runLater(() -> {
-            drawMap();
-        });
+        Platform.runLater(this::drawMap);
     }
 
     @Override
