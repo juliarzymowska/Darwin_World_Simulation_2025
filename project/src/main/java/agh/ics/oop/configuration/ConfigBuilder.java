@@ -127,4 +127,12 @@ public class ConfigBuilder {
     public void setSmellRange(int smellRange) {
         this.smellRange = smellRange;
     }
+
+    public int getInitialAnimalCount() {
+        return initialAnimalCount;
+    }
+
+    public int getInitialEnergy() {
+        return initialEnergy;
+    }
 }
