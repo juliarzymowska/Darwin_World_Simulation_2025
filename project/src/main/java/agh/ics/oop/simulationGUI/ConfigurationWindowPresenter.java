@@ -4,10 +4,7 @@ import agh.ics.oop.configuration.ConfigBuilder;
 import agh.ics.oop.model.exception.ConfigurationException;
 import agh.ics.oop.model.map.MapType;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.util.function.Consumer;
@@ -115,7 +112,7 @@ public class ConfigurationWindowPresenter {
         moveToFeromonProbabilitySpinner.setValueFactory(
                 new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0, 1.0, builder.getMoveToFeromonProbability(), 0.05)
         );
-        configureSpinner(moveToFeromonProbabilitySpinner);
+        configureDoubleSpinner(moveToFeromonProbabilitySpinner);
 
         mapTypeChoiceBox.getItems().setAll(MapType.values());
         mapTypeChoiceBox.setValue(builder.getMapType());
@@ -174,8 +171,47 @@ public class ConfigurationWindowPresenter {
     /**
      * Metoda pomocnicza konfigurująca Spinner
      */
-    private void configureSpinner(Spinner<?> spinner) {
+    private void configureSpinner(Spinner<Integer> spinner) {
         spinner.setEditable(true);
+
+        TextFormatter<Integer> formatter = new TextFormatter<>(
+                spinner.getValueFactory().getConverter(),
+                spinner.getValueFactory().getValue(),
+                change -> {
+                    if (change.getControlNewText().matches("-?\\d*")) {
+                        return change;
+                    }
+                    return null;
+                }
+        );
+
+        spinner.getEditor().setTextFormatter(formatter);
+        spinner.getValueFactory().valueProperty().bindBidirectional(formatter.valueProperty());
+
+        spinner.focusedProperty().addListener((observable, wasFocused, isNowFocused) -> {
+            if (!isNowFocused) {
+                spinner.increment(0);
+            }
+        });
+    }
+
+    private void configureDoubleSpinner(Spinner<Double> spinner) {
+        spinner.setEditable(true);
+
+        TextFormatter<Double> formatter = new TextFormatter<>(
+                spinner.getValueFactory().getConverter(),
+                spinner.getValueFactory().getValue(),
+                change -> {
+                    String newText = change.getControlNewText();
+                    if (newText.matches("-?([0-9]*)?(\\.[0-9]*)?")) {
+                        return change;
+                    }
+                    return null;
+                }
+        );
+
+        spinner.getEditor().setTextFormatter(formatter);
+        spinner.getValueFactory().valueProperty().bindBidirectional(formatter.valueProperty());
 
         spinner.focusedProperty().addListener((observable, wasFocused, isNowFocused) -> {
             if (!isNowFocused) {

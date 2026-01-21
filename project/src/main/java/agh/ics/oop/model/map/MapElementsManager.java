@@ -57,7 +57,6 @@ public class MapElementsManager {
      * ANIMAL LOGIC
      * */
 
-    //Usunęłam wyjątek, bo jak będą się pojawiać złe pozycje to jest to błąd programisty i nie chcemy tego obsługiwać w trakcie
     public void placeAnimal(Animal animal) {
         Vector2d position = animal.getCurrentPosition();
         if (animals.containsKey(position)) {
