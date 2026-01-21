@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="agh.ics.oop.simulationGUI.ConfigurationWindowPresenter"
+          hgap="10" vgap="10"
+          alignment="CENTER">
+
+    <Label text="Initial Animal Count" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+    <TextField fx:id="initialAnimalCountField"
+               GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+    <Label text="Initial Energy" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <TextField fx:id="initialEnergyField"
+               GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <Button text="Start Simulation"
+            fx:id="startSimulationButton"
+            onAction="#handleStartSimulation"
+            GridPane.rowIndex="2" GridPane.columnIndex="0"
+            GridPane.columnSpan="2"/>
+    <Button
+            text="Close"
+            fx:id="closeButton"
+            onAction="#handleClose"
+            GridPane.rowIndex="3" GridPane.columnIndex="0"
+            GridPane.columnSpan="2"
+    />
+</GridPane>
