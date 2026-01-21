@@ -220,7 +220,8 @@ public class ConfigurationWindowPresenter {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.writeValue(file, config);
-        }
+    }
+
     /**
      * Metoda pomocnicza konfigurująca Spinner
      */
@@ -273,4 +274,11 @@ public class ConfigurationWindowPresenter {
         });
     }
 
+    private void commitSpinner(Spinner<?> spinner) {
+        if (spinner.isEditable()) {
+            // This little trick forces the Spinner to read the text field
+            // and update its internal value immediately.
+            spinner.increment(0);
+        }
+    }
 }

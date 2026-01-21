@@ -13,7 +13,7 @@ import static java.lang.Math.max;
 public class Animal implements WorldElement, Comparable<Animal> {
     private MapDirection currentOrientation;
     private Vector2d currentPosition;
-    protected final static ConfigAnimal config = new ConfigAnimal(); // for testing purposes, later should be passed from outside
+    private ConfigAnimal config;
 
     private int currentEnergy, currentAge = 0, numberOfChildren = 0, numberOfEatenPlants = 0,
             numberOfDescendants = 0, dayOfBirth = 0, dayOfDeath = -1;
@@ -26,11 +26,12 @@ public class Animal implements WorldElement, Comparable<Animal> {
      * For animals to be placed on map at the beginning of simulation.
      * @param position - initial position of animal on map
      * */
-    public Animal(Vector2d position) {
+    public Animal(Vector2d position, ConfigAnimal config) {
         this.currentPosition = position;
         this.genotype = new Genotype(config.genotypeLength());
         this.currentEnergy = config.initialEnergy();
         this.currentOrientation = MapDirection.getRandomDirection();
+        this.config = config;
     }
 
     /*
@@ -40,6 +41,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
      * @param energy - initial energy of animal
      * */
     public Animal(Animal father, Animal mother, int currentDay) {
+        this.config = father.config;
         this.currentPosition = new Vector2d(father.getCurrentPosition().getX(), father.getCurrentPosition().getY());
         this.genotype = new Genotype(father, mother, config.minMutations(), config.maxMutations());
         this.currentOrientation = MapDirection.getRandomDirection();
@@ -166,7 +168,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
     // for movement
     private void decreaseEnergy() {
         // uważam, że najniższa możliwa energia powinna wynosić 0
-        this.currentEnergy = max(0,currentEnergy- config.energyConsumedByMove());
+        this.currentEnergy = max(0, currentEnergy - config.energyConsumedByMove());
     }
 
     // for reproduction

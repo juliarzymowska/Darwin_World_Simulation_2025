@@ -118,7 +118,7 @@ public class Simulation implements Runnable {
                     (int) (Math.random() * configMap.width()),
                     (int) (Math.random() * configMap.height())
             );
-            Animal newAnimal = new Animal(position);
+            Animal newAnimal = new Animal(position, configAnimal);
             // safe check if map allows placement (though here we just force it usually)
             if (!map.isOccupied(position) || map.canMoveTo(position)) {
                 map.placeAnimal(newAnimal);
