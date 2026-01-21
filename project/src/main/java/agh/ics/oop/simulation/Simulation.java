@@ -18,9 +18,6 @@ public class Simulation implements Runnable {
     private final WorldMap map;
     private final SimulationStatsTracker statsTracker;
     private final ConsoleMapDisplay consoleMapDisplay;
-    // TODO: some error for config file that doesn't let user make a genotypeLength = 0!
-    // TODO: error for config file when number of grass per day is bigger than map tiles number
-
 
     // (for testing) Constructor of Simulation class.
     public Simulation(List<Vector2d> positions, WorldMap map) {
@@ -34,7 +31,6 @@ public class Simulation implements Runnable {
             Animal newAnimal = new Animal(pos);
             map.placeAnimal(newAnimal);
         }
-        //CSV saver obserwuje zmiany statystyk
         statsTracker.addObserver(new CSVSaver());
 
     }

@@ -15,9 +15,6 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class EarthMap implements WorldMap {
-    //Zrobić funkcje nextday() usuwającą zwierzęta, a w feromonmap zmniejszające intensywnośc zapachów. (ja bym w
-    // przeniosła removeDeadAnimals (działa tak samo niezależnie od warianty mapy) do MapELemetsManager i wywoływałą
-    // ją w performDayCycle() w Simulation)
 
     protected final Vector2d leftDownMapCorner = new Vector2d(0, 0);
     protected final Vector2d rightUpMapCorner;
