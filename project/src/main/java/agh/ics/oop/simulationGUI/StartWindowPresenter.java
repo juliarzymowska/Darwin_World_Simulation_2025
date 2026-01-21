@@ -4,6 +4,7 @@ import agh.ics.oop.configuration.ConfigAnimal;
 import agh.ics.oop.configuration.ConfigBuilder;
 import agh.ics.oop.configuration.ConfigLoadFromJSON;
 import agh.ics.oop.configuration.ConfigMap;
+import agh.ics.oop.model.exception.ConfigurationException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -53,9 +54,7 @@ public class StartWindowPresenter {
                 System.out.println("Configuration loaded successfully!");
 
                 openConfigurationWindow(builder);
-            } catch (Exception e) {
-                // TODO: Show exception message in alert (after merge with exceptions branch and adding custom
-                //  exceptions to ConfigBuilder and ConfigLoadFromJSON)
+            } catch (ConfigurationException | IOException e) {
                 javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
                 alert.setTitle("Invalid Configuration");
                 alert.setHeaderText("Error loading JSON");

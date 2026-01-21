@@ -1,6 +1,7 @@
 package agh.ics.oop.simulationGUI;
 
 import agh.ics.oop.configuration.ConfigBuilder;
+import agh.ics.oop.model.exception.ConfigurationException;
 import agh.ics.oop.model.map.MapType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -60,6 +61,9 @@ public class ConfigurationWindowPresenter {
     // Consumer is a functional interface representing a function that takes one argument and returns no result.
     private Consumer<ConfigBuilder> onStartSimulation; // callback to notify when simulation should start
 
+    /**
+     * This is called manually AFTER FXMLLoader.load()
+     */
     public void setConfigBuilder(ConfigBuilder builder) {
         this.configBuilder = builder;
 
@@ -96,27 +100,27 @@ public class ConfigurationWindowPresenter {
 
     @FXML
     private void handleStartSimulation() {
-        configBuilder.setInitialAnimalCount(Integer.parseInt(initialAnimalCountField.getText()));
-        configBuilder.setInitialEnergy(Integer.parseInt(initialEnergyField.getText()));
-        configBuilder.setMaxEnergy(Integer.parseInt(maxEnergyField.getText()));
-        configBuilder.setEnergyToReproduce(Integer.parseInt(energyToReproduceField.getText()));
-        configBuilder.setEnergyConsumedByMove(Integer.parseInt(energyConsumedByMoveField.getText()));
-        configBuilder.setEnergyGainedByEating(Integer.parseInt(energyGainedByEatingField.getText()));
-        configBuilder.setMinMutations(Integer.parseInt(minMutationsField.getText()));
-        configBuilder.setMaxMutations(Integer.parseInt(maxMutationsField.getText()));
-        configBuilder.setGenotypeLength(Integer.parseInt(genotypeLengthField.getText()));
-
-        configBuilder.setWidth(Integer.parseInt(widthField.getText()));
-        configBuilder.setHeight(Integer.parseInt(heightField.getText()));
-        configBuilder.setStartPlantNumber(Integer.parseInt(startPlantNumberField.getText()));
-        configBuilder.setDailyPlantNumber(Integer.parseInt(dailyPlantNumberField.getText()));
-        configBuilder.setMapType(mapTypeChoiceBox.getValue());
-        configBuilder.setMoveToFeromonProbability(Double.parseDouble(moveToFeromonProbabilityField.getText()));
-        configBuilder.setDaysToDecreaseFeromon(Integer.parseInt(daysToDecreaseFeromonField.getText()));
-        configBuilder.setSmellRange(Integer.parseInt(smellRangeField.getText()));
-
-//        System.out.println("Config ready, starting simulation...");
-//        System.out.println(configBuilder);
+        try {
+            configBuilder.setInitialAnimalCount(Integer.parseInt(initialAnimalCountField.getText()));
+            configBuilder.setInitialEnergy(Integer.parseInt(initialEnergyField.getText()));
+            configBuilder.setMaxEnergy(Integer.parseInt(maxEnergyField.getText()));
+            configBuilder.setEnergyToReproduce(Integer.parseInt(energyToReproduceField.getText()));
+            configBuilder.setEnergyConsumedByMove(Integer.parseInt(energyConsumedByMoveField.getText()));
+            configBuilder.setEnergyGainedByEating(Integer.parseInt(energyGainedByEatingField.getText()));
+            configBuilder.setMinMutations(Integer.parseInt(minMutationsField.getText()));
+            configBuilder.setMaxMutations(Integer.parseInt(maxMutationsField.getText()));
+            configBuilder.setGenotypeLength(Integer.parseInt(genotypeLengthField.getText()));
+            configBuilder.setWidth(Integer.parseInt(widthField.getText()));
+            configBuilder.setHeight(Integer.parseInt(heightField.getText()));
+            configBuilder.setStartPlantNumber(Integer.parseInt(startPlantNumberField.getText()));
+            configBuilder.setDailyPlantNumber(Integer.parseInt(dailyPlantNumberField.getText()));
+            configBuilder.setMapType(mapTypeChoiceBox.getValue());
+            configBuilder.setMoveToFeromonProbability(Double.parseDouble(moveToFeromonProbabilityField.getText()));
+            configBuilder.setDaysToDecreaseFeromon(Integer.parseInt(daysToDecreaseFeromonField.getText()));
+            configBuilder.setSmellRange(Integer.parseInt(smellRangeField.getText()));
+        } catch (ConfigurationException e) {
+            e.printStackTrace();
+        }
 
         if (onStartSimulation != null) {
             onStartSimulation.accept(configBuilder);
