@@ -6,6 +6,7 @@ import agh.ics.oop.configuration.ConfigLoadFromJSON;
 import agh.ics.oop.configuration.ConfigMap;
 import agh.ics.oop.model.exception.*;
 import agh.ics.oop.simulation.Simulation;
+import agh.ics.oop.simulation.SimulationEngine;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,6 +27,8 @@ public class StartWindowPresenter {
     private Button loadFromJSON;
     @FXML
     private Button startButton;
+
+    private final SimulationEngine simulationEngine = new SimulationEngine();
 
     @FXML
     private void handleStartSimulation() throws ConfigurationException {
@@ -125,17 +128,19 @@ public class StartWindowPresenter {
 
             // 5. Setup the Stage
             Stage stage = new Stage();
-            stage.setTitle("Darwin World Simulation");
+            stage.setTitle("Darwin World - Simulation ID: "+ simulation.hashCode());
             stage.setScene(new Scene(root));
 
             // Ensure simulation stops when window closes
-            stage.setOnCloseRequest(event -> presenter.onWindowClose());
+            stage.setOnCloseRequest(event ->{
+                presenter.onWindowClose();
+                simulation.shutDown();
+            });
 
             stage.show();
 
             // 6. Start the Simulation on a separate thread
-            Thread simulationThread = new Thread(simulation);
-            simulationThread.start();
+            simulationEngine.runAsyncInThreadPool(simulation);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -145,6 +150,7 @@ public class StartWindowPresenter {
 
     @FXML
     private void handleClose() {
+        simulationEngine.shutdownService();
         javafx.application.Platform.exit();
         System.exit(0);
     }
