@@ -162,4 +162,64 @@ public class ConfigBuilder {
     public int getInitialEnergy() {
         return initialEnergy;
     }
+
+    public int getMaxEnergy() {
+        return maxEnergy;
+    }
+
+    public int getEnergyToReproduce() {
+        return energyToReproduce;
+    }
+
+    public int getEnergyConsumedByMove() {
+        return energyConsumedByMove;
+    }
+
+    public int getEnergyGainedByEating() {
+        return energyGainedByEating;
+    }
+
+    public int getMinMutations() {
+        return minMutations;
+    }
+
+    public int getMaxMutations() {
+        return maxMutations;
+    }
+
+    public int getGenotypeLength() {
+        return genotypeLength;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getStartPlantNumber() {
+        return startPlantNumber;
+    }
+
+    public int getDailyPlantNumber() {
+        return dailyPlantNumber;
+    }
+
+    public MapType getMapType() {
+        return mapType;
+    }
+
+    public double getMoveToFeromonProbability() {
+        return moveToFeromonProbability;
+    }
+
+    public int getDaysToDecreaseFeromon() {
+        return daysToDecreaseFeromon;
+    }
+
+    public int getSmellRange() {
+        return smellRange;
+    }
 }

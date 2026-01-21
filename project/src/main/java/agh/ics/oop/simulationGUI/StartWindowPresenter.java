@@ -84,9 +84,7 @@ public class StartWindowPresenter {
                     () -> ((Stage) scene.getWindow()).close()
             );
 
-            presenter.setStartSimulation(finalBuilder -> {
-                openSimulationWindow(builder);
-            });
+            presenter.setStartSimulation(this::openSimulationWindow);
 
             Stage stage = new Stage();
             stage.setScene(scene);
