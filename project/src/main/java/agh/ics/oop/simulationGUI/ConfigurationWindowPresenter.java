@@ -68,7 +68,6 @@ public class ConfigurationWindowPresenter {
     public void setConfigBuilder(ConfigBuilder builder) {
         this.configBuilder = builder;
 
-        // Ustawianie fabryk i konfiguracja
         maxEnergySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, builder.getMaxEnergy()));
         configureSpinner(maxEnergySpinner);
 
