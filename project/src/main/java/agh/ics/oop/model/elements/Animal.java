@@ -5,6 +5,7 @@ import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.util.Vector2d;
 
 import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 /*
  * Class representing an animal in the simulation.
@@ -15,7 +16,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
     private Vector2d currentPosition;
     private ConfigAnimal config;
 
-    private int currentEnergy, currentAge = 0, numberOfChildren = 0, numberOfEatenPlants = 0,
+    private int maxEnergy, currentEnergy, currentAge = 0, numberOfChildren = 0, numberOfEatenPlants = 0,
             numberOfDescendants = 0, dayOfBirth = 0, dayOfDeath = -1;
     private boolean isAlive = true;
     private final Genotype genotype;
@@ -30,6 +31,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
         this.currentPosition = position;
         this.genotype = new Genotype(config.genotypeLength());
         this.currentEnergy = config.initialEnergy();
+        this.maxEnergy = config.maxEnergy();
         this.currentOrientation = MapDirection.getRandomDirection();
         this.config = config;
     }
@@ -167,7 +169,6 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     // for movement
     private void decreaseEnergy() {
-        // uważam, że najniższa możliwa energia powinna wynosić 0
         this.currentEnergy = max(0, currentEnergy - config.energyConsumedByMove());
     }
 
@@ -185,7 +186,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     // for eating
     public void gainEnergy() {
-        this.currentEnergy += config.energyGainedByEating();
+        this.currentEnergy += min(config.energyGainedByEating(),maxEnergy);
         numberOfEatenPlants += 1;
     }
 

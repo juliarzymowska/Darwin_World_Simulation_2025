@@ -28,7 +28,7 @@ public class Simulation implements Runnable {
         this.map = (configMap.mapType() == MapType.EARTH_MAP) ? new EarthMap(configMap) : new FeromonMap(configMap);
         this.statsTracker = new SimulationStatsTracker(map);
         map.addObserver(statsTracker);
-        statsTracker.addObserver(new CSVSaver());
+        statsTracker.addObserver(new CSVSaver(map));
 
         generateAnimalsOnMap(configAnimal, configMap, map);
     }
