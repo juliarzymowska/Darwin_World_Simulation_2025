@@ -3,10 +3,14 @@ package agh.ics.oop.simulationGUI;
 import agh.ics.oop.configuration.ConfigBuilder;
 import agh.ics.oop.model.exception.ConfigurationException;
 import agh.ics.oop.model.map.MapType;
+import agh.ics.oop.simulation.Simulation;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.function.Consumer;
 
 public class ConfigurationWindowPresenter {
@@ -131,13 +135,10 @@ public class ConfigurationWindowPresenter {
     @FXML
     private void handleStartSimulation() {
         try {
-            int maxEnergy = maxEnergySpinner.getValue();
-            int initialEnergy = initialEnergySpinner.getValue();
-
-            configBuilder.setMaxEnergy(maxEnergy);
+            // 1. Update the builder with values from spinners
+            configBuilder.setMaxEnergy(maxEnergySpinner.getValue());
             configBuilder.setInitialAnimalCount(initialAnimalCountSpinner.getValue());
-            configBuilder.setInitialEnergy(initialEnergy);
-
+            configBuilder.setInitialEnergy(initialEnergySpinner.getValue());
             configBuilder.setEnergyToReproduce(energyToReproduceSpinner.getValue());
             configBuilder.setEnergyConsumedByMove(energyConsumedByMoveSpinner.getValue());
             configBuilder.setEnergyGainedByEating(energyGainedByEatingSpinner.getValue());
@@ -147,14 +148,14 @@ public class ConfigurationWindowPresenter {
             configBuilder.setWidth(widthSpinner.getValue());
             configBuilder.setHeight(heightSpinner.getValue());
             configBuilder.setStartPlantNumber(startPlantNumberSpinner.getValue());
-            configBuilder.setDailyPlantNumber(dailyPlantNumberSpinner.getValue()); // Zmienione z Field na Spinner
+            configBuilder.setDailyPlantNumber(dailyPlantNumberSpinner.getValue());
             configBuilder.setMapType(mapTypeChoiceBox.getValue());
             configBuilder.setMoveToFeromonProbability(moveToFeromonProbabilitySpinner.getValue());
             configBuilder.setDaysToDecreaseFeromon(daysToDecreaseFeromonSpinner.getValue());
             configBuilder.setSmellRange(smellRangeSpinner.getValue());
 
         } catch (ConfigurationException e) {
-            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+            var alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
             alert.setTitle("Invalid Configuration");
             alert.setHeaderText("Error in configuration");
             alert.setContentText(e.getMessage());
@@ -162,9 +163,12 @@ public class ConfigurationWindowPresenter {
             return;
         }
 
+        // 2. Notify the listener (StartWindowPresenter) that we are ready
         if (onStartSimulation != null) {
             onStartSimulation.accept(configBuilder);
         }
+
+        // 3. Close this configuration window
         handleClose();
     }
 
