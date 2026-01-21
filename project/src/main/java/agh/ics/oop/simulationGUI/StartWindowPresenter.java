@@ -128,11 +128,11 @@ public class StartWindowPresenter {
 
             // 5. Setup the Stage
             Stage stage = new Stage();
-            stage.setTitle("Darwin World - Simulation ID: "+ simulation.hashCode());
+            stage.setTitle("Darwin World - Simulation ID: " + simulation.hashCode());
             stage.setScene(new Scene(root));
 
             // Ensure simulation stops when window closes
-            stage.setOnCloseRequest(event ->{
+            stage.setOnCloseRequest(event -> {
                 presenter.onWindowClose();
                 simulation.shutDown();
             });

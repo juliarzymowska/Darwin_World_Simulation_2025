@@ -83,31 +83,65 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     private void drawMap() {
         GraphicsContext gc = mapCanvas.getGraphicsContext2D();
 
-        // 1. Wipe the entire canvas clean
+        // 1. Wipe and Fill Background (Grass)
         gc.clearRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
-
-        // 2. Fill the background
         gc.setFill(Color.LIGHTGREEN);
         gc.fillRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
+
+        // 2. Draw Pheromones (NEW STEP)
+        drawPheromones(gc);
 
         // 3. Draw Grid Lines
         drawGrid(gc);
 
-        // 4. Draw Objects
+        // 4. Draw Objects (Animals/Plants)
         for (int x = 0; x < mapWidth; x++) {
             for (int y = 0; y < mapHeight; y++) {
                 Vector2d position = new Vector2d(x, y);
-                // Cast to EarthMap or FeromonMap depending on what you use
-                WorldElement object = worldMap.objectAt(position);
+                // Note: We cast to EarthMap to use the generic objectAt
+                // If you are using FeromonMap, objectAt might return a Feromon if no animal is there,
+                // but we handle drawing Feromones separately in step 2, so we can ignore them here
+                // OR handle them if your objectAt returns them.
+                WorldElement object = ((agh.ics.oop.model.map.EarthMap) worldMap).objectAt(position);
 
-                if (object != null) {
+                // Important: Don't draw Feromon object again if it's returned by objectAt
+                if (object != null && !(object instanceof agh.ics.oop.model.elements.Feromon)) {
                     drawObject(gc, object, x, y);
                 }
             }
         }
 
-        // 5. Re-apply scaling (in case window size changed)
+        // 5. Scale
         autoScaleMap();
+    }
+
+    private void drawPheromones(GraphicsContext gc) {
+        // Only run this logic if the map is actually a FeromonMap
+        if (worldMap instanceof agh.ics.oop.model.map.FeromonMap feromonMap) {
+
+            for (int x = 0; x < mapWidth; x++) {
+                for (int y = 0; y < mapHeight; y++) {
+                    Vector2d position = new Vector2d(x, y);
+
+                    // Use the new method we added to FeromonMap
+                    int intensity = feromonMap.getSmellValue(position);
+
+                    if (intensity > 0) {
+                        double drawX = x * CELL_SIZE;
+                        double drawY = (mapHeight - 1 - y) * CELL_SIZE;
+
+                        // Calculate opacity:
+                        // Low smell = transparent blue
+                        // High smell = darker blue
+                        // We cap it at 0.6 so we never completely hide the grass/grid
+                        double opacity = Math.min(intensity * 0.15, 0.6);
+
+                        gc.setFill(Color.rgb(0, 0, 255, opacity));
+                        gc.fillRect(drawX, drawY, CELL_SIZE, CELL_SIZE);
+                    }
+                }
+            }
+        }
     }
 
     private void drawObject(GraphicsContext gc, WorldElement object, int x, int y) {
