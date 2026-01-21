@@ -5,6 +5,7 @@ import agh.ics.oop.configuration.ConfigBuilder;
 import agh.ics.oop.configuration.ConfigLoadFromJSON;
 import agh.ics.oop.configuration.ConfigMap;
 import agh.ics.oop.model.exception.*;
+import agh.ics.oop.simulation.Simulation;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -104,24 +105,41 @@ public class StartWindowPresenter {
 
     private void openSimulationWindow(ConfigBuilder builder) {
         try {
+            // 1. Convert Builder to Records
+            // (Assuming you don't have a builder.build() method, we construct them manually here)
+            ConfigAnimal configAnimal = builder.buildAnimalConfig();
+            ConfigMap configMap = builder.buildMapConfig();
+
+            // 2. Create the Simulation
+            Simulation simulation = new Simulation(configAnimal, configMap, builder.getMoveDelay());
+
+            // 3. Load the Simulation Window FXML
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getClassLoader().getResource(
-                            "simulationWindow/simulation-window.fxml"
-                    )
+                    getClass().getClassLoader().getResource("simulationWindow/simulation-window.fxml")
             );
             Parent root = loader.load();
 
+            // 4. Get the Presenter and pass the Simulation to it
             SimulationWindowPresenter presenter = loader.getController();
-            presenter.setConfig(builder);
+            presenter.setSimulation(simulation);
 
-
+            // 5. Setup the Stage
             Stage stage = new Stage();
-            stage.setTitle("Simulation");
+            stage.setTitle("Darwin World Simulation");
             stage.setScene(new Scene(root));
+
+            // Ensure simulation stops when window closes
+            stage.setOnCloseRequest(event -> presenter.onWindowClose());
+
             stage.show();
+
+            // 6. Start the Simulation on a separate thread
+            Thread simulationThread = new Thread(simulation);
+            simulationThread.start();
 
         } catch (IOException e) {
             e.printStackTrace();
+            // Ideally show an Alert here if FXML fails to load
         }
     }
 

@@ -14,7 +14,7 @@ public class World {
         List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(1, 1), new Vector2d(0, 0));
         ConfigMap configMap = new ConfigMap();
         ConfigAnimal configAnimal = new ConfigAnimal();
-        Simulation simulation = new Simulation(configAnimal, configMap);
+        Simulation simulation = new Simulation(configAnimal, configMap, 1000);
 //        Simulation simulation = new Simulation(positions, map);
         simulation.run();
         /*

@@ -8,6 +8,7 @@ import agh.ics.oop.model.map.MapType;
  * It contains fields for various configuration parameters and provides methods to set these parameters.
  * */
 public class ConfigBuilder {
+    private int moveDelay = 300; // Default 300ms
     // Animal
     private int initialAnimalCount;
     private int initialEnergy;
@@ -163,14 +164,14 @@ public class ConfigBuilder {
     }
 
     public void setStartPlantNumber(int startPlantNumber) throws IllegalNumberOfPlantsException {
-        if (startPlantNumber < 0 || startPlantNumber > width*height) {
+        if (startPlantNumber < 0 || startPlantNumber > width * height) {
             throw new IllegalNumberOfPlantsException(width, height);
         }
         this.startPlantNumber = startPlantNumber;
     }
 
     public void setDailyPlantNumber(int dailyPlantNumber) throws IllegalNumberOfPlantsException {
-        if (dailyPlantNumber < 0 || dailyPlantNumber > width*height) {
+        if (dailyPlantNumber < 0 || dailyPlantNumber > width * height) {
             throw new IllegalNumberOfPlantsException(width, height);
         }
         this.dailyPlantNumber = dailyPlantNumber;
@@ -267,5 +268,13 @@ public class ConfigBuilder {
 
     public int getSmellRange() {
         return smellRange;
+    }
+
+    public int getMoveDelay() {
+        return moveDelay;
+    }
+
+    public void setMoveDelay(int moveDelay) {
+        this.moveDelay = moveDelay;
     }
 }

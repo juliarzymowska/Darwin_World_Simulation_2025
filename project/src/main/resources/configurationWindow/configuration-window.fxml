@@ -63,12 +63,15 @@
         <Label text="Smell Range" GridPane.rowIndex="16" GridPane.columnIndex="0"/>
         <Spinner fx:id="smellRangeSpinner" GridPane.rowIndex="16" GridPane.columnIndex="1"/>
 
+        <Label text="Move Delay (ms):" GridPane.rowIndex="17" GridPane.columnIndex="0"/>
+        <Spinner fx:id="moveDelaySpinner" GridPane.rowIndex="17" GridPane.columnIndex="1"/>
+
         <Button fx:id="startSimulationButton" text="Start Simulation" onAction="#handleStartSimulation"
-                GridPane.columnSpan="2" GridPane.rowIndex="17" GridPane.columnIndex="0"/>
+                GridPane.columnSpan="2" GridPane.rowIndex="18" GridPane.columnIndex="0"/>
         <Button fx:id="saveConfigurationButton" text="Save Configuration" onAction="#handleSaveConfiguration"
-                GridPane.columnSpan="2" GridPane.rowIndex="17" GridPane.columnIndex="1"/>
+                GridPane.columnSpan="2" GridPane.rowIndex="18" GridPane.columnIndex="1"/>
         <Button fx:id="closeButton" text="Close" onAction="#handleClose" GridPane.columnSpan="2"
-                GridPane.rowIndex="17" GridPane.columnIndex="2"/>
+                GridPane.rowIndex="18" GridPane.columnIndex="1"/>
     </GridPane>
 
 </GridPane>
