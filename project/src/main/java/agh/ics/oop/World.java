@@ -2,11 +2,8 @@ package agh.ics.oop;
 
 import agh.ics.oop.configuration.ConfigAnimal;
 import agh.ics.oop.configuration.ConfigMap;
-import agh.ics.oop.model.*;
-import agh.ics.oop.model.map.EarthMap;
-import agh.ics.oop.model.map.FeromonMap;
-import agh.ics.oop.model.map.WorldMap;
 import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.simulation.Simulation;
 
 import java.util.List;
 
@@ -17,7 +14,7 @@ public class World {
         List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(1, 1), new Vector2d(0, 0));
         ConfigMap configMap = new ConfigMap();
         ConfigAnimal configAnimal = new ConfigAnimal();
-        Simulation simulation = new Simulation(configAnimal, configMap);
+        Simulation simulation = new Simulation(configAnimal, configMap, 1000);
 //        Simulation simulation = new Simulation(positions, map);
         simulation.run();
         /*

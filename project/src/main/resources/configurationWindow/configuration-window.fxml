@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="agh.ics.oop.simulationGUI.ConfigurationWindowPresenter"
+          hgap="10" vgap="10"
+          alignment="CENTER">
+    <GridPane fx:id="configGrid" hgap="10" vgap="10" alignment="CENTER">
+        <!-- Animal config -->
+        <Label text="Max Energy" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Spinner fx:id="maxEnergySpinner" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Initial Animal Count" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Spinner fx:id="initialAnimalCountSpinner" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Initial Energy" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Spinner fx:id="initialEnergySpinner" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Energy to Reproduce" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <Spinner fx:id="energyToReproduceSpinner" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Energy Consumed by Move" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <Spinner fx:id="energyConsumedByMoveSpinner" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+        <Label text="Energy Gained by Eating" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <Spinner fx:id="energyGainedByEatingSpinner" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+        <Label text="Genotype Length" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+        <Spinner fx:id="genotypeLengthSpinner" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+        <Label text="Max Mutations" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+        <Spinner fx:id="maxMutationsSpinner" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+        <Label text="Min Mutations" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+        <Spinner fx:id="minMutationsSpinner" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
+
+        <!-- Map config -->
+        <Label text="Width" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+        <Spinner fx:id="widthSpinner" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+
+        <Label text="Height" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
+        <Spinner fx:id="heightSpinner" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
+
+        <Label text="Start Plant Number" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
+        <Spinner fx:id="startPlantNumberSpinner" GridPane.rowIndex="11" GridPane.columnIndex="1"/>
+
+        <Label text="Daily Plant Number" GridPane.rowIndex="12" GridPane.columnIndex="0"/>
+        <Spinner fx:id="dailyPlantNumberSpinner" GridPane.rowIndex="12" GridPane.columnIndex="1"/>
+
+        <Label text="Map Type" GridPane.rowIndex="13" GridPane.columnIndex="0"/>
+        <ChoiceBox fx:id="mapTypeChoiceBox" GridPane.rowIndex="13" GridPane.columnIndex="1"/>
+
+        <Label text="Move to Feromon Probability" GridPane.rowIndex="14" GridPane.columnIndex="0"/>
+        <Spinner fx:id="moveToFeromonProbabilitySpinner" GridPane.rowIndex="14" GridPane.columnIndex="1"/>
+
+        <Label text="Days to Decrease Feromon" GridPane.rowIndex="15" GridPane.columnIndex="0"/>
+        <Spinner fx:id="daysToDecreaseFeromonSpinner" GridPane.rowIndex="15" GridPane.columnIndex="1"/>
+
+        <Label text="Smell Range" GridPane.rowIndex="16" GridPane.columnIndex="0"/>
+        <Spinner fx:id="smellRangeSpinner" GridPane.rowIndex="16" GridPane.columnIndex="1"/>
+
+        <Label text="Move Delay (ms):" GridPane.rowIndex="17" GridPane.columnIndex="0"/>
+        <Spinner fx:id="moveDelaySpinner" GridPane.rowIndex="17" GridPane.columnIndex="1"/>
+
+        <Button fx:id="startSimulationButton" text="Start Simulation" onAction="#handleStartSimulation"
+                GridPane.columnSpan="2" GridPane.rowIndex="18" GridPane.columnIndex="0"/>
+        <Button fx:id="saveConfigurationButton" text="Save Configuration" onAction="#handleSaveConfiguration"
+                GridPane.columnSpan="2" GridPane.rowIndex="18" GridPane.columnIndex="1"/>
+        <Button fx:id="closeButton" text="Close" onAction="#handleClose" GridPane.columnSpan="2"
+                GridPane.rowIndex="18" GridPane.columnIndex="2"/>
+    </GridPane>
+
+</GridPane>

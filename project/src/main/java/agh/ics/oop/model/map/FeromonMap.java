@@ -56,6 +56,7 @@ public class FeromonMap extends EarthMap {
             super.moveTo(animal);
         }
     }
+
     @Override
     protected void handleReproductionAtPosition(Vector2d position, int currentDay) {
         super.handleReproductionAtPosition(position, currentDay);
@@ -73,6 +74,13 @@ public class FeromonMap extends EarthMap {
         }
     }
 
+    public int getSmellValue(Vector2d position) {
+        if (feromons.containsKey(position)) {
+            return feromons.get(position).getFeromonValue();
+        }
+        return 0;
+    }
+
     public void decreaseFeromons() {
         List<Feromon> toRemove = new ArrayList<>();
         for (Feromon feromon : feromons.values()) {
@@ -84,14 +92,14 @@ public class FeromonMap extends EarthMap {
             }
             feromon.increaseFeromonDay();
         }
-        for (Feromon feromon : toRemove){
+        for (Feromon feromon : toRemove) {
             feromons.remove(feromon.getCurrentPosition());
         }
     }
 
     @Override
-    public WorldElement objectAt(Vector2d pos){
-        if (super.objectAt(pos) != null){
+    public WorldElement objectAt(Vector2d pos) {
+        if (super.objectAt(pos) != null) {
             return super.objectAt(pos);
         }
         return feromons.get(pos);

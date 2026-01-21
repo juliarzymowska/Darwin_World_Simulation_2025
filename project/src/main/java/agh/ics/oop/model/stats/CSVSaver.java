@@ -1,6 +1,7 @@
 package agh.ics.oop.model.stats;
 
 import agh.ics.oop.model.elements.Genotype;
+import agh.ics.oop.model.map.WorldMap;
 import agh.ics.oop.model.observators.StatsChangeListener;
 
 import java.io.IOException;
@@ -13,9 +14,11 @@ public class CSVSaver implements StatsChangeListener {
     private final Path csvFilePath;
     private static final String HEADER = "day;animals;plants;freeFields;avgEnergy;avgLifespan;avgChildren;mostPopularGenotype";
     private int lastDay = -1;
+    private WorldMap map;
 
-    public CSVSaver() {
-        this.csvFilePath = Paths.get("simulation_csv.csv");
+    public CSVSaver(WorldMap map) {
+        this.csvFilePath = Paths.get("simulation_" +map.getId() + ".csv");
+        this.map = map;
         initializeFile();
     }
 
