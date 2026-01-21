@@ -13,7 +13,6 @@ import javafx.stage.Stage;
 import java.util.function.Consumer;
 
 public class ConfigurationWindowPresenter {
-    // TODO: change TextField to Spinner
     @FXML
     private Spinner<Integer> maxEnergySpinner;
     @FXML
@@ -178,7 +177,6 @@ public class ConfigurationWindowPresenter {
     private void configureSpinner(Spinner<?> spinner) {
         spinner.setEditable(true);
 
-        // Fix dla JavaFX: zatwierdzanie tekstu przy utracie fokusu (bez klikania Enter)
         spinner.focusedProperty().addListener((observable, wasFocused, isNowFocused) -> {
             if (!isNowFocused) {
                 spinner.increment(0);
