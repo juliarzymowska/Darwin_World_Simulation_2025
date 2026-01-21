@@ -4,6 +4,7 @@ import agh.ics.oop.configuration.ConfigAnimal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -118,7 +119,20 @@ public class Genotype {
         }
     }
 
-    public String toString(){
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Genotype genotype1 = (Genotype) o;
+        return Objects.equals(this.genotype, genotype1.genotype);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(genotype);
+    }
+
+    public String toString() {
         return genotype.toString();
     }
 }

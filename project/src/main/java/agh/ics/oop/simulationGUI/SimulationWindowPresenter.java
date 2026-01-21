@@ -1,6 +1,7 @@
 package agh.ics.oop.simulationGUI;
 
 import agh.ics.oop.model.elements.Animal;
+import agh.ics.oop.model.elements.Genotype;
 import agh.ics.oop.model.elements.Plant;
 import agh.ics.oop.model.elements.WorldElement;
 import agh.ics.oop.model.map.WorldMap;
@@ -20,7 +21,10 @@ import javafx.scene.paint.Color;
 import java.util.List;
 
 public class SimulationWindowPresenter implements MapChangeListener, StatsChangeListener {
-
+    @FXML
+    private Label mostCommonGenotypeLabel;
+    @FXML
+    private Label childrenCountLabel;
     @FXML
     private Canvas mapCanvas;
     @FXML
@@ -210,6 +214,29 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
         Platform.runLater(this::drawMap);
     }
 
+//    @Override
+//    public void statsChanged(StatsRecord stats) {
+//        Platform.runLater(() -> {
+//            dayLabel.setText("Day: " + stats.day());
+//            animalCountLabel.setText("Animals: " + stats.animalCount());
+//            plantCountLabel.setText("Plants: " + stats.plantCount());
+//            emptyFieldsLabel.setText("Empty Fields: " + stats.freeTilesCount());
+//            avgEnergyLabel.setText(String.format("Avg Energy: %.2f", stats.averageEnergyLevel()));
+//            avgLifeSpanLabel.setText(String.format("Avg LifeSpan: %.2f", stats.averageLifeTime()));
+
+    /// /            mostCommonGenotypeLabel.setText("Most Common Genotype: " + stats.());
+//            childrenCountLabel.setText(String.format("Avg Children: %.2f", stats.averageKids()));
+//
+//            // LOGIC FOR GENOTYPE
+//            if (stats.mostPopularGenotypes() == null || stats.mostPopularGenotypes().isEmpty()) {
+//                mostCommonGenotypeLabel.setText("Top Genotype: -");
+//            } else {
+//                // Get the winner (index 0)
+//                Genotype top = stats.mostPopularGenotypes().get(0);
+//                mostCommonGenotypeLabel.setText("Top Genotype: " + top.toString());
+//            }
+//        });
+//    }
     @Override
     public void statsChanged(StatsRecord stats) {
         Platform.runLater(() -> {
@@ -219,7 +246,26 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
             emptyFieldsLabel.setText("Empty Fields: " + stats.freeTilesCount());
             avgEnergyLabel.setText(String.format("Avg Energy: %.2f", stats.averageEnergyLevel()));
             avgLifeSpanLabel.setText(String.format("Avg LifeSpan: %.2f", stats.averageLifeTime()));
+            childrenCountLabel.setText(String.format("Avg Children: %.2f", stats.averageKids()));
+
+            // --- CHANGED LOGIC FOR TOP 3 GENOTYPES ---
+            updateGenotypeLabel(stats.mostPopularGenotypes());
         });
+    }
+
+    private void updateGenotypeLabel(List<Genotype> genotypes) {
+        if (genotypes == null || genotypes.isEmpty()) {
+            mostCommonGenotypeLabel.setText("Top Genotypes: -");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder("Top Genotypes:\n");
+        for (int i = 0; i < genotypes.size(); i++) {
+            // Format: "1. [0, 4, 2...]"
+            sb.append(i + 1).append(". ").append(genotypes.get(i).toString()).append("\n");
+        }
+
+        mostCommonGenotypeLabel.setText(sb.toString());
     }
 
     @Override
