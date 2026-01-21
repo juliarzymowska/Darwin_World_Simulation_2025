@@ -147,43 +147,43 @@ public class ConfigurationWindowPresenter {
     @FXML
     private void handleSaveConfiguration() {
         try {
-            updateConfigFromUI();
+            // Only save if configuration is valid
+            if (updateConfigFromUI()) {
+                javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+                fileChooser.setTitle("Save Configuration");
+                fileChooser.getExtensionFilters().add(
+                        new javafx.stage.FileChooser.ExtensionFilter("JSON files", "*.json")
+                );
 
-            javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
-            fileChooser.setTitle("Save Configuration");
-            fileChooser.getExtensionFilters().add(
-                    new javafx.stage.FileChooser.ExtensionFilter("JSON files", "*.json")
-            );
+                java.io.File file = fileChooser.showSaveDialog(maxEnergySpinner.getScene().getWindow());
 
-            java.io.File file = fileChooser.showSaveDialog(maxEnergySpinner.getScene().getWindow());
-
-            if (file != null) {
-                saveToFile(file, configBuilder);
-
-                System.out.println("Configuration saved to: " + file.getAbsolutePath());
+                if (file != null) {
+                    saveToFile(file, configBuilder);
+                    System.out.println("Configuration saved to: " + file.getAbsolutePath());
+                }
             }
-        } catch (java.io.IOException e){
+        } catch (java.io.IOException e) {
             javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
             alert.setTitle("Save Error");
             alert.setHeaderText("Failed to save the file to disk");
             alert.setContentText(e.getMessage());
             alert.showAndWait();
-            return;
         }
     }
 
     @FXML
     private void handleStartSimulation() {
-        updateConfigFromUI();
-        if (onStartSimulation != null) {
-            onStartSimulation.accept(configBuilder);
+        // Only proceed if configuration is valid
+        if (updateConfigFromUI()) {
+            if (onStartSimulation != null) {
+                onStartSimulation.accept(configBuilder);
+            }
+            handleClose();
         }
-        handleClose();
     }
 
-    private void updateConfigFromUI(){
+    private boolean updateConfigFromUI() {
         try {
-            // 1. Update the builder with values from spinners
             configBuilder.setMaxEnergy(maxEnergySpinner.getValue());
             configBuilder.setInitialAnimalCount(initialAnimalCountSpinner.getValue());
             configBuilder.setInitialEnergy(initialEnergySpinner.getValue());
@@ -203,28 +203,25 @@ public class ConfigurationWindowPresenter {
             configBuilder.setSmellRange(smellRangeSpinner.getValue());
             configBuilder.setMoveDelay(moveDelaySpinner.getValue());
 
+            return true; // Success!
+
         } catch (ConfigurationException e) {
-            var alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
             alert.setTitle("Invalid Configuration");
             alert.setHeaderText("Error in configuration");
             alert.setContentText(e.getMessage());
             alert.showAndWait();
-            return;
-        }
 
-        // 2. Notify the listener (StartWindowPresenter) that we are ready
-        if (onStartSimulation != null) {
-            onStartSimulation.accept(configBuilder);
+            return false; // Failure!
         }
-
-        // 3. Close this configuration window
-        handleClose();
     }
+
     private void saveToFile(java.io.File file, ConfigBuilder config) throws java.io.IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.writeValue(file, config);
-        }
+    }
+
     /**
      * Metoda pomocnicza konfigurująca Spinner
      */
