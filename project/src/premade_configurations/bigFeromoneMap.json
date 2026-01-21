@@ -12,7 +12,7 @@
   "height": 50,
   "startPlantNumber": 120,
   "dailyPlantNumber": 15,
-  "mapType": "FEROMONE_MAP",
+  "mapType": "FEROMON_MAP",
   "moveToFeromonProbability": 0.6,
   "daysToDecreaseFeromon": 5,
   "smellRange": 3
