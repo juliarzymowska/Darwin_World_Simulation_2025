@@ -15,6 +15,8 @@ import java.util.function.Consumer;
 
 public class ConfigurationWindowPresenter {
     @FXML
+    private Spinner<Integer> moveDelaySpinner;
+    @FXML
     private Spinner<Integer> maxEnergySpinner;
     @FXML
     private Spinner<Integer> energyToReproduceSpinner;
@@ -118,6 +120,11 @@ public class ConfigurationWindowPresenter {
         );
         configureDoubleSpinner(moveToFeromonProbabilitySpinner);
 
+        moveDelaySpinner.setValueFactory(
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 2000, builder.getMoveDelay(), 100)
+        );
+        configureSpinner(moveDelaySpinner);
+
         mapTypeChoiceBox.getItems().setAll(MapType.values());
         mapTypeChoiceBox.setValue(builder.getMapType());
     }
@@ -153,6 +160,7 @@ public class ConfigurationWindowPresenter {
             configBuilder.setMoveToFeromonProbability(moveToFeromonProbabilitySpinner.getValue());
             configBuilder.setDaysToDecreaseFeromon(daysToDecreaseFeromonSpinner.getValue());
             configBuilder.setSmellRange(smellRangeSpinner.getValue());
+            configBuilder.setMoveDelay(moveDelaySpinner.getValue());
 
         } catch (ConfigurationException e) {
             var alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);

@@ -16,13 +16,15 @@ import java.util.List;
 public class Simulation implements Runnable {
     private final WorldMap map;
     private final SimulationStatsTracker statsTracker;
+    private final int moveDelay;
 
     // Thread control
     private volatile boolean running = false;
     private volatile boolean paused = true;
     private final Object pauseLock = new Object();
 
-    public Simulation(ConfigAnimal configAnimal, ConfigMap configMap) {
+    public Simulation(ConfigAnimal configAnimal, ConfigMap configMap, int moveDelay) {
+        this.moveDelay = moveDelay;
         this.map = (configMap.mapType() == MapType.EARTH_MAP) ? new EarthMap(configMap) : new FeromonMap(configMap);
         this.statsTracker = new SimulationStatsTracker(map);
         map.addObserver(statsTracker);
@@ -53,9 +55,8 @@ public class Simulation implements Runnable {
             currentDay++;
             performDayCycle(currentDay);
 
-            // Slow down simulation for visualization (e.g., 300ms delay)
             try {
-                Thread.sleep(300);
+                Thread.sleep(moveDelay);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 break;
