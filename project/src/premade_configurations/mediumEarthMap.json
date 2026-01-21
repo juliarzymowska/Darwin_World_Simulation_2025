@@ -12,7 +12,7 @@
   "height": 25,
   "startPlantNumber": 60,
   "dailyPlantNumber": 8,
-  "mapType": "EARTH",
+  "mapType": "EARTH_MAP",
   "moveToFeromonProbability": 0.0,
   "daysToDecreaseFeromon": 0,
   "smellRange": 0
