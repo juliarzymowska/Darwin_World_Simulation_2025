@@ -19,6 +19,7 @@
 
     <Button text="Start Simulation"
             fx:id="startSimulationButton"
+            onAction="#handleStartSimulation"
             GridPane.rowIndex="2" GridPane.columnIndex="0"
             GridPane.columnSpan="2"/>
     <Button

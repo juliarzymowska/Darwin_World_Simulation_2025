@@ -79,13 +79,18 @@ public class StartWindowPresenter {
                     () -> ((Stage) scene.getWindow()).close()
             );
 
+            presenter.setStartSimulation(finalBuilder -> {
+                System.out.println("Simulation started!");
+                System.out.println(finalBuilder);
+            });
+
             Stage stage = new Stage();
             stage.setScene(scene);
             stage.setTitle("Configuration");
             stage.show();
 
             // close start window
-            closeButton.getScene().getWindow().hide();
+//            closeButton.getScene().getWindow().hide();
 
         } catch (IOException e) {
             e.printStackTrace();

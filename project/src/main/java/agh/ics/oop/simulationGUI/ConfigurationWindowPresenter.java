@@ -6,6 +6,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.util.function.Consumer;
+
 public class ConfigurationWindowPresenter {
 
     @FXML
@@ -17,7 +19,13 @@ public class ConfigurationWindowPresenter {
     @FXML
     private Button startSimulationButton;
 
+    @FXML
+    private Button closeButton;
+
     private ConfigBuilder configBuilder;
+
+    // Consumer is a functional interface representing a function that takes one argument and returns no result.
+    private Consumer<ConfigBuilder> onStartSimulation; // callback to notify when simulation should start
 
     /**
      * This is called manually AFTER FXMLLoader.load()
@@ -34,8 +42,9 @@ public class ConfigurationWindowPresenter {
         );
     }
 
-    @FXML
-    private Button closeButton;
+    public void setStartSimulation(Consumer<ConfigBuilder> callback) {
+        this.onStartSimulation = callback;
+    }
 
     @FXML
     private void handleClose() {
@@ -56,8 +65,9 @@ public class ConfigurationWindowPresenter {
         System.out.println("Config ready, starting simulation...");
         System.out.println(configBuilder);
 
-        // NEXT STEP:
-        // open simulation window
-        // close config window
+        if (onStartSimulation != null) {
+            onStartSimulation.accept(configBuilder);
+        }
+        handleClose();
     }
 }
