@@ -19,10 +19,9 @@ import java.util.stream.Stream;
 public class SimulationStatsTracker implements MapChangeListener {
     WorldMap map;
     MapElementsManager elementsManager;
-    private int deadAnimalCount=0;
-    private int totalLifeTime=0;
+    private int deadAnimalCount = 0;
+    private int totalLifeTime = 0;
     private List<StatsChangeListener> observers = new ArrayList<>();
-
 
 
     public SimulationStatsTracker(WorldMap map) {
@@ -44,14 +43,14 @@ public class SimulationStatsTracker implements MapChangeListener {
         }
     }
 
-    public void handleDeadAnimals(List<Animal>  deadAnimals) {
-        for  (Animal animal : deadAnimals) {
+    public void handleDeadAnimals(List<Animal> deadAnimals) {
+        for (Animal animal : deadAnimals) {
             deadAnimalCount++;
-            totalLifeTime+= animal.getAge();
+            totalLifeTime += animal.getAge();
         }
     }
 
-    public StatsRecord saveStats(int day){
+    public StatsRecord updateStats(int day) {
         StatsRecord record = new StatsRecord(
                 day,
                 getAnimalCount(),
@@ -67,9 +66,9 @@ public class SimulationStatsTracker implements MapChangeListener {
     }
 
     /// na potrzeby testów w konsoli
-    public void printStats(int day){
+    public void printStats(int day) {
         String separator = "=".repeat(60);
-        StatsRecord record = saveStats(day);
+        StatsRecord record = updateStats(day);
         String header = String.format("| %-15s | %-10s | %-10s | %-10s |",
                 "STATYSTYKA", "WARTOŚĆ", "DZIEŃ " + record.day(), "");
 
@@ -98,17 +97,17 @@ public class SimulationStatsTracker implements MapChangeListener {
         System.out.printf("| %-25s | %-29s |\n", label, value);
     }
 
-    private int getAnimalCount(){
+    private int getAnimalCount() {
         return elementsManager.getAnimals().size();
     }
 
-    private int getPlantCount(){
+    private int getPlantCount() {
         return elementsManager.getPlants().size();
     }
 
-    private int getFreeTilesCount(){
+    private int getFreeTilesCount() {
         Boundary boundary = map.getCurrentBounds();
-        int totalTiles = (boundary.rightUpMapCorner().getX()+1)*(boundary.rightUpMapCorner().getY()+1);
+        int totalTiles = (boundary.rightUpMapCorner().getX() + 1) * (boundary.rightUpMapCorner().getY() + 1);
         List<Vector2d> animalPos = elementsManager.getAnimals().stream()
                 .map(Animal::getCurrentPosition).toList();
         List<Vector2d> plantPos = elementsManager.getPlants().stream()
@@ -119,39 +118,39 @@ public class SimulationStatsTracker implements MapChangeListener {
         return totalTiles - occupiedTiles;
     }
 
-    private List<Genotype> getMostPopularGenotypes(){
+    private List<Genotype> getMostPopularGenotypes() {
         return elementsManager.getAnimals().stream()
                 .map(Animal::getGenotype)
-                .collect(Collectors.groupingBy(g-> g,Collectors.counting())).entrySet().stream()
+                .collect(Collectors.groupingBy(g -> g, Collectors.counting())).entrySet().stream()
                 .sorted(Map.Entry.<Genotype, Long>comparingByValue().reversed())
                 .limit(3)
                 .map(Map.Entry::getKey)
                 .toList();
     }
 
-    private double getAverageEnergy(){
+    private double getAverageEnergy() {
         List<Animal> animals = elementsManager.getAnimals();
-        if  (animals.isEmpty()) return 0;
+        if (animals.isEmpty()) return 0;
         double energy = 0.0;
-        for  (Animal animal : animals){
+        for (Animal animal : animals) {
             energy += animal.getEnergy();
         }
-        return energy/animals.size();
+        return energy / animals.size();
     }
 
-    private double getAverageLifeTime(){
+    private double getAverageLifeTime() {
         if (deadAnimalCount == 0) return 0.0;
         else return (double) totalLifeTime / deadAnimalCount;
     }
 
-    private double getAverageKids(){
+    private double getAverageKids() {
         List<Animal> animals = elementsManager.getAnimals();
-        if  (animals.isEmpty()) return 0;
+        if (animals.isEmpty()) return 0;
         double kids = 0.0;
-        for  (Animal animal : animals){
+        for (Animal animal : animals) {
             kids += animal.getNumberOfChildren();
         }
-        return kids/animals.size();
+        return kids / animals.size();
     }
 
     @Override

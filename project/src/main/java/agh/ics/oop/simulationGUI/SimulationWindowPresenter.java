@@ -5,6 +5,8 @@ import agh.ics.oop.model.elements.Plant;
 import agh.ics.oop.model.elements.WorldElement;
 import agh.ics.oop.model.map.WorldMap;
 import agh.ics.oop.model.observators.MapChangeListener;
+import agh.ics.oop.model.observators.StatsChangeListener;
+import agh.ics.oop.model.stats.StatsRecord;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.simulation.Simulation;
 import javafx.application.Platform;
@@ -20,7 +22,7 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.List;
 
-public class SimulationWindowPresenter implements MapChangeListener {
+public class SimulationWindowPresenter implements MapChangeListener, StatsChangeListener {
 
     @FXML
     private GridPane mapGrid;
@@ -48,6 +50,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
         this.simulation = simulation;
         this.worldMap = simulation.getMap();
         this.worldMap.addObserver(this); // Subscribe to updates
+        this.simulation.getStats().addObserver(this); // Subscribe to stats updates
 
         // Initialize grid dimensions based on map size
         this.width = worldMap.getCurrentBounds().rightUpMapCorner().getX() + 1;
@@ -75,10 +78,7 @@ public class SimulationWindowPresenter implements MapChangeListener {
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
         // Run UI updates on the JavaFX Application Thread
-        Platform.runLater(() -> {
-            drawMap();
-            updateStats();
-        });
+        Platform.runLater(this::drawMap);
     }
 
     private void drawMap() {
@@ -125,11 +125,22 @@ public class SimulationWindowPresenter implements MapChangeListener {
         return Color.BLUE;
     }
 
-    private void updateStats() {
-        // You need to expose getters in SimulationStatsTracker
-        // For now, assuming you can get these values:
-        // dayLabel.setText("...");
-        // animalCountLabel.setText("...");
+    @Override
+    public void statsChanged(StatsRecord stats) {
+        // UI updates must happen on JavaFX Application Thread
+        Platform.runLater(() -> updateStats(stats));
+    }
+
+    // 4. Update the labels using the Record data
+    private void updateStats(StatsRecord stats) {
+        dayLabel.setText(String.valueOf(stats.day()));
+        animalCountLabel.setText(String.valueOf(stats.animalCount()));
+        plantCountLabel.setText(String.valueOf(stats.plantCount()));
+        emptyFieldsLabel.setText(String.valueOf(stats.freeTilesCount()));
+
+        // formatting to 2 decimal places for averages
+        avgEnergyLabel.setText(String.format("%.2f", stats.averageEnergyLevel()));
+        avgLifeSpanLabel.setText(String.format("%.2f", stats.averageLifeTime()));
     }
 
     @FXML

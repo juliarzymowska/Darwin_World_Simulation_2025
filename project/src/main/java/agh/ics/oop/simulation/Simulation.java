@@ -80,6 +80,7 @@ public class Simulation implements Runnable {
         // Stats are updated via observers automatically,
         // but we trigger mapChanged to notify UI
         map.mapChanged(map, "Day " + currentDay);
+        statsTracker.updateStats(currentDay);
 
         if (animals.isEmpty()) {
             running = false;

@@ -20,14 +20,18 @@ public class SimulationApp extends Application {
     }
 
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {
-        // stworzenie sceny (panelu do wyświetlania wraz zawartością z FXML)
         var scene = new Scene(viewRoot);
-
-        // ustawienie sceny w oknie
         primaryStage.setScene(scene);
-
-        // konfiguracja okna
-        primaryStage.setTitle("Simulation app");
+        primaryStage.setTitle("Darwin World Simulation app");
     }
 
+    @Override
+    public void stop() throws Exception {
+        // This method is called when the application is stopped
+        System.out.println("Shutting down application...");
+
+        // Force kill all background threads (simulations)
+        // Without this, your IntelliJ might show the app as still "Running" after you close the window
+        System.exit(0);
+    }
 }
