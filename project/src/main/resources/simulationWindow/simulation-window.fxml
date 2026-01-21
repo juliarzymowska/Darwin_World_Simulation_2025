@@ -34,6 +34,11 @@
             <Label fx:id="emptyFieldsLabel" text="Empty Fields: 0"/>
             <Label fx:id="avgEnergyLabel" text="Avg Energy: 0"/>
             <Label fx:id="avgLifeSpanLabel" text="Avg LifeSpan: 0"/>
+            <Label fx:id="childrenCountLabel" text="Children Count: 0"/>
+            <Label fx:id="mostCommonGenotypeLabel"
+                   text="Most Common Genotype: N/A"
+                   wrapText="true"
+                   style="-fx-font-family: 'monospaced';"/>
         </VBox>
     </right>
 
