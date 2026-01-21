@@ -3,16 +3,12 @@ package agh.ics.oop.simulationGUI;
 import agh.ics.oop.configuration.ConfigBuilder;
 import agh.ics.oop.model.exception.ConfigurationException;
 import agh.ics.oop.model.map.MapType;
-import agh.ics.oop.simulation.Simulation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.function.Consumer;
 
 public class ConfigurationWindowPresenter {

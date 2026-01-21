@@ -11,8 +11,6 @@ import agh.ics.oop.model.util.*;
 import java.util.*;
 
 import static agh.ics.oop.model.util.MapDirection.directionOnBorder;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
 
 public class EarthMap implements WorldMap {
 
@@ -62,7 +60,7 @@ public class EarthMap implements WorldMap {
         }
     }
 
-    public void growDailyPlants(){
+    public void growDailyPlants() {
         elementsManager.addPlants(dailyPlantNumber, rightUpMapCorner.getX(), rightUpMapCorner.getY());
         mapChanged(this, "growing %d plants".formatted(dailyPlantNumber));
     }
@@ -109,6 +107,23 @@ public class EarthMap implements WorldMap {
             elementsManager.removeAnimal(animal);
         }
         notifyAnimalsRemoved(deadAnimals);
+    }
+
+    /**
+     * Retrieves a specific animal from a given position for tracking purposes.
+     * Prioritizes the strongest animal or simply the first one found.
+     */
+    public Animal getAnimalAt(Vector2d position) {
+        // We access the elementsManager directly to get the list of animals
+        Optional<List<Animal>> animals = elementsManager.animalAt(position);
+
+        if (animals.isPresent() && !animals.get().isEmpty()) {
+            // Return the first animal found (usually the strongest if the list is sorted,
+            // or just the first one added if not).
+            return animals.get().get(0);
+        }
+
+        return null; // No animal found here
     }
 
     /*
@@ -185,6 +200,16 @@ public class EarthMap implements WorldMap {
     /*
      * OTHERS
      * */
+
+    public boolean isPreferredPosition(Vector2d position) {
+        int height = rightUpMapCorner.getY() + 1;
+        // Example logic: Jungle takes up ~20% of the map in the middle
+        int jungleHeight = (int) (height * 0.2);
+        int jungleStartY = (height - jungleHeight) / 2;
+        int jungleEndY = jungleStartY + jungleHeight;
+
+        return position.getY() >= jungleStartY && position.getY() <= jungleEndY;
+    }
 
     @Override
     public Boundary getCurrentBounds() {
