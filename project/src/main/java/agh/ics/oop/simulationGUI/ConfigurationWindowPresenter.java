@@ -220,8 +220,7 @@ public class ConfigurationWindowPresenter {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.writeValue(file, config);
-    }
-
+        }
     /**
      * Metoda pomocnicza konfigurująca Spinner
      */
