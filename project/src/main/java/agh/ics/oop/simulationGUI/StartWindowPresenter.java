@@ -1,7 +1,9 @@
 package agh.ics.oop.simulationGUI;
 
+import agh.ics.oop.configuration.ConfigAnimal;
 import agh.ics.oop.configuration.ConfigBuilder;
 import agh.ics.oop.configuration.ConfigLoadFromJSON;
+import agh.ics.oop.configuration.ConfigMap;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,7 +28,13 @@ public class StartWindowPresenter {
     @FXML
     private void handleStartSimulation() {
         // TODO: Open configuration window or start with default config
-        System.out.println("Start simulation clicked");
+        ConfigAnimal defaultAnimal = new ConfigAnimal();
+        ConfigMap defaultMap = new ConfigMap();
+
+        ConfigBuilder builder = ConfigBuilder.fromDefaults(defaultAnimal, defaultMap);
+
+        // open configuration window
+        openConfigurationWindow(builder);
     }
 
     @FXML
@@ -76,9 +84,7 @@ public class StartWindowPresenter {
                     () -> ((Stage) scene.getWindow()).close()
             );
 
-            presenter.setStartSimulation(finalBuilder -> {
-                openSimulationWindow(builder);
-            });
+            presenter.setStartSimulation(this::openSimulationWindow);
 
             Stage stage = new Stage();
             stage.setScene(scene);
