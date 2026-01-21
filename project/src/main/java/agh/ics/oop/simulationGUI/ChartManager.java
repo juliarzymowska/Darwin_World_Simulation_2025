@@ -9,8 +9,8 @@ import javafx.scene.chart.NumberAxis;
 public class ChartManager {
     private static final int MAX_DATA_POINTS = 100;
     private static final String X_AXIS_LABEL = "Day";
-    private static final String Y_AXIS_LABEL = "Animal Count";
     private static final String SERIES_STYLE = "-fx-stroke: #ff7f0e; -fx-stroke-width: 2px;";
+    private String selectedStat = "Animal Count";
 
     private final LineChart<Number, Number> chart;
     private XYChart.Series<Number, Number> statsSeries;
@@ -36,7 +36,7 @@ public class ChartManager {
             xAxis.setAutoRanging(false);
             xAxis.setForceZeroInRange(false);
 
-            yAxis.setLabel(Y_AXIS_LABEL);
+            yAxis.setLabel(selectedStat);
             yAxis.setAutoRanging(true);
 
             chart.getData().add(statsSeries);
@@ -47,19 +47,34 @@ public class ChartManager {
         });
     }
 
+    public void setObservedStat(String statName) {
+        this.selectedStat = statName;
+        Platform.runLater(() -> {
+            statsSeries.getData().clear();
+            chart.getYAxis().setLabel(statName);
+        });
+    }
+
     public void updateChart(StatsRecord statistics) {
         Platform.runLater(() -> {
-            statsSeries.getData().add(new XYChart.Data<>(statistics.day(), statistics.animalCount()));
+            double value = switch (selectedStat) {
+                case "Animal Count" -> (double) statistics.animalCount();
+                case "Plant Count" -> (double) statistics.plantCount();
+                case "Free Tiles" -> (double) statistics.freeTilesCount();
+                case "Avg Energy" -> statistics.averageEnergyLevel();
+                case "Avg Lifespan" -> statistics.averageLifeTime();
+                case "Avg Children" -> statistics.averageKids();
+                default -> 0.0;
+            };
+            statsSeries.getData().add(new XYChart.Data<>(statistics.day(), value));
 
             if (statsSeries.getData().size() > MAX_DATA_POINTS) {
                 statsSeries.getData().remove(0);
             }
 
             NumberAxis xAxis = (NumberAxis) chart.getXAxis();
-            int currentDay = statistics.day();
-            int lowerBound = Math.max(1, currentDay - MAX_DATA_POINTS);
-            xAxis.setLowerBound(lowerBound);
-            xAxis.setUpperBound(Math.max(MAX_DATA_POINTS, currentDay));
+            xAxis.setLowerBound(Math.max(1, statistics.day() - MAX_DATA_POINTS));
+            xAxis.setUpperBound(Math.max(MAX_DATA_POINTS, statistics.day()));
 
             if (statsSeries.getNode() != null) {
                 statsSeries.getNode().setStyle(SERIES_STYLE);

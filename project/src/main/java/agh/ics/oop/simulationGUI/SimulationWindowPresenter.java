@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.LineChart;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -46,6 +47,9 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     private Label avgLifeSpanLabel;
 
     @FXML
+    private ChoiceBox<String> statChoiceBox;
+
+    @FXML
     private LineChart<Number, Number> statsChart;
     private ChartManager chartManager;
 
@@ -64,6 +68,23 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
         // Auto-scaling logic (from your previous project)
         mapContainer.widthProperty().addListener((obs, oldVal, newVal) -> drawMap());
         mapContainer.heightProperty().addListener((obs, oldVal, newVal) -> drawMap());
+
+        // ChoiceBox for statistic
+        statChoiceBox.getItems().addAll(
+                "Animal Count",
+                "Plant Count",
+                "Free Tiles",
+                "Avg Energy",
+                "Avg Lifespan",
+                "Avg Children"
+        );
+        statChoiceBox.setValue("Animal Count");
+
+        statChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && chartManager != null) {
+                chartManager.setObservedStat(newVal);
+            }
+        });
     }
 
     public void setSimulation(Simulation simulation) {
@@ -257,7 +278,9 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
             // --- CHANGED LOGIC FOR TOP 3 GENOTYPES ---
             updateGenotypeLabel(stats.mostPopularGenotypes());
 
-            chartManager.updateChart(stats);
+            if (chartManager != null) {
+                chartManager.updateChart(stats);
+            }
         });
     }
 
