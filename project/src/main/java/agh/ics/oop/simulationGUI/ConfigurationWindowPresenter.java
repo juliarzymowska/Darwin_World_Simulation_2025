@@ -1,6 +1,7 @@
 package agh.ics.oop.simulationGUI;
 
 import agh.ics.oop.configuration.ConfigBuilder;
+import agh.ics.oop.model.exception.ConfigurationException;
 import agh.ics.oop.model.map.MapType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -60,12 +61,15 @@ public class ConfigurationWindowPresenter {
     // Consumer is a functional interface representing a function that takes one argument and returns no result.
     private Consumer<ConfigBuilder> onStartSimulation; // callback to notify when simulation should start
 
+    /**
+     * This is called manually AFTER FXMLLoader.load()
+     */
     public void setConfigBuilder(ConfigBuilder builder) {
         this.configBuilder = builder;
 
+        maxEnergyField.setText(String.valueOf(builder.getMaxEnergy()));
         initialAnimalCountField.setText(String.valueOf(builder.getInitialAnimalCount()));
         initialEnergyField.setText(String.valueOf(builder.getInitialEnergy()));
-        maxEnergyField.setText(String.valueOf(builder.getMaxEnergy()));
         energyToReproduceField.setText(String.valueOf(builder.getEnergyToReproduce()));
         energyConsumedByMoveField.setText(String.valueOf(builder.getEnergyConsumedByMove()));
         energyGainedByEatingField.setText(String.valueOf(builder.getEnergyGainedByEating()));
@@ -96,31 +100,59 @@ public class ConfigurationWindowPresenter {
 
     @FXML
     private void handleStartSimulation() {
-        configBuilder.setInitialAnimalCount(Integer.parseInt(initialAnimalCountField.getText()));
-        configBuilder.setInitialEnergy(Integer.parseInt(initialEnergyField.getText()));
-        configBuilder.setMaxEnergy(Integer.parseInt(maxEnergyField.getText()));
-        configBuilder.setEnergyToReproduce(Integer.parseInt(energyToReproduceField.getText()));
-        configBuilder.setEnergyConsumedByMove(Integer.parseInt(energyConsumedByMoveField.getText()));
-        configBuilder.setEnergyGainedByEating(Integer.parseInt(energyGainedByEatingField.getText()));
-        configBuilder.setMinMutations(Integer.parseInt(minMutationsField.getText()));
-        configBuilder.setMaxMutations(Integer.parseInt(maxMutationsField.getText()));
-        configBuilder.setGenotypeLength(Integer.parseInt(genotypeLengthField.getText()));
+        try {
+            int maxEnergy = parseOrDefault(maxEnergyField.getText(), configBuilder.getMaxEnergy());
+            int initialEnergy = parseOrDefault(initialEnergyField.getText(), configBuilder.getInitialEnergy());
 
-        configBuilder.setWidth(Integer.parseInt(widthField.getText()));
-        configBuilder.setHeight(Integer.parseInt(heightField.getText()));
-        configBuilder.setStartPlantNumber(Integer.parseInt(startPlantNumberField.getText()));
-        configBuilder.setDailyPlantNumber(Integer.parseInt(dailyPlantNumberField.getText()));
-        configBuilder.setMapType(mapTypeChoiceBox.getValue());
-        configBuilder.setMoveToFeromonProbability(Double.parseDouble(moveToFeromonProbabilityField.getText()));
-        configBuilder.setDaysToDecreaseFeromon(Integer.parseInt(daysToDecreaseFeromonField.getText()));
-        configBuilder.setSmellRange(Integer.parseInt(smellRangeField.getText()));
+            configBuilder.setMaxEnergy(maxEnergy);
+            configBuilder.setInitialAnimalCount(parseOrDefault(initialAnimalCountField.getText(), configBuilder.getInitialAnimalCount()));
+            configBuilder.setInitialEnergy(initialEnergy);
 
-//        System.out.println("Config ready, starting simulation...");
-//        System.out.println(configBuilder);
+            configBuilder.setEnergyToReproduce(parseOrDefault(energyToReproduceField.getText(), configBuilder.getEnergyToReproduce()));
+            configBuilder.setEnergyConsumedByMove(parseOrDefault(energyConsumedByMoveField.getText(), configBuilder.getEnergyConsumedByMove()));
+            configBuilder.setEnergyGainedByEating(parseOrDefault(energyGainedByEatingField.getText(), configBuilder.getEnergyGainedByEating()));
+            configBuilder.setGenotypeLength(parseOrDefault(genotypeLengthField.getText(), configBuilder.getGenotypeLength()));
+            configBuilder.setMaxMutations(parseOrDefault(maxMutationsField.getText(), configBuilder.getMaxMutations()));
+            configBuilder.setMinMutations(parseOrDefault(minMutationsField.getText(), configBuilder.getMinMutations()));
+            configBuilder.setWidth(parseOrDefault(widthField.getText(), configBuilder.getWidth()));
+            configBuilder.setHeight(parseOrDefault(heightField.getText(), configBuilder.getHeight()));
+            configBuilder.setStartPlantNumber(parseOrDefault(startPlantNumberField.getText(), configBuilder.getStartPlantNumber()));
+            configBuilder.setDailyPlantNumber(parseOrDefault(dailyPlantNumberField.getText(), configBuilder.getDailyPlantNumber()));
+            configBuilder.setMapType(mapTypeChoiceBox.getValue());
+            configBuilder.setMoveToFeromonProbability(parseOrDefaultDouble(moveToFeromonProbabilityField.getText(), configBuilder.getMoveToFeromonProbability()));
+            configBuilder.setDaysToDecreaseFeromon(parseOrDefault(daysToDecreaseFeromonField.getText(), configBuilder.getDaysToDecreaseFeromon()));
+            configBuilder.setSmellRange(parseOrDefault(smellRangeField.getText(), configBuilder.getSmellRange()));
+
+        } catch (ConfigurationException e) {
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+            alert.setTitle("Invalid Configuration");
+            alert.setHeaderText("Error in configuration");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+            return;
+        }
 
         if (onStartSimulation != null) {
             onStartSimulation.accept(configBuilder);
         }
         handleClose();
     }
+
+    // helper methods
+    private int parseOrDefault(String text, int defaultValue) {
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
+    private double parseOrDefaultDouble(String text, double defaultValue) {
+        try {
+            return Double.parseDouble(text);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
 }

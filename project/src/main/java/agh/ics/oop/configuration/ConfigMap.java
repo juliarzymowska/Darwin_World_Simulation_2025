@@ -13,7 +13,7 @@ public record ConfigMap(
         int smellRange
 ) {
     public ConfigMap() {
-        this(3, 3, 0, 0, MapType.FEROMON_MAP, 0.1, 2, 2);
+        this(5, 5, 5, 5, MapType.FEROMON_MAP, 0.1, 2, 2);
     }
 
     public ConfigMap(int width, int height, int startPlantNumber, int dailyPlantNumber, MapType mapType, double moveToFeromonProbability, int daysToDecreaseFeromon, int smellRange) {

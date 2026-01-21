@@ -10,14 +10,14 @@
           alignment="CENTER">
     <GridPane fx:id="configGrid" hgap="10" vgap="10" alignment="CENTER">
         <!-- Animal config -->
-        <Label text="Initial Animal Count" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField fx:id="initialAnimalCountField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <Label text="Max Energy" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="maxEnergyField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-        <Label text="Initial Energy" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <TextField fx:id="initialEnergyField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label text="Initial Animal Count" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="initialAnimalCountField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-        <Label text="Max Energy" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <TextField fx:id="maxEnergyField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <Label text="Initial Energy" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="initialEnergyField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
         <Label text="Energy to Reproduce" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
         <TextField fx:id="energyToReproduceField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
@@ -28,14 +28,15 @@
         <Label text="Energy Gained by Eating" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
         <TextField fx:id="energyGainedByEatingField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
 
-        <Label text="Min Mutations" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-        <TextField fx:id="minMutationsField" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+        <Label text="Genotype Length" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+        <TextField fx:id="genotypeLengthField" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
 
         <Label text="Max Mutations" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
         <TextField fx:id="maxMutationsField" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
 
-        <Label text="Genotype Length" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
-        <TextField fx:id="genotypeLengthField" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+        <Label text="Min Mutations" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+        <TextField fx:id="minMutationsField" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
 
         <!-- Map config -->
         <Label text="Width" GridPane.rowIndex="9" GridPane.columnIndex="0"/>

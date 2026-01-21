@@ -1,5 +1,6 @@
 package agh.ics.oop.configuration;
 
+import agh.ics.oop.model.exception.*;
 import agh.ics.oop.model.map.MapType;
 
 /*
@@ -58,19 +59,19 @@ public class ConfigBuilder {
         );
     }
 
-    public static ConfigBuilder fromDefaults(ConfigAnimal animal, ConfigMap map) {
+    public static ConfigBuilder fromDefaults(ConfigAnimal animal, ConfigMap map) throws ConfigurationException {
         ConfigBuilder builder = new ConfigBuilder();
 
         // Animal config
+        builder.setMaxEnergy(animal.maxEnergy());
         builder.setInitialAnimalCount(animal.initialAnimalCount());
         builder.setInitialEnergy(animal.initialEnergy());
-        builder.setMaxEnergy(animal.maxEnergy());
         builder.setEnergyToReproduce(animal.energyToReproduce());
         builder.setEnergyConsumedByMove(animal.energyConsumedByMove());
         builder.setEnergyGainedByEating(animal.energyGainedByEating());
-        builder.setMinMutations(animal.minMutations());
-        builder.setMaxMutations(animal.maxMutations());
         builder.setGenotypeLength(animal.genotypeLength());
+        builder.setMaxMutations(animal.maxMutations());
+        builder.setMinMutations(animal.minMutations());
 
         // Map config
         builder.setWidth(map.width());
@@ -86,11 +87,17 @@ public class ConfigBuilder {
     }
 
     // Setters for Animal config
-    public void setInitialAnimalCount(int initialAnimalCount) {
+    public void setInitialAnimalCount(int initialAnimalCount) throws IllegalAnimalCountException {
+        if (initialAnimalCount <= 0 || initialAnimalCount > 100) {
+            throw new IllegalAnimalCountException(initialAnimalCount, 100);
+        }
         this.initialAnimalCount = initialAnimalCount;
     }
 
-    public void setInitialEnergy(int initialEnergy) {
+    public void setInitialEnergy(int initialEnergy) throws IllegalInitialEnergyException {
+        if (initialEnergy <= 0 || initialEnergy > maxEnergy) {
+            throw new IllegalInitialEnergyException(maxEnergy);
+        }
         this.initialEnergy = initialEnergy;
     }
 
@@ -98,44 +105,74 @@ public class ConfigBuilder {
         this.maxEnergy = maxEnergy;
     }
 
-    public void setEnergyToReproduce(int energyToReproduce) {
+    public void setEnergyToReproduce(int energyToReproduce) throws IllegalEnergyToReproduceException {
+        if (energyToReproduce <= 0 || energyToReproduce > maxEnergy) {
+            throw new IllegalEnergyToReproduceException(maxEnergy);
+        }
         this.energyToReproduce = energyToReproduce;
     }
 
-    public void setEnergyConsumedByMove(int energyConsumedByMove) {
+    public void setEnergyConsumedByMove(int energyConsumedByMove) throws IllegalEnergyConsumedByMoveException {
+        if (energyConsumedByMove <= 0 || energyConsumedByMove > maxEnergy) {
+            throw new IllegalEnergyConsumedByMoveException(maxEnergy);
+        }
         this.energyConsumedByMove = energyConsumedByMove;
     }
 
-    public void setEnergyGainedByEating(int energyGainedByEating) {
+    public void setEnergyGainedByEating(int energyGainedByEating) throws IllegalEnergyGainedByEatingException {
+        if (energyGainedByEating <= 0 || energyGainedByEating > maxEnergy) {
+            throw new IllegalEnergyGainedByEatingException(maxEnergy);
+        }
         this.energyGainedByEating = energyGainedByEating;
     }
 
-    public void setMinMutations(int minMutations) {
+    public void setMinMutations(int minMutations) throws IllegalMinMutationsException {
+        if (minMutations < 0 || minMutations > maxMutations) {
+            throw new IllegalMinMutationsException(maxMutations);
+        }
         this.minMutations = minMutations;
     }
 
-    public void setMaxMutations(int maxMutations) {
+    public void setMaxMutations(int maxMutations) throws IllegalMaxMutationsException {
+        if (maxMutations < 0 || maxMutations > genotypeLength || maxMutations < minMutations) {
+            throw new IllegalMaxMutationsException(genotypeLength);
+        }
         this.maxMutations = maxMutations;
     }
 
-    public void setGenotypeLength(int genotypeLength) {
+    public void setGenotypeLength(int genotypeLength) throws IllegalGenotypeLengthException {
+        if (genotypeLength <= 0) {
+            throw new IllegalGenotypeLengthException();
+        }
         this.genotypeLength = genotypeLength;
     }
 
     // Setters for Map config
-    public void setWidth(int width) {
+    public void setWidth(int width) throws IllegalMapWidthException {
+        if (width <= 0 || width > 100) {
+            throw new IllegalMapWidthException(100);
+        }
         this.width = width;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(int height) throws IllegalMapHeightException {
+        if (height <= 0 || height > 100) {
+            throw new IllegalMapHeightException(100);
+        }
         this.height = height;
     }
 
-    public void setStartPlantNumber(int startPlantNumber) {
+    public void setStartPlantNumber(int startPlantNumber) throws IllegalNumberOfPlantsException {
+        if (startPlantNumber < 0 || startPlantNumber > 100) {
+            throw new IllegalNumberOfPlantsException(width, height);
+        }
         this.startPlantNumber = startPlantNumber;
     }
 
-    public void setDailyPlantNumber(int dailyPlantNumber) {
+    public void setDailyPlantNumber(int dailyPlantNumber) throws IllegalNumberOfPlantsException {
+        if (dailyPlantNumber < 0 || dailyPlantNumber > 100) {
+            throw new IllegalNumberOfPlantsException(width, height);
+        }
         this.dailyPlantNumber = dailyPlantNumber;
     }
 
@@ -143,15 +180,24 @@ public class ConfigBuilder {
         this.mapType = mapType;
     }
 
-    public void setMoveToFeromonProbability(double moveToFeromonProbability) {
+    public void setMoveToFeromonProbability(double moveToFeromonProbability) throws IllegalMoveToFeromonProbabilityException {
+        if (moveToFeromonProbability < 0 || moveToFeromonProbability > 1) {
+            throw new IllegalMoveToFeromonProbabilityException();
+        }
         this.moveToFeromonProbability = moveToFeromonProbability;
     }
 
-    public void setDaysToDecreaseFeromon(int daysToDecreaseFeromon) {
+    public void setDaysToDecreaseFeromon(int daysToDecreaseFeromon) throws IllegalDaysToDecreaseFeromonException {
+        if (daysToDecreaseFeromon < 0) {
+            throw new IllegalDaysToDecreaseFeromonException();
+        }
         this.daysToDecreaseFeromon = daysToDecreaseFeromon;
     }
 
-    public void setSmellRange(int smellRange) {
+    public void setSmellRange(int smellRange) throws IllegalSmellRangeException {
+        if (smellRange < 0 || smellRange > 100) {
+            throw new IllegalSmellRangeException();
+        }
         this.smellRange = smellRange;
     }
 

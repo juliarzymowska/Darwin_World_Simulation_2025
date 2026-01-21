@@ -17,7 +17,7 @@ public record ConfigAnimal(
 ) {
     //  (for testing) Default constructor with preset values
     public ConfigAnimal() {
-        this(1, 100, 100, 50, 50, 20, 1, 3, 8);
+        this(1, 100, 200, 50, 50, 20, 1, 3, 8);
     }
 
     public ConfigAnimal(
