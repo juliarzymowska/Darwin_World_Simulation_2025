@@ -14,6 +14,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.LineChart;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -44,6 +45,10 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     @FXML
     private Label avgLifeSpanLabel;
 
+    @FXML
+    private LineChart<Number, Number> statsChart;
+    private ChartManager chartManager;
+
     private WorldMap worldMap;
     private Simulation simulation;
 
@@ -64,6 +69,7 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     public void setSimulation(Simulation simulation) {
         this.simulation = simulation;
         this.worldMap = simulation.getMap();
+        this.chartManager = new ChartManager(statsChart);
 
         // Initialize map dimensions for drawing
         // Assuming map is a rectangle from (0,0) to (width, height)
@@ -250,6 +256,8 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
 
             // --- CHANGED LOGIC FOR TOP 3 GENOTYPES ---
             updateGenotypeLabel(stats.mostPopularGenotypes());
+
+            chartManager.updateChart(stats);
         });
     }
 
