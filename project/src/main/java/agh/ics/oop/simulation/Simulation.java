@@ -23,13 +23,14 @@ public class Simulation implements Runnable {
     private volatile boolean paused = true;
     private final Object pauseLock = new Object();
 
-    public Simulation(ConfigAnimal configAnimal, ConfigMap configMap, int moveDelay) {
+    public Simulation(ConfigAnimal configAnimal, ConfigMap configMap, int moveDelay, boolean saveToCSV) {
         this.moveDelay = moveDelay;
         this.map = (configMap.mapType() == MapType.EARTH_MAP) ? new EarthMap(configMap) : new FeromonMap(configMap);
         this.statsTracker = new SimulationStatsTracker(map);
         map.addObserver(statsTracker);
-        statsTracker.addObserver(new CSVSaver(map));
-
+        if (saveToCSV) {
+            statsTracker.addObserver(new CSVSaver(map));
+        }
         generateAnimalsOnMap(configAnimal, configMap, map);
     }
 
