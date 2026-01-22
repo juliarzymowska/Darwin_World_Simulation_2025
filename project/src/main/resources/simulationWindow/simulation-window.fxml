@@ -48,6 +48,11 @@
                 <Label fx:id="trackedAgeLabel" text="Age: -"/>
                 <Label fx:id="trackedDeathDayLabel" text="Death Day: -"/>
             </VBox>
+
+            <Separator styleClass="sidebar-separator"/>
+            <Label text="Simulation Log" styleClass="section-title"/>
+            <ListView fx:id="logListView" VBox.vgrow="ALWAYS"
+                      styleClass="log-list"/>
         </VBox>
     </left>
 

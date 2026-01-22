@@ -8,7 +8,7 @@
             fx:controller="agh.ics.oop.simulationGUI.StartWindowPresenter"
             stylesheets="@start-window.css"
             styleClass="main-window"
-            prefWidth="450" prefHeight="550">
+            prefWidth="650" prefHeight="550">
 
     <center>
         <VBox spacing="25"
