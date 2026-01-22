@@ -8,6 +8,7 @@ import agh.ics.oop.model.observators.StatsChangeListener;
 import agh.ics.oop.model.stats.StatsRecord;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.simulation.Simulation;
+import com.sun.javafx.scene.control.SelectedItemsReadOnlyObservableList;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -211,9 +212,18 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
         if (deadAnimals.isEmpty()) return;
 
         int count = deadAnimals.size();
-        String message = String.format("✝ %d animals died.", count);
+        if (count == 0) {
+            String message = "✝ No animals died.";
+            logMessage(message);
+        }
+        if (count == 1) {
+            String message = String.format("✝ %d animal died");
+            logMessage(message);
+        } else {
+            String message = String.format("✝ %d animals died.", count);
+            logMessage(message);
+        }
 
-        logMessage(message);
     }
 
     public void onWindowClose() {
