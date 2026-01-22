@@ -54,6 +54,9 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     @FXML
     private LineChart<Number, Number> statsChart;
     private ChartManager chartManager;
+    private double cellSize;    // Calculated dynamically
+    private double offsetX;     // To center the map horizontally
+    private double offsetY;     // To center the map vertically
 
     private WorldMap worldMap;
     private Simulation simulation;
@@ -61,7 +64,6 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     private Set<Genotype> topGenotypes = new HashSet<>();
     private boolean isPaused = true; // Start paused usually
 
-    private static final double CELL_SIZE = 20.0;
     private double mapWidth;
     private double mapHeight;
 
@@ -70,8 +72,12 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
 
     @FXML
     public void initialize() {
+        mapCanvas.setManaged(false);
         mapContainer.widthProperty().addListener((obs, oldVal, newVal) -> drawMap());
         mapContainer.heightProperty().addListener((obs, oldVal, newVal) -> drawMap());
+
+        mapCanvas.widthProperty().bind(mapContainer.widthProperty());
+        mapCanvas.heightProperty().bind(mapContainer.heightProperty());
 
         // CLICK EVENT
         mapCanvas.setOnMouseClicked(this::handleMapClick);
@@ -97,16 +103,27 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     }
 
     private void handleMapClick(MouseEvent event) {
-        double x = event.getX();
-        double y = event.getY();
+        double mouseX = event.getX();
+        double mouseY = event.getY();
 
-        int col = (int) (x / CELL_SIZE);
-        int row = (int) (mapHeight - (y / CELL_SIZE));
+        // 1. Remove the Offset (Center the click relative to the map)
+        double mapX = mouseX - offsetX;
+        double mapY = mouseY - offsetY;
 
-        // Safety check for bounds
-        if (col < 0 || col >= mapWidth || row < 0 || row >= mapHeight) {
-            return;
+        // 2. Check if click is outside the map area
+        if (mapX < 0 || mapX >= mapWidth * cellSize || mapY < 0 || mapY >= mapHeight * cellSize) {
+            return; // Clicked on the empty padding area
         }
+
+        // 3. Convert to Grid Coordinates
+        int col = (int) (mapX / cellSize);
+
+        // Standard Y-inversion logic for Bottom-Left (0,0) map
+        int row = (int) (mapHeight - (mapY / cellSize));
+
+        // Clamp to valid range (fixes the edge case we discussed earlier)
+        if (row >= mapHeight) row = (int) mapHeight - 1;
+        if (row < 0) row = 0;
 
         Vector2d position = new Vector2d(col, row);
 
@@ -154,8 +171,6 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
         this.mapHeight = worldMap.getCurrentBounds().rightUpMapCorner().getY() + 1;
         this.chartManager = new ChartManager(statsChart);
 
-        mapCanvas.setWidth(mapWidth * CELL_SIZE);
-        mapCanvas.setHeight(mapHeight * CELL_SIZE);
 
         worldMap.addObserver(this);
         simulation.getStats().addObserver(this);
@@ -165,41 +180,42 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     // --- DRAWING LOGIC ---
 
     private void drawMap() {
+        if (worldMap == null) return;
+
         GraphicsContext gc = mapCanvas.getGraphicsContext2D();
-        gc.clearRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
+        double canvasW = mapCanvas.getWidth();
+        double canvasH = mapCanvas.getHeight();
 
-        // 1. Background
+        gc.clearRect(0, 0, canvasW, canvasH);
+
+        double sizeX = canvasW / mapWidth;
+        double sizeY = canvasH / mapHeight;
+        this.cellSize = Math.min(sizeX, sizeY);
+
+        this.offsetX = (canvasW - mapWidth * cellSize) / 2;
+        this.offsetY = (canvasH - mapHeight * cellSize) / 2;
+
         gc.setFill(Color.LIGHTGREEN);
-        gc.fillRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
+        gc.fillRect(offsetX, offsetY, mapWidth * cellSize, mapHeight * cellSize);
 
-        // 2. Preferred Fields (Jungle) - ONLY if toggled
-        if (showPreferredFields) {
-            drawPreferredFields(gc);
-        }
-
-        // 3. Pheromones
+        if (showPreferredFields) drawPreferredFields(gc);
         drawPheromones(gc);
-
-        // 4. Grid
         drawGrid(gc);
-
-        // 5. Objects
         drawObjects(gc);
-
-        autoScaleMap();
     }
 
     private void drawPreferredFields(GraphicsContext gc) {
         EarthMap map = (EarthMap) worldMap;
-        // Darker Green for Jungle
-        gc.setFill(Color.rgb(34, 139, 34, 0.5));
+        gc.setFill(Color.rgb(34, 139, 34, 0.5)); // Jungle Color
 
         for (int x = 0; x < mapWidth; x++) {
             for (int y = 0; y < mapHeight; y++) {
                 if (map.isPreferredPosition(new Vector2d(x, y))) {
-                    double drawX = x * CELL_SIZE;
-                    double drawY = (mapHeight - 1 - y) * CELL_SIZE;
-                    gc.fillRect(drawX, drawY, CELL_SIZE, CELL_SIZE);
+                    // CALCULATE POSITION
+                    double drawX = offsetX + x * cellSize;
+                    double drawY = offsetY + (mapHeight - 1 - y) * cellSize;
+
+                    gc.fillRect(drawX, drawY, cellSize, cellSize);
                 }
             }
         }
@@ -214,26 +230,29 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
 
                 if (obj == null || obj instanceof agh.ics.oop.model.elements.Feromon) continue;
 
-                double drawX = x * CELL_SIZE;
-                double drawY = (mapHeight - 1 - y) * CELL_SIZE;
+                double drawX = offsetX + x * cellSize;
+                double drawY = offsetY + (mapHeight - 1 - y) * cellSize;
 
                 if (obj instanceof Plant) {
                     gc.setFill(Color.DARKGREEN);
-                    gc.fillOval(drawX + 4, drawY + 4, CELL_SIZE - 8, CELL_SIZE - 8);
+                    // Make plants slightly smaller than the cell
+                    gc.fillOval(drawX + cellSize * 0.2, drawY + cellSize * 0.2, cellSize * 0.6, cellSize * 0.6);
                 } else if (obj instanceof Animal animal) {
                     gc.setFill(getEnergyColor(animal));
-                    gc.fillOval(drawX, drawY, CELL_SIZE, CELL_SIZE);
+                    gc.fillOval(drawX, drawY, cellSize, cellSize);
 
+                    // Tracked Ring
                     if (animal.equals(trackedAnimal)) {
                         gc.setStroke(Color.GOLD);
-                        gc.setLineWidth(3);
-                        gc.strokeOval(drawX - 2, drawY - 2, CELL_SIZE + 4, CELL_SIZE + 4);
+                        gc.setLineWidth(cellSize * 0.1); // Dynamic stroke width
+                        gc.strokeOval(drawX, drawY, cellSize, cellSize);
                     }
 
+                    // Dominant Genotype Ring
                     if (showDominantGenotype && topGenotypes.contains(animal.getGenotype())) {
                         gc.setStroke(Color.MAGENTA);
-                        gc.setLineWidth(2);
-                        gc.strokeOval(drawX, drawY, CELL_SIZE, CELL_SIZE);
+                        gc.setLineWidth(cellSize * 0.1);
+                        gc.strokeOval(drawX, drawY, cellSize, cellSize);
                     }
                 }
             }
@@ -246,11 +265,15 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
                 for (int y = 0; y < mapHeight; y++) {
                     int intensity = feromonMap.getSmellValue(new Vector2d(x, y));
                     if (intensity > 0) {
-                        double drawX = x * CELL_SIZE;
-                        double drawY = (mapHeight - 1 - y) * CELL_SIZE;
+                        double drawX = offsetX + (x * cellSize);
+                        double drawY = offsetY + ((mapHeight - 1 - y) * cellSize);
+
+                        // Logic remains the same: cap opacity at 0.6 so we can still see terrain
                         double opacity = Math.min(intensity * 0.15, 0.6);
                         gc.setFill(Color.rgb(0, 0, 255, opacity));
-                        gc.fillRect(drawX, drawY, CELL_SIZE, CELL_SIZE);
+
+                        // Draw rect with dynamic size
+                        gc.fillRect(drawX, drawY, cellSize, cellSize);
                     }
                 }
             }
@@ -354,14 +377,30 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
 
     private void drawGrid(GraphicsContext gc) {
         gc.setStroke(Color.rgb(180, 255, 180));
-        gc.setLineWidth(1);
-        for (int x = 0; x <= mapWidth; x++) gc.strokeLine(x * CELL_SIZE, 0, x * CELL_SIZE, mapHeight * CELL_SIZE);
-        for (int y = 0; y <= mapHeight; y++) gc.strokeLine(0, y * CELL_SIZE, mapWidth * CELL_SIZE, y * CELL_SIZE);
+        // Optional: Make the line thinner if cells are tiny so the map isn't all green
+        gc.setLineWidth(Math.max(0.5, cellSize * 0.05));
+
+        double gridWidth = mapWidth * cellSize;
+        double gridHeight = mapHeight * cellSize;
+
+        // 1. Draw Vertical Lines
+        // Start at offsetX, move right by cellSize each time
+        for (int x = 0; x <= mapWidth; x++) {
+            double xPos = offsetX + (x * cellSize);
+            gc.strokeLine(xPos, offsetY, xPos, offsetY + gridHeight);
+        }
+
+        // 2. Draw Horizontal Lines
+        // Start at offsetY, move down by cellSize each time
+        for (int y = 0; y <= mapHeight; y++) {
+            double yPos = offsetY + (y * cellSize);
+            gc.strokeLine(offsetX, yPos, offsetX + gridWidth, yPos);
+        }
     }
 
     private Color getEnergyColor(Animal animal) {
         int energy = animal.getEnergy();
-        double hue = (double) (energy * 240) /animal.getMaxEnergy();
+        double hue = (double) (energy * 240) / animal.getMaxEnergy();
         return Color.hsb(hue, 1, 1);
     }
 
