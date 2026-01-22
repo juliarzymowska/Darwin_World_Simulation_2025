@@ -107,7 +107,7 @@ public class AnimalTest {
 
         animal.gainEnergy();
 
-        assertEquals(config.maxEnergy(), animal.getEnergy(), "Energia nie powinna przekroczyć maxEnergy");
+        assertEquals(config.maxEnergy(), animal.getEnergy(), "Energy should not exceed maxEnergy after eating");
     }
 
     @Test
@@ -131,7 +131,7 @@ public class AnimalTest {
 
         int result = a1.compareTo(a2);
 
-        assertNotEquals(0, result, "Nawet przy tych samych statystykach, porównanie nie powinno zwracać 0 (tie-break)");
+        assertNotEquals(0, result, "Same energy and age should not result in equality due to unique IDs");
     }
 
 }

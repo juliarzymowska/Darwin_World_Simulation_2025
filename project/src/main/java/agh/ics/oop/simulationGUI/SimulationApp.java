@@ -8,6 +8,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/*
+ * Class for launching the JavaFX application
+ * */
 public class SimulationApp extends Application {
 
     @Override
@@ -26,12 +29,8 @@ public class SimulationApp extends Application {
     }
 
     @Override
-    public void stop() throws Exception {
-        // This method is called when the application is stopped
-        System.out.println("Shutting down application...");
-
+    public void stop() {
         // Force kill all background threads (simulations)
-        // Without this, your IntelliJ might show the app as still "Running" after you close the window
         System.exit(0);
     }
 }

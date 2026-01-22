@@ -1,7 +1,5 @@
 package agh.ics.oop.model.elements;
 
-import agh.ics.oop.configuration.ConfigAnimal;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -10,9 +8,10 @@ import java.util.stream.IntStream;
 
 
 public class Genotype {
-    protected List<Integer> genotype = new ArrayList<>();
-    protected int activeGeneIndex;
+    private List<Integer> genotype = new ArrayList<>();
+    private int activeGeneIndex;
     private final static Random random = new Random();
+    private static final int MAX_GENE_VALUE = 8;
 
     /*
      * Constructor of Genotype class.
@@ -22,7 +21,7 @@ public class Genotype {
      * */
     public Genotype(int genotypeLength) {
         for (int i = 0; i < genotypeLength; i++) {
-            this.genotype.add(random.nextInt(8));
+            this.genotype.add(random.nextInt(MAX_GENE_VALUE));
         }
         activeGeneIndex = random.nextInt(genotypeLength);
     }
@@ -114,10 +113,14 @@ public class Genotype {
         for (int i = 0; i < mutationsNumber; i++) {
             int indexToMutate = indexes.get(i);
             int currentGene = genotype.get(indexToMutate);
-            int mutatedGene = (currentGene + random.nextInt(1, 8)) % 8;
+            int mutatedGene = (currentGene + random.nextInt(1, MAX_GENE_VALUE)) % MAX_GENE_VALUE;
             genotype.set(indexToMutate, mutatedGene);
         }
     }
+
+    /*
+     * OTHER
+     * */
 
     @Override
     public boolean equals(Object o) {

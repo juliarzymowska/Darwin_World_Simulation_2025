@@ -4,6 +4,11 @@ import java.util.Objects;
 
 import static java.lang.Math.abs;
 
+/*
+ * Class representing a 2D vector with integer coordinates.
+ * It provides methods for vector operations such as addition, subtraction,
+ * comparison, and calculating the Manhattan distance.
+ * */
 public class Vector2d {
     private final int x;
     private final int y;
@@ -54,11 +59,11 @@ public class Vector2d {
         return new Vector2d(-x, -y);
     }
 
-    public int manhattanMetricDistance(Vector2d other){
+    public int manhattanMetricDistance(Vector2d other) {
         return abs(this.x - other.getX()) + abs(this.y - other.getY());
     }
 
-    public MapDirection toMapDirection(){
+    public MapDirection toMapDirection() {
         if (this.x == 0 && this.y == 1) return MapDirection.NORTH;
         if (this.x == 0 && this.y == -1) return MapDirection.SOUTH;
         if (this.x == 1 && this.y == 0) return MapDirection.EAST;

@@ -2,7 +2,13 @@ package agh.ics.oop.model.elements;
 
 import agh.ics.oop.model.util.Vector2d;
 
-public class Feromon implements WorldElement, Comparable<Feromon>{
+/*
+ * Class representing a feromon in the world.
+ * Feromons have a position, a value indicating their strength, and a day counter.
+ * They can increase or decrease their value and day count.
+ * Feromons can be compared based on their value.
+ * */
+public class Feromon implements WorldElement, Comparable<Feromon> {
     private final Vector2d feromonPosition;
     private int feromonValue;
     private int feromonDay;
@@ -13,10 +19,10 @@ public class Feromon implements WorldElement, Comparable<Feromon>{
         this.feromonDay = 1;
     }
 
-    @Override
-    public String toString() {
-        return "~";
-    }
+//    @Override
+//    public String toString() {
+//        return "~";
+//    }
 
     @Override
     public Vector2d getCurrentPosition() {
@@ -27,19 +33,19 @@ public class Feromon implements WorldElement, Comparable<Feromon>{
         this.feromonValue = feromonValue - 1;
     }
 
-    public void increaseFeromonValue(){
+    public void increaseFeromonValue() {
         this.feromonValue = feromonValue + 1;
     }
 
-    public void increaseFeromonDay(){
+    public void increaseFeromonDay() {
         this.feromonDay = feromonDay + 1;
     }
 
-    public int getFeromonDay(){
+    public int getFeromonDay() {
         return feromonDay;
     }
 
-    public int getFeromonValue(){
+    public int getFeromonValue() {
         return feromonValue;
     }
 

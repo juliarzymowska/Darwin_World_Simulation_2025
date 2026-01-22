@@ -13,6 +13,9 @@ import agh.ics.oop.model.util.Vector2d;
 
 import java.util.List;
 
+/*
+ * Class Simulation is responsible for running the main simulation loop.
+ * */
 public class Simulation implements Runnable {
     private final WorldMap map;
     private final SimulationStatsTracker statsTracker;
@@ -20,7 +23,7 @@ public class Simulation implements Runnable {
 
     private volatile boolean running = false;
     private volatile boolean paused = true;
-    private final Object pauseLock = new Object();
+    private final Object pauseLock = new Object(); // for pausing and resuming, etc
 
     public Simulation(ConfigAnimal configAnimal, ConfigMap configMap, int moveDelay, boolean saveToCSV) {
         this.moveDelay = moveDelay;
@@ -39,7 +42,6 @@ public class Simulation implements Runnable {
         int currentDay = 0;
 
         while (running) {
-            // Handle Pause
             synchronized (pauseLock) {
                 while (paused && running) {
                     try {
@@ -51,7 +53,6 @@ public class Simulation implements Runnable {
                 }
             }
 
-            // Logic
             currentDay++;
             performDayCycle(currentDay);
 
@@ -86,30 +87,6 @@ public class Simulation implements Runnable {
         }
     }
 
-    public void pause() {
-        paused = true;
-    }
-
-    public void resume() {
-        synchronized (pauseLock) {
-            paused = false;
-            pauseLock.notifyAll();
-        }
-    }
-
-    public void shutDown() {
-        running = false;
-        resume();
-    }
-
-    public WorldMap getMap() {
-        return map;
-    }
-
-    public SimulationStatsTracker getStats() {
-        return statsTracker;
-    }
-
     private void generateAnimalsOnMap(ConfigAnimal configAnimal, ConfigMap configMap, WorldMap map) {
         for (int i = 0; i < configAnimal.initialAnimalCount(); i++) {
             Vector2d position = new Vector2d(
@@ -124,10 +101,44 @@ public class Simulation implements Runnable {
         }
     }
 
+    /*
+     * Getters
+     * */
+
+    public WorldMap getMap() {
+        return map;
+    }
+
+    public SimulationStatsTracker getStats() {
+        return statsTracker;
+    }
+
+    /*
+     * For simulation control (pause, resume, stop)
+     * */
+
+    public void pause() {
+        paused = true;
+    }
+
+    public void resume() {
+        synchronized (pauseLock) {
+            paused = false;
+            pauseLock.notifyAll();
+        }
+    }
+
     public void stop() {
         if (running) {
             running = false;
             resume();
         }
     }
+
+
+    public void shutDown() {
+        running = false;
+        resume();
+    }
+
 }

@@ -7,6 +7,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 
+/*
+ * Class responsible for managing and executing multiple simulations concurrently.
+ * */
 public class SimulationEngine {
     private final ForkJoinPool executorService = ForkJoinPool.commonPool();
     private final List<Simulation> simulationList = new ArrayList<>();
