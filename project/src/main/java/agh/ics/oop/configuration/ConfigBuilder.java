@@ -29,6 +29,8 @@ public class ConfigBuilder {
     private int daysToDecreaseFeromon;
     private int smellRange;
 
+    private boolean saveToCSV = false;
+
     public ConfigBuilder builder() {
         return new ConfigBuilder();
     }
@@ -202,6 +204,10 @@ public class ConfigBuilder {
         this.smellRange = smellRange;
     }
 
+    public void setSaveToCSV(boolean saveToCSV) {
+        this.saveToCSV = saveToCSV;
+    }
+
     public int getInitialAnimalCount() {
         return initialAnimalCount;
     }
@@ -276,5 +282,9 @@ public class ConfigBuilder {
 
     public void setMoveDelay(int moveDelay) {
         this.moveDelay = moveDelay;
+    }
+
+    public boolean isSaveToCSV() {
+        return saveToCSV;
     }
 }

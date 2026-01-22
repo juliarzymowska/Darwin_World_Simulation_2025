@@ -114,7 +114,7 @@ public class StartWindowPresenter {
             ConfigMap configMap = builder.buildMapConfig();
 
             // 2. Create the Simulation
-            Simulation simulation = new Simulation(configAnimal, configMap, builder.getMoveDelay());
+            Simulation simulation = new Simulation(configAnimal, configMap, builder.getMoveDelay(), builder.isSaveToCSV());
 
             // 3. Load the Simulation Window FXML
             FXMLLoader loader = new FXMLLoader(

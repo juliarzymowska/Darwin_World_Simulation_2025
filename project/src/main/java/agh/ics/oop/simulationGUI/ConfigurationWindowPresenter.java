@@ -47,6 +47,8 @@ public class ConfigurationWindowPresenter {
     private Spinner<Integer> smellRangeSpinner;
     @FXML
     private Spinner<Integer> initialAnimalCountSpinner;
+    @FXML
+    private CheckBox saveToCSVCheckBox;
 
     @FXML
     private Spinner<Integer> initialEnergySpinner;
@@ -128,6 +130,8 @@ public class ConfigurationWindowPresenter {
 
         mapTypeChoiceBox.getItems().setAll(MapType.values());
         mapTypeChoiceBox.setValue(builder.getMapType());
+
+        saveToCSVCheckBox.setSelected(builder.isSaveToCSV());
     }
 
     public void setStartSimulation(Consumer<ConfigBuilder> callback) {
@@ -198,6 +202,7 @@ public class ConfigurationWindowPresenter {
             configBuilder.setDaysToDecreaseFeromon(daysToDecreaseFeromonSpinner.getValue());
             configBuilder.setSmellRange(smellRangeSpinner.getValue());
             configBuilder.setMoveDelay(moveDelaySpinner.getValue());
+            configBuilder.setSaveToCSV(saveToCSVCheckBox.isSelected());
 
             return true; // Success!
 
