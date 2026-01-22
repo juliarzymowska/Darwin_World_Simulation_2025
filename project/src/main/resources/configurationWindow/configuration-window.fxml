@@ -126,8 +126,6 @@
                         <Label text="Export Stats to CSV:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
                         <CheckBox fx:id="saveToCSVCheckBox" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-                        <Label text="Enable Debug Logs:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                        <CheckBox fx:id="debugModeCheckBox" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
                     </GridPane>
                 </VBox>
 

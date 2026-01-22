@@ -26,7 +26,7 @@ public class ConfigurationWindowPresenter {
     private Spinner<Double> moveToFeromonProbabilitySpinner;
 
     @FXML
-    private CheckBox saveToCSVCheckBox, debugModeCheckBox;
+    private CheckBox saveToCSVCheckBox;
 
     @FXML
     private Button closeButton;
@@ -150,7 +150,6 @@ public class ConfigurationWindowPresenter {
 
     private boolean updateConfigFromUI() {
         try {
-            configBuilder.setDebugMode(debugModeCheckBox.isSelected());
             configBuilder.setMaxEnergy(maxEnergySpinner.getValue());
             configBuilder.setInitialAnimalCount(initialAnimalCountSpinner.getValue());
             configBuilder.setInitialEnergy(initialEnergySpinner.getValue());

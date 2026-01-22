@@ -9,7 +9,6 @@ import agh.ics.oop.model.map.MapType;
  * */
 public class ConfigBuilder {
     private int moveDelay = 300; // Default 300ms
-    private boolean debugMode = false;
     // Animal
     private int initialAnimalCount;
     private int initialEnergy;
@@ -208,9 +207,6 @@ public class ConfigBuilder {
         this.saveToCSV = saveToCSV;
     }
 
-    public void setDebugMode(boolean debugMode) {
-        this.debugMode = debugMode;
-    }
 
     /*
      * Getters
@@ -294,9 +290,5 @@ public class ConfigBuilder {
 
     public boolean isSaveToCSV() {
         return saveToCSV;
-    }
-
-    public boolean isDebugMode() {
-        return debugMode;
     }
 }
