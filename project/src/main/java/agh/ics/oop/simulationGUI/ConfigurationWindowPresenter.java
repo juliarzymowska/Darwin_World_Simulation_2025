@@ -90,7 +90,7 @@ public class ConfigurationWindowPresenter {
         configureDoubleSpinner(moveToFeromonProbabilitySpinner);
 
         moveDelaySpinner.setValueFactory(
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 2000, builder.getMoveDelay(), 100)
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(100, 2000, builder.getMoveDelay(), 100)
         );
         configureSpinner(moveDelaySpinner);
 
