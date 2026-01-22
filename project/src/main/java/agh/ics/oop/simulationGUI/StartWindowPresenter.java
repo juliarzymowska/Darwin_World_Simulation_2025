@@ -4,7 +4,7 @@ import agh.ics.oop.configuration.ConfigAnimal;
 import agh.ics.oop.configuration.ConfigBuilder;
 import agh.ics.oop.configuration.ConfigLoadFromJSON;
 import agh.ics.oop.configuration.ConfigMap;
-import agh.ics.oop.model.exception.*;
+import agh.ics.oop.exception.ConfigurationException;
 import agh.ics.oop.simulation.Simulation;
 import agh.ics.oop.simulation.SimulationEngine;
 import javafx.fxml.FXML;

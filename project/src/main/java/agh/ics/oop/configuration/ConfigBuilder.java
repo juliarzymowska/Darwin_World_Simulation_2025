@@ -1,6 +1,6 @@
 package agh.ics.oop.configuration;
 
-import agh.ics.oop.model.exception.*;
+import agh.ics.oop.exception.*;
 import agh.ics.oop.model.map.MapType;
 
 /*

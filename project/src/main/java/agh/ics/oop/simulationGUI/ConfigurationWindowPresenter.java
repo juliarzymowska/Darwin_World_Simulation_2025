@@ -1,7 +1,7 @@
 package agh.ics.oop.simulationGUI;
 
 import agh.ics.oop.configuration.ConfigBuilder;
-import agh.ics.oop.model.exception.ConfigurationException;
+import agh.ics.oop.exception.ConfigurationException;
 import agh.ics.oop.model.map.MapType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

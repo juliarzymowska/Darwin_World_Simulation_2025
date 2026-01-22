@@ -1,4 +1,4 @@
-package agh.ics.oop.model.exception;
+package agh.ics.oop.exception;
 
 public class IllegalSmellRangeException extends ConfigurationException {
     public IllegalSmellRangeException() {

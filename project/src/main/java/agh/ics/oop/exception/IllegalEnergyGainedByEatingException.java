@@ -1,4 +1,4 @@
-package agh.ics.oop.model.exception;
+package agh.ics.oop.exception;
 
 public class IllegalEnergyGainedByEatingException extends ConfigurationException {
     public IllegalEnergyGainedByEatingException(int maxEnergy) {

@@ -1,4 +1,4 @@
-package agh.ics.oop.model.exception;
+package agh.ics.oop.exception;
 
 public class IllegalGenotypeLengthException extends ConfigurationException {
     public IllegalGenotypeLengthException() {
