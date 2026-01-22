@@ -11,8 +11,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
+/*
+ * Class for managing map elements (animals and plants).
+ * (should be) thread-safe
+ * */
 public class MapElementsManager {
-    // Thread-safe map for animal lists (Key: Position, Value: Thread-safe List of Animals)
+    // Thread-safe map for animal lists
     private final Map<Vector2d, List<Animal>> animals = new ConcurrentHashMap<>();
 
     // Thread-safe map for plants
@@ -25,7 +29,7 @@ public class MapElementsManager {
     public void addPlants(int n, int x, int y) {
         NormalPositionGenerator randomPositionGenerator = new NormalPositionGenerator(n, x, y);
         for (Vector2d v : randomPositionGenerator) {
-            // putIfAbsent is atomic and thread-safe
+            // putIfAbsent is atomic and thread-safe : )
             plants.putIfAbsent(v, new Plant(v));
         }
     }
@@ -39,12 +43,10 @@ public class MapElementsManager {
     }
 
     public List<Plant> getPlants() {
-        // Returns a safe snapshot of the values
         return new ArrayList<>(plants.values());
     }
 
     public List<Vector2d> getPositionsWithAnimalsAndPlants() {
-        // Thread-safe iteration over keys
         List<Vector2d> result = new ArrayList<>();
         for (Vector2d pos : animals.keySet()) {
             if (plants.containsKey(pos)) {
@@ -60,7 +62,7 @@ public class MapElementsManager {
 
     public void placeAnimal(Animal animal) {
         Vector2d position = animal.getCurrentPosition();
-        // Atomically get the list or create a new CopyOnWriteArrayList (safe for iteration)
+        // computeIfAbsent to handle concurrent additions
         animals.computeIfAbsent(position, k -> new CopyOnWriteArrayList<>()).add(animal);
     }
 
@@ -71,7 +73,6 @@ public class MapElementsManager {
         List<Animal> cellAnimals = animals.get(position);
         if (cellAnimals != null) {
             cellAnimals.remove(animal);
-            // Clean up empty keys (optional, but good for memory)
             if (cellAnimals.isEmpty()) {
                 animals.remove(position);
             }
@@ -81,13 +82,11 @@ public class MapElementsManager {
     public Optional<Animal> reproduceAtPosition(Vector2d position, int currentDay) {
         List<Animal> animalsAtPosition = animals.get(position);
 
-        // Defensive check
         if (animalsAtPosition == null || animalsAtPosition.size() < 2) {
             return Optional.empty();
         }
 
-        // Create a local copy to sort/filter safely without modifying the map
-        List<Animal> sortedAnimals = new ArrayList<>(animalsAtPosition);
+        List<Animal> sortedAnimals = new ArrayList<>(animalsAtPosition); // local copy to sort
 
         List<Animal> eligibleAnimals = sortedAnimals.stream()
                 .filter(Animal::validateReproduction)
@@ -124,14 +123,12 @@ public class MapElementsManager {
 
     public Optional<List<Animal>> animalAt(Vector2d position) {
         List<Animal> list = animals.get(position);
-        // Return a copy to ensure caller doesn't hit concurrency issues later
-        return list == null ? Optional.empty() : Optional.of(new ArrayList<>(list));
+        return list == null ? Optional.empty() : Optional.of(new ArrayList<>(list)); // return a copy
     }
 
     public List<Vector2d> getPositionsWithMultipleAnimals() {
         List<Vector2d> result = new ArrayList<>();
         for (Map.Entry<Vector2d, List<Animal>> entry : animals.entrySet()) {
-            // Safe to check size on CopyOnWriteArrayList
             if (entry.getValue().size() >= 2) {
                 result.add(entry.getKey());
             }
@@ -140,7 +137,6 @@ public class MapElementsManager {
     }
 
     public List<Animal> getAnimals() {
-        // Safely collect all animals into a new list
         return animals.values().stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
@@ -153,7 +149,6 @@ public class MapElementsManager {
     public WorldElement objectAt(Vector2d position) {
         List<Animal> list = animals.get(position);
         if (list != null && !list.isEmpty()) {
-            // CopyOnWriteArrayList makes this get(0) safe even if simulation is adding animals
             return list.get(0);
         }
         return plants.get(position);

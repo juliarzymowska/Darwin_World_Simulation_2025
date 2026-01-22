@@ -13,12 +13,10 @@ import java.util.*;
 import static agh.ics.oop.model.util.MapDirection.directionOnBorder;
 
 public class EarthMap implements WorldMap {
-
     protected final Vector2d leftDownMapCorner = new Vector2d(0, 0);
     protected final Vector2d rightUpMapCorner;
     private final int dailyPlantNumber;
     private final MapElementsManager elementsManager = new MapElementsManager();
-    protected final MapVisualizer vis = new MapVisualizer(this);
     private final List<MapChangeListener> observers = new ArrayList<>();
     private final UUID id = UUID.randomUUID();
 
@@ -109,22 +107,6 @@ public class EarthMap implements WorldMap {
         notifyAnimalsRemoved(deadAnimals);
     }
 
-    /**
-     * Retrieves a specific animal from a given position for tracking purposes.
-     * Prioritizes the strongest animal or simply the first one found.
-     */
-    public Animal getAnimalAt(Vector2d position) {
-        // We access the elementsManager directly to get the list of animals
-        Optional<List<Animal>> animals = elementsManager.animalAt(position);
-
-        if (animals.isPresent() && !animals.get().isEmpty()) {
-            // Return the first animal found (usually the strongest if the list is sorted,
-            // or just the first one added if not).
-            return animals.get().get(0);
-        }
-
-        return null; // No animal found here
-    }
 
     /*
      * MOVEMENT
@@ -149,12 +131,12 @@ public class EarthMap implements WorldMap {
         MapDirection nextOrientation = animal.getCurrentOrientation().turn(currentGene);
         Vector2d targetPosition = currentPosition.add(nextOrientation.toUnitVector());
 
-        // 1. Obsługa BIEGUNÓW (Północ/Południe)
+        // NORTH / SOUTH handling
         if (targetPosition.getY() > rightUpMapCorner.getY() || targetPosition.getY() < leftDownMapCorner.getY()) {
             return positionOnBorder(currentPosition);
         }
 
-        // 2. Obsługa WSCHÓD/ZACHÓD
+        // EAST / WEST handling
         int newX = targetPosition.getX();
         int minX = leftDownMapCorner.getX();
         int maxX = rightUpMapCorner.getX();
@@ -198,18 +180,33 @@ public class EarthMap implements WorldMap {
     }
 
     /*
-     * OTHERS
+     * For simulation window
      * */
 
+    //   returns the first animal at the given position, or null if none exist, for clicking to track animal
+    public Animal getAnimalAt(Vector2d position) {
+        Optional<List<Animal>> animals = elementsManager.animalAt(position);
+
+        if (animals.isPresent() && !animals.get().isEmpty()) {
+            return animals.get().get(0); // return the first animal found
+        }
+
+        return null; // No animal found here
+    }
+
     public boolean isPreferredPosition(Vector2d position) {
+        // it's always 20% of the map height in the middle - jungle
         int height = rightUpMapCorner.getY() + 1;
-        // Example logic: Jungle takes up ~20% of the map in the middle
         int jungleHeight = (int) (height * 0.2);
         int jungleStartY = (height - jungleHeight) / 2;
         int jungleEndY = jungleStartY + jungleHeight;
 
         return position.getY() >= jungleStartY && position.getY() <= jungleEndY;
     }
+
+    /*
+     * Getters
+     * */
 
     @Override
     public Boundary getCurrentBounds() {
@@ -220,6 +217,10 @@ public class EarthMap implements WorldMap {
     public UUID getId() {
         return id;
     }
+
+    /*
+     * Observers
+     * */
 
     @Override
     public void removeObserver(MapChangeListener observer) {
@@ -244,19 +245,15 @@ public class EarthMap implements WorldMap {
         }
     }
 
-    // for console display purposes (MapVisualizer)
+    /*
+     * Others
+     * */
+
     public WorldElement objectAt(Vector2d position) {
         return elementsManager.objectAt(position);
     }
 
-    // same as above
     public boolean isOccupied(Vector2d position) {
         return objectAt(position) != null;
-    }
-
-    @Override
-    public String toString() {
-        Boundary currentBounds = this.getCurrentBounds();
-        return vis.draw(currentBounds.leftDownMapCorner(), currentBounds.rightUpMapCorner());
     }
 }

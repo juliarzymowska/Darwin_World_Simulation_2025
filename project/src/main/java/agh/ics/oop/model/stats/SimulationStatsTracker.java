@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/*
+ * Class for tracking and reporting simulation statistics.
+ * */
 public class SimulationStatsTracker implements MapChangeListener {
     WorldMap map;
     MapElementsManager elementsManager;

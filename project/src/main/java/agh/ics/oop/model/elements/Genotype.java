@@ -1,7 +1,5 @@
 package agh.ics.oop.model.elements;
 
-import agh.ics.oop.configuration.ConfigAnimal;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -118,6 +116,10 @@ public class Genotype {
             genotype.set(indexToMutate, mutatedGene);
         }
     }
+
+    /*
+     * OTHER
+     * */
 
     @Override
     public boolean equals(Object o) {

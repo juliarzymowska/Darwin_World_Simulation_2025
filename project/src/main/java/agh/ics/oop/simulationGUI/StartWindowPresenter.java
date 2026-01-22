@@ -22,11 +22,7 @@ import java.io.IOException;
 
 public class StartWindowPresenter {
     @FXML
-    private Button closeButton;
-    @FXML
-    private Button loadFromJSON;
-    @FXML
-    private Button startButton;
+    private Button closeButton, loadFromJSON, startButton;
 
     private final SimulationEngine simulationEngine = new SimulationEngine();
 

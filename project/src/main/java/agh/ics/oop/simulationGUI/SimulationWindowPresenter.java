@@ -18,6 +18,10 @@ import javafx.scene.chart.LineChart;
 
 import java.util.List;
 
+/*
+ * Class for controlling the simulation window GUI
+ * It handles user interactions, updates the map rendering, and displays statistics.
+ * */
 public class SimulationWindowPresenter implements MapChangeListener, StatsChangeListener {
     @FXML
     private Canvas mapCanvas;

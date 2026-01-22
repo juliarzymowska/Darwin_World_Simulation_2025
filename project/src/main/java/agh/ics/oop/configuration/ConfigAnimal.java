@@ -15,43 +15,8 @@ public record ConfigAnimal(
         int maxMutations,
         int genotypeLength
 ) {
-    //  (for testing) Default constructor with preset values
+    //  Default constructor with preset values
     public ConfigAnimal() {
         this(1, 100, 200, 50, 50, 20, 1, 3, 8);
-    }
-
-    public ConfigAnimal(
-            int initialAnimalCount,
-            int initialEnergy,
-            int maxEnergy,
-            int energyToReproduce,
-            int energyConsumedByMove,
-            int energyGainedByEating,
-            int minMutations,
-            int maxMutations,
-            int genotypeLength
-    ) {
-        this.initialAnimalCount = initialAnimalCount;
-        this.initialEnergy = initialEnergy;
-        this.maxEnergy = maxEnergy;
-        this.energyToReproduce = energyToReproduce;
-        this.energyConsumedByMove = energyConsumedByMove;
-        this.energyGainedByEating = energyGainedByEating;
-        this.minMutations = minMutations;
-        this.maxMutations = maxMutations;
-        this.genotypeLength = genotypeLength;
-    }
-
-    //for tests
-    public ConfigAnimal withInitialEnergy(int energy) {
-        return new ConfigAnimal(initialAnimalCount, energy, maxEnergy, energyToReproduce, energyConsumedByMove, energyGainedByEating, minMutations, maxMutations, genotypeLength);
-    }
-
-    public ConfigAnimal withEnergyToReproduce(int energy) {
-        return new ConfigAnimal(initialAnimalCount, initialEnergy, maxEnergy, energy, energyConsumedByMove, energyGainedByEating, minMutations, maxMutations, genotypeLength);
-    }
-
-    public ConfigAnimal withMoveCost(int cost) {
-        return new ConfigAnimal(initialAnimalCount, initialEnergy, maxEnergy, energyToReproduce, cost, energyGainedByEating, minMutations, maxMutations, genotypeLength);
     }
 }

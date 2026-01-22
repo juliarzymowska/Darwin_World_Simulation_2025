@@ -31,10 +31,6 @@ public class ConfigBuilder {
 
     private boolean saveToCSV = false;
 
-    public ConfigBuilder builder() {
-        return new ConfigBuilder();
-    }
-
     public ConfigAnimal buildAnimalConfig() {
         return new ConfigAnimal(
                 initialAnimalCount,
@@ -89,7 +85,10 @@ public class ConfigBuilder {
         return builder;
     }
 
-    // Setters for Animal config
+    /*
+     * Setters
+     * */
+
     public void setInitialAnimalCount(int initialAnimalCount) throws IllegalAnimalCountException {
         if (initialAnimalCount <= 0 || initialAnimalCount > 200) {
             throw new IllegalAnimalCountException(initialAnimalCount, 200);
@@ -207,6 +206,10 @@ public class ConfigBuilder {
     public void setSaveToCSV(boolean saveToCSV) {
         this.saveToCSV = saveToCSV;
     }
+
+    /*
+     * Getters
+     * */
 
     public int getInitialAnimalCount() {
         return initialAnimalCount;

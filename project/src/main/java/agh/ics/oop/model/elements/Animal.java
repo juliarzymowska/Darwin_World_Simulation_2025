@@ -121,11 +121,11 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return maxEnergy;
     }
 
-    public Animal getMother(){
+    public Animal getMother() {
         return mother;
     }
 
-    public Animal getFather(){
+    public Animal getFather() {
         return father;
     }
 
@@ -157,22 +157,18 @@ public class Animal implements WorldElement, Comparable<Animal> {
     }
 
     // visual representation of the animal based on its orientation
-    @Override
-    public String toString() {
-        return switch (currentOrientation) {
-            case NORTH -> "⭡";
-            case NORTH_EAST -> "↗";
-            case EAST -> "⭢";
-            case SOUTH_EAST -> "↘";
-            case SOUTH -> "⭣";
-            case SOUTH_WEST -> "↙";
-            case WEST -> "⭠";
-            case NORTH_WEST -> "↖";
-        };
-    }
-// not needed now
-//    public boolean isAt(Vector2d position) {
-//        return currentPosition.equals(position);
+//    @Override
+//    public String toString() {
+//        return switch (currentOrientation) {
+//            case NORTH -> "⭡";
+//            case NORTH_EAST -> "↗";
+//            case EAST -> "⭢";
+//            case SOUTH_EAST -> "↘";
+//            case SOUTH -> "⭣";
+//            case SOUTH_WEST -> "↙";
+//            case WEST -> "⭠";
+//            case NORTH_WEST -> "↖";
+//        };
 //    }
     /*
      * Methods
@@ -184,8 +180,8 @@ public class Animal implements WorldElement, Comparable<Animal> {
         }
     }
 
-    public void updateNumberOfDescendents(){
-        if(isAlive){
+    public void updateNumberOfDescendents() {
+        if (isAlive) {
             this.numberOfDescendants++;
         }
     }
@@ -208,7 +204,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     // for eating
     public void gainEnergy() {
-        this.currentEnergy = min(this.currentEnergy  +config.energyGainedByEating(),maxEnergy);
+        this.currentEnergy = min(this.currentEnergy + config.energyGainedByEating(), maxEnergy);
         numberOfEatenPlants += 1;
     }
 

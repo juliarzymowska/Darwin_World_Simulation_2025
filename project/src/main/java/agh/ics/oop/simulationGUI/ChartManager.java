@@ -6,10 +6,14 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.NumberAxis;
 
+/*
+ * Class for managing and updating a line chart that displays various statistics over time.
+ * It allows setting the observed statistic and updating the chart with new data points.
+ * */
 public class ChartManager {
     private static final int MAX_DATA_POINTS = 100;
     private static final String X_AXIS_LABEL = "Day";
-    private static final String SERIES_STYLE = "-fx-stroke: #ff7f0e; -fx-stroke-width: 2px;";
+    private static final String SERIES_STYLE = "-fx-stroke: #59c77e; -fx-stroke-width: 2px;";
     private String selectedStat = "Animal Count";
 
     private final LineChart<Number, Number> chart;
