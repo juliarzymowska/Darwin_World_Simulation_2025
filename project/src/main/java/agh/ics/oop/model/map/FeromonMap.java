@@ -97,6 +97,14 @@ public class FeromonMap extends EarthMap {
         }
     }
 
+    public Map<Vector2d, Integer> getActiveFeromons() {
+        Map<Vector2d, Integer> activeFeromons = new HashMap<>();
+        for (Feromon feromon : feromons.values()) {
+            activeFeromons.put(feromon.getCurrentPosition(), feromon.getFeromonValue());
+        }
+        return activeFeromons;
+    }
+
     @Override
     public WorldElement objectAt(Vector2d pos) {
         if (super.objectAt(pos) != null) {

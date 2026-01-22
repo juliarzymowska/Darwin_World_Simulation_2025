@@ -27,6 +27,7 @@ import javafx.scene.control.ChoiceBox;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class SimulationWindowPresenter implements MapChangeListener, StatsChangeListener {
@@ -67,6 +68,8 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     private double mapWidth;
     private double mapHeight;
 
+    private final Color[] pheromoneColors = new Color[20];
+
     private boolean showPreferredFields = false;
     private boolean showDominantGenotype = false;
 
@@ -82,9 +85,13 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
         // CLICK EVENT
         mapCanvas.setOnMouseClicked(this::handleMapClick);
 
+        for (int i = 0; i < 20; i++) {
+            double opacity = Math.min(i * 0.15, 0.6);
+            pheromoneColors[i] = Color.rgb(0, 0, 255, opacity);
+        }
+
         stopTrackingButton.setDisable(true);
 
-        // ChoiceBox for statistic
         statChoiceBox.getItems().addAll(
                 "Animal Count",
                 "Plant Count",
@@ -106,22 +113,17 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
         double mouseX = event.getX();
         double mouseY = event.getY();
 
-        // 1. Remove the Offset (Center the click relative to the map)
         double mapX = mouseX - offsetX;
         double mapY = mouseY - offsetY;
 
-        // 2. Check if click is outside the map area
         if (mapX < 0 || mapX >= mapWidth * cellSize || mapY < 0 || mapY >= mapHeight * cellSize) {
-            return; // Clicked on the empty padding area
+            return;
         }
 
-        // 3. Convert to Grid Coordinates
         int col = (int) (mapX / cellSize);
 
-        // Standard Y-inversion logic for Bottom-Left (0,0) map
         int row = (int) (mapHeight - (mapY / cellSize));
 
-        // Clamp to valid range (fixes the edge case we discussed earlier)
         if (row >= mapHeight) row = (int) mapHeight - 1;
         if (row < 0) row = 0;
 
@@ -222,38 +224,41 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     }
 
     private void drawObjects(GraphicsContext gc) {
-        EarthMap map = (EarthMap) worldMap;
-        for (int x = 0; x < mapWidth; x++) {
-            for (int y = 0; y < mapHeight; y++) {
-                Vector2d pos = new Vector2d(x, y);
-                WorldElement obj = map.objectAt(pos);
+        if (!(worldMap instanceof EarthMap map)) return;
 
-                if (obj == null || obj instanceof agh.ics.oop.model.elements.Feromon) continue;
+        gc.setFill(Color.DARKGREEN);
+        for (Plant plant : map.getElementsManager().getPlants()) {
+            Vector2d pos = plant.getCurrentPosition();
 
-                double drawX = offsetX + x * cellSize;
-                double drawY = offsetY + (mapHeight - 1 - y) * cellSize;
+            if (pos.getX() < mapWidth && pos.getY() < mapHeight) {
+                double drawX = offsetX + (pos.getX() * cellSize);
+                double drawY = offsetY + ((mapHeight - 1 - pos.getY()) * cellSize);
 
-                if (obj instanceof Plant) {
-                    gc.setFill(Color.DARKGREEN);
-                    // Make plants slightly smaller than the cell
-                    gc.fillOval(drawX + cellSize * 0.2, drawY + cellSize * 0.2, cellSize * 0.6, cellSize * 0.6);
-                } else if (obj instanceof Animal animal) {
-                    gc.setFill(getEnergyColor(animal));
-                    gc.fillOval(drawX, drawY, cellSize, cellSize);
+                gc.fillOval(drawX + cellSize * 0.2, drawY + cellSize * 0.2, cellSize * 0.6, cellSize * 0.6);
+            }
+        }
 
-                    // Tracked Ring
-                    if (animal.equals(trackedAnimal)) {
-                        gc.setStroke(Color.GOLD);
-                        gc.setLineWidth(cellSize * 0.1); // Dynamic stroke width
-                        gc.strokeOval(drawX, drawY, cellSize, cellSize);
-                    }
+        for (Animal animal : map.getElementsManager().getAnimals()) {
+            Vector2d pos = animal.getCurrentPosition();
 
-                    // Dominant Genotype Ring
-                    if (showDominantGenotype && topGenotypes.contains(animal.getGenotype())) {
-                        gc.setStroke(Color.MAGENTA);
-                        gc.setLineWidth(cellSize * 0.1);
-                        gc.strokeOval(drawX, drawY, cellSize, cellSize);
-                    }
+            if (pos.getX() < mapWidth && pos.getY() < mapHeight) {
+                double drawX = offsetX + (pos.getX() * cellSize);
+                double drawY = offsetY + ((mapHeight - 1 - pos.getY()) * cellSize);
+
+                gc.setFill(getEnergyColor(animal));
+                gc.fillOval(drawX, drawY, cellSize, cellSize);
+
+                // Highlights
+                if (animal.equals(trackedAnimal)) {
+                    gc.setStroke(Color.GOLD);
+                    gc.setLineWidth(Math.max(1.5, cellSize * 0.1));
+                    gc.strokeOval(drawX, drawY, cellSize, cellSize);
+                }
+
+                if (showDominantGenotype && topGenotypes.contains(animal.getGenotype())) {
+                    gc.setStroke(Color.MAGENTA);
+                    gc.setLineWidth(Math.max(1.0, cellSize * 0.08));
+                    gc.strokeOval(drawX, drawY, cellSize, cellSize);
                 }
             }
         }
@@ -261,26 +266,27 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
 
     private void drawPheromones(GraphicsContext gc) {
         if (worldMap instanceof FeromonMap feromonMap) {
-            for (int x = 0; x < mapWidth; x++) {
-                for (int y = 0; y < mapHeight; y++) {
-                    int intensity = feromonMap.getSmellValue(new Vector2d(x, y));
-                    if (intensity > 0) {
-                        double drawX = offsetX + (x * cellSize);
-                        double drawY = offsetY + ((mapHeight - 1 - y) * cellSize);
 
-                        // Logic remains the same: cap opacity at 0.6 so we can still see terrain
-                        double opacity = Math.min(intensity * 0.15, 0.6);
-                        gc.setFill(Color.rgb(0, 0, 255, opacity));
+            Map<Vector2d, Integer> activeSmells = feromonMap.getActiveFeromons();
 
-                        // Draw rect with dynamic size
-                        gc.fillRect(drawX, drawY, cellSize, cellSize);
-                    }
+            for (Map.Entry<Vector2d, Integer> entry : activeSmells.entrySet()) {
+                Vector2d pos = entry.getKey();
+                int intensity = entry.getValue();
+
+                if (pos.getX() >= 0 && pos.getX() < mapWidth &&
+                        pos.getY() >= 0 && pos.getY() < mapHeight) {
+
+                    double drawX = offsetX + (pos.getX() * cellSize);
+                    double drawY = offsetY + ((mapHeight - 1 - pos.getY()) * cellSize);
+
+                    int index = Math.min(intensity, 19); // Clamp to array size
+                    gc.setFill(pheromoneColors[index]);
+                    gc.fillRect(drawX, drawY, cellSize, cellSize);
                 }
             }
         }
     }
 
-    // --- STATS UPDATES ---
 
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
@@ -298,7 +304,6 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
             avgLifeSpanLabel.setText(String.format("Avg LifeSpan: %.2f", stats.averageLifeTime()));
             childrenCountLabel.setText(String.format("Avg Children: %.2f", stats.averageKids()));
 
-            // Update Top Genotypes for Highlighting
             this.topGenotypes.clear();
             if (stats.mostPopularGenotypes() != null) {
                 this.topGenotypes.addAll(stats.mostPopularGenotypes());
@@ -311,7 +316,6 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
                 mostCommonGenotypeLabel.setText(sb.toString());
             }
 
-            // Update Tracked Animal
             updateTrackedAnimalStats();
 
             if (chartManager != null) {
@@ -322,7 +326,6 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
 
     private void updateTrackedAnimalStats() {
         if (trackedAnimal != null) {
-            // Podświetlenie statusu (Żyje/Martwy)
             if (trackedAnimal.getDayOfDeath() != -1) {
                 trackedAnimalStatusLabel.setText("Status: DEAD (ID: " + trackedAnimal.hashCode() + ")");
                 trackedAnimalStatusLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
@@ -333,11 +336,9 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
                 trackedDeathDayLabel.setText("Death Day: -");
             }
 
-            // Aktualizacja genotypu i aktywnego genu
             trackedGenotypeLabel.setText("Genotype: " + trackedAnimal.getGenotype());
             trackedActiveGeneLabel.setText("Active gen: " + trackedAnimal.getGenotype().getActiveGeneIndex());
 
-            // Statystyki liczbowe
             trackedEnergyLabel.setText("Energy: " + trackedAnimal.getEnergy());
             trackedEatenLabel.setText("Eaten plants: " + trackedAnimal.getNumberOfEatenPlants());
             trackedChildrenLabel.setText("Children: " + trackedAnimal.getNumberOfChildren());
@@ -347,7 +348,9 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
         }
     }
 
-    // --- CONTROLS ---
+    /*
+     * Controls
+     * */
 
     @FXML
     private void onPauseClicked() {
@@ -404,15 +407,7 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
         return Color.hsb(hue, 1, 1);
     }
 
-    private void autoScaleMap() {
-        if (mapContainer.getWidth() == 0 || mapContainer.getHeight() == 0) return;
-        double widthRatio = mapContainer.getWidth() / mapCanvas.getWidth();
-        double heightRatio = mapContainer.getHeight() / mapCanvas.getHeight();
-        double scale = Math.min(widthRatio, heightRatio);
-        mapCanvas.setScaleX(scale);
-        mapCanvas.setScaleY(scale);
-    }
-
+    // empty implementation, not used in GUI
     @Override
     public void handleDeadAnimals(List<Animal> deadAnimals) {
     }

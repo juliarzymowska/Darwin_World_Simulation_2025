@@ -91,8 +91,8 @@ public class ConfigBuilder {
 
     // Setters for Animal config
     public void setInitialAnimalCount(int initialAnimalCount) throws IllegalAnimalCountException {
-        if (initialAnimalCount <= 0 || initialAnimalCount > 100) {
-            throw new IllegalAnimalCountException(initialAnimalCount, 100);
+        if (initialAnimalCount <= 0 || initialAnimalCount > 200) {
+            throw new IllegalAnimalCountException(initialAnimalCount, 200);
         }
         this.initialAnimalCount = initialAnimalCount;
     }
@@ -152,15 +152,15 @@ public class ConfigBuilder {
 
     // Setters for Map config
     public void setWidth(int width) throws IllegalMapWidthException {
-        if (width <= 0 || width > 100) {
-            throw new IllegalMapWidthException(100);
+        if (width <= 0 || width > 200) {
+            throw new IllegalMapWidthException(200);
         }
         this.width = width;
     }
 
     public void setHeight(int height) throws IllegalMapHeightException {
-        if (height <= 0 || height > 100) {
-            throw new IllegalMapHeightException(100);
+        if (height <= 0 || height > 200) {
+            throw new IllegalMapHeightException(200);
         }
         this.height = height;
     }
