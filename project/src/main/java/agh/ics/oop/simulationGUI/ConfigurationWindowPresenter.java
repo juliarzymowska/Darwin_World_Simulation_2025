@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 import java.util.function.Consumer;
 
@@ -215,14 +216,38 @@ public class ConfigurationWindowPresenter {
 
     // Helper method to configure a Spinner to accept only double input : )
     private void configureDoubleSpinner(Spinner<Double> spinner) {
+        if (spinner.getValueFactory() == null) {
+            spinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0, 100.0, 0.0, 0.1));
+        }
+
         spinner.setEditable(true);
 
+        StringConverter<Double> doubleConverter = new StringConverter<Double>() {
+            @Override
+            public String toString(Double value) {
+                return (value == null) ? "0.0" : value.toString();
+            }
+
+            @Override
+            public Double fromString(String string) {
+                try {
+                    if (string == null || string.isEmpty() || string.equals("-") || string.equals(".") || string.equals(",")) {
+                        return 0.0;
+                    }
+                    return Double.valueOf(string.replace(',', '.'));
+                } catch (NumberFormatException e) {
+                    return spinner.getValue();
+                }
+            }
+        };
+
+        spinner.getValueFactory().setConverter(doubleConverter);
+
         TextFormatter<Double> formatter = new TextFormatter<>(
-                spinner.getValueFactory().getConverter(),
+                doubleConverter,
                 spinner.getValueFactory().getValue(),
                 change -> {
-                    String newText = change.getControlNewText();
-                    if (newText.matches("-?([0-9]*)?(\\.[0-9]*)?")) {
+                    if (change.getControlNewText().matches("-?([0-9]*)?([\\.,][0-9]*)?")) {
                         return change;
                     }
                     return null;
@@ -232,11 +257,10 @@ public class ConfigurationWindowPresenter {
         spinner.getEditor().setTextFormatter(formatter);
         spinner.getValueFactory().valueProperty().bindBidirectional(formatter.valueProperty());
 
-        spinner.focusedProperty().addListener((observable, wasFocused, isNowFocused) -> {
-            if (!isNowFocused) {
+        spinner.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal) {
                 spinner.increment(0);
             }
         });
     }
-
 }

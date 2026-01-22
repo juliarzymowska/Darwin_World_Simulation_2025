@@ -143,7 +143,7 @@ public class ConfigBuilder {
     }
 
     public void setGenotypeLength(int genotypeLength) throws IllegalGenotypeLengthException {
-        if (genotypeLength <= 0) {
+        if (genotypeLength <= 0 || genotypeLength > 20) {
             throw new IllegalGenotypeLengthException();
         }
         this.genotypeLength = genotypeLength;

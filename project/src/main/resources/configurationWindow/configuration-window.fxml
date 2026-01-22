@@ -45,7 +45,7 @@
                         <Spinner fx:id="energyToReproduceSpinner" GridPane.rowIndex="3" GridPane.columnIndex="1"
                                  maxWidth="Infinity"/>
 
-                        <Label text="Breeding Cost:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                        <Label text="Energy to Move:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
                         <Spinner fx:id="energyConsumedByMoveSpinner" GridPane.rowIndex="4" GridPane.columnIndex="1"
                                  maxWidth="Infinity"/>
 
