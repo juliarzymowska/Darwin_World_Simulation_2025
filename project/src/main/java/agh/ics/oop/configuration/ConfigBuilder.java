@@ -1,6 +1,6 @@
 package agh.ics.oop.configuration;
 
-import agh.ics.oop.model.exception.*;
+import agh.ics.oop.exception.*;
 import agh.ics.oop.model.map.MapType;
 
 /*
@@ -29,9 +29,7 @@ public class ConfigBuilder {
     private int daysToDecreaseFeromon;
     private int smellRange;
 
-    public ConfigBuilder builder() {
-        return new ConfigBuilder();
-    }
+    private boolean saveToCSV = false;
 
     public ConfigAnimal buildAnimalConfig() {
         return new ConfigAnimal(
@@ -87,10 +85,13 @@ public class ConfigBuilder {
         return builder;
     }
 
-    // Setters for Animal config
+    /*
+     * Setters
+     * */
+
     public void setInitialAnimalCount(int initialAnimalCount) throws IllegalAnimalCountException {
-        if (initialAnimalCount <= 0 || initialAnimalCount > 100) {
-            throw new IllegalAnimalCountException(initialAnimalCount, 100);
+        if (initialAnimalCount <= 0 || initialAnimalCount > 200) {
+            throw new IllegalAnimalCountException(initialAnimalCount, 200);
         }
         this.initialAnimalCount = initialAnimalCount;
     }
@@ -142,7 +143,7 @@ public class ConfigBuilder {
     }
 
     public void setGenotypeLength(int genotypeLength) throws IllegalGenotypeLengthException {
-        if (genotypeLength <= 0) {
+        if (genotypeLength <= 0 || genotypeLength > 20) {
             throw new IllegalGenotypeLengthException();
         }
         this.genotypeLength = genotypeLength;
@@ -150,15 +151,15 @@ public class ConfigBuilder {
 
     // Setters for Map config
     public void setWidth(int width) throws IllegalMapWidthException {
-        if (width <= 0 || width > 100) {
-            throw new IllegalMapWidthException(100);
+        if (width <= 0 || width > 200) {
+            throw new IllegalMapWidthException(200);
         }
         this.width = width;
     }
 
     public void setHeight(int height) throws IllegalMapHeightException {
-        if (height <= 0 || height > 100) {
-            throw new IllegalMapHeightException(100);
+        if (height <= 0 || height > 200) {
+            throw new IllegalMapHeightException(200);
         }
         this.height = height;
     }
@@ -201,6 +202,15 @@ public class ConfigBuilder {
         }
         this.smellRange = smellRange;
     }
+
+    public void setSaveToCSV(boolean saveToCSV) {
+        this.saveToCSV = saveToCSV;
+    }
+
+
+    /*
+     * Getters
+     * */
 
     public int getInitialAnimalCount() {
         return initialAnimalCount;
@@ -276,5 +286,9 @@ public class ConfigBuilder {
 
     public void setMoveDelay(int moveDelay) {
         this.moveDelay = moveDelay;
+    }
+
+    public boolean isSaveToCSV() {
+        return saveToCSV;
     }
 }

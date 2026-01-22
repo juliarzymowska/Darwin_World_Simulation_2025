@@ -1,61 +1,32 @@
 package agh.ics.oop.simulationGUI;
 
 import agh.ics.oop.configuration.ConfigBuilder;
-import agh.ics.oop.model.exception.ConfigurationException;
+import agh.ics.oop.exception.ConfigurationException;
 import agh.ics.oop.model.map.MapType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 import java.util.function.Consumer;
 
 public class ConfigurationWindowPresenter {
     @FXML
-    private Spinner<Integer> moveDelaySpinner;
-    @FXML
-    private Spinner<Integer> maxEnergySpinner;
-    @FXML
-    private Spinner<Integer> energyToReproduceSpinner;
-    @FXML
-    private Spinner<Integer> energyConsumedByMoveSpinner;
-    @FXML
-    private Spinner<Integer> energyGainedByEatingSpinner;
-    @FXML
-    private Spinner<Integer> minMutationsSpinner;
-    @FXML
-    private Spinner<Integer> maxMutationsSpinner;
-    @FXML
-    private Spinner<Integer> genotypeLengthSpinner;
-
-    @FXML
-    private Spinner<Integer> widthSpinner;
-    @FXML
-    private Spinner<Integer> heightSpinner;
-    @FXML
-    private Spinner<Integer> startPlantNumberSpinner;
-    @FXML
-    private Spinner<Integer> dailyPlantNumberSpinner;
+    private Spinner<Integer> moveDelaySpinner, maxEnergySpinner, energyToReproduceSpinner,
+            energyConsumedByMoveSpinner, energyGainedByEatingSpinner, minMutationsSpinner, maxMutationsSpinner,
+            genotypeLengthSpinner, widthSpinner, heightSpinner, startPlantNumberSpinner,
+            dailyPlantNumberSpinner, daysToDecreaseFeromonSpinner,
+            smellRangeSpinner, initialAnimalCountSpinner,
+            initialEnergySpinner;
     @FXML
     private ChoiceBox<MapType> mapTypeChoiceBox;
     @FXML
     private Spinner<Double> moveToFeromonProbabilitySpinner;
-    @FXML
-    private Spinner<Integer> daysToDecreaseFeromonSpinner;
-    @FXML
-    private Spinner<Integer> smellRangeSpinner;
-    @FXML
-    private Spinner<Integer> initialAnimalCountSpinner;
 
     @FXML
-    private Spinner<Integer> initialEnergySpinner;
-
-    @FXML
-    private Button startSimulationButton;
-
-    @FXML
-    private Button stopSimulationButton;
+    private CheckBox saveToCSVCheckBox;
 
     @FXML
     private Button closeButton;
@@ -65,9 +36,7 @@ public class ConfigurationWindowPresenter {
     // Consumer is a functional interface representing a function that takes one argument and returns no result.
     private Consumer<ConfigBuilder> onStartSimulation; // callback to notify when simulation should start
 
-    /**
-     * This is called manually AFTER FXMLLoader.load()
-     */
+    // Method to set the configuration builder and initialize UI components
     public void setConfigBuilder(ConfigBuilder builder) {
         this.configBuilder = builder;
 
@@ -122,12 +91,14 @@ public class ConfigurationWindowPresenter {
         configureDoubleSpinner(moveToFeromonProbabilitySpinner);
 
         moveDelaySpinner.setValueFactory(
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 2000, builder.getMoveDelay(), 100)
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(100, 2000, builder.getMoveDelay(), 100)
         );
         configureSpinner(moveDelaySpinner);
 
         mapTypeChoiceBox.getItems().setAll(MapType.values());
         mapTypeChoiceBox.setValue(builder.getMapType());
+
+        saveToCSVCheckBox.setSelected(builder.isSaveToCSV());
     }
 
     public void setStartSimulation(Consumer<ConfigBuilder> callback) {
@@ -169,7 +140,6 @@ public class ConfigurationWindowPresenter {
 
     @FXML
     private void handleStartSimulation() {
-        // Only proceed if configuration is valid
         if (updateConfigFromUI()) {
             if (onStartSimulation != null) {
                 onStartSimulation.accept(configBuilder);
@@ -198,6 +168,7 @@ public class ConfigurationWindowPresenter {
             configBuilder.setDaysToDecreaseFeromon(daysToDecreaseFeromonSpinner.getValue());
             configBuilder.setSmellRange(smellRangeSpinner.getValue());
             configBuilder.setMoveDelay(moveDelaySpinner.getValue());
+            configBuilder.setSaveToCSV(saveToCSVCheckBox.isSelected());
 
             return true; // Success!
 
@@ -218,9 +189,7 @@ public class ConfigurationWindowPresenter {
         mapper.writeValue(file, config);
     }
 
-    /**
-     * Metoda pomocnicza konfigurująca Spinner
-     */
+    // Helper method to configure a Spinner to accept only integer input : )
     private void configureSpinner(Spinner<Integer> spinner) {
         spinner.setEditable(true);
 
@@ -245,15 +214,40 @@ public class ConfigurationWindowPresenter {
         });
     }
 
+    // Helper method to configure a Spinner to accept only double input : )
     private void configureDoubleSpinner(Spinner<Double> spinner) {
+        if (spinner.getValueFactory() == null) {
+            spinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0, 100.0, 0.0, 0.1));
+        }
+
         spinner.setEditable(true);
 
+        StringConverter<Double> doubleConverter = new StringConverter<Double>() {
+            @Override
+            public String toString(Double value) {
+                return (value == null) ? "0.0" : value.toString();
+            }
+
+            @Override
+            public Double fromString(String string) {
+                try {
+                    if (string == null || string.isEmpty() || string.equals("-") || string.equals(".") || string.equals(",")) {
+                        return 0.0;
+                    }
+                    return Double.valueOf(string.replace(',', '.'));
+                } catch (NumberFormatException e) {
+                    return spinner.getValue();
+                }
+            }
+        };
+
+        spinner.getValueFactory().setConverter(doubleConverter);
+
         TextFormatter<Double> formatter = new TextFormatter<>(
-                spinner.getValueFactory().getConverter(),
+                doubleConverter,
                 spinner.getValueFactory().getValue(),
                 change -> {
-                    String newText = change.getControlNewText();
-                    if (newText.matches("-?([0-9]*)?(\\.[0-9]*)?")) {
+                    if (change.getControlNewText().matches("-?([0-9]*)?([\\.,][0-9]*)?")) {
                         return change;
                     }
                     return null;
@@ -263,18 +257,10 @@ public class ConfigurationWindowPresenter {
         spinner.getEditor().setTextFormatter(formatter);
         spinner.getValueFactory().valueProperty().bindBidirectional(formatter.valueProperty());
 
-        spinner.focusedProperty().addListener((observable, wasFocused, isNowFocused) -> {
-            if (!isNowFocused) {
+        spinner.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal) {
                 spinner.increment(0);
             }
         });
-    }
-
-    private void commitSpinner(Spinner<?> spinner) {
-        if (spinner.isEditable()) {
-            // This little trick forces the Spinner to read the text field
-            // and update its internal value immediately.
-            spinner.increment(0);
-        }
     }
 }

@@ -1,0 +1,133 @@
+.root {
+    -fx-soft-blush: #ffe5ec;
+    -fx-pastel-pink: #ffc2d1;
+    -fx-cherry: #ffb3c6;
+    -fx-cotton-candy: #ff8fab;
+    -fx-petal-rouge: #fb6f92;
+    -fx-white-trans: rgba(255, 255, 255, 0.9);
+}
+
+.main-window {
+    -fx-background-color: -fx-soft-blush;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.content-container {
+    -fx-padding: 20;
+    -fx-background-color: transparent;
+}
+
+.scroll-pane, .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.header-bar {
+    -fx-background-color: -fx-pastel-pink;
+    -fx-padding: 15;
+    -fx-border-color: -fx-cherry;
+    -fx-border-width: 0 0 2 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+}
+
+.window-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-petal-rouge;
+}
+
+.config-card {
+    -fx-background-color: -fx-white-trans;
+    -fx-background-radius: 15;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 10, 0, 0, 2);
+    -fx-border-color: -fx-pastel-pink;
+    -fx-border-radius: 15;
+    -fx-border-width: 1;
+}
+
+.section-header {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-petal-rouge;
+    -fx-padding: 0 0 10 0;
+    -fx-border-color: -fx-cherry;
+    -fx-border-width: 0 0 1 0;
+    -fx-margin: 0 0 15 0;
+}
+
+.label {
+    -fx-text-fill: #555;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.spinner, .choice-box {
+    -fx-background-color: white;
+    -fx-background-radius: 5;
+    -fx-border-color: -fx-pastel-pink;
+    -fx-border-radius: 5;
+    -fx-padding: 2;
+}
+
+.spinner .text-field {
+    -fx-background-color: transparent;
+}
+
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: -fx-pastel-pink;
+}
+
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-background-color: -fx-cotton-candy;
+}
+
+.footer-bar {
+    -fx-background-color: -fx-white-trans;
+    -fx-padding: 15;
+    -fx-border-color: -fx-cherry;
+    -fx-border-width: 1 0 0 0;
+}
+
+.primary-button {
+    -fx-background-color: #59c77e; /* Green */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 8 20;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+}
+
+.primary-button:hover {
+    -fx-background-color: #45a065;
+}
+
+.secondary-button {
+    -fx-background-color: -fx-cotton-candy; /* Pink */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 8 20;
+    -fx-cursor: hand;
+}
+
+.secondary-button:hover {
+    -fx-background-color: -fx-petal-rouge;
+}
+
+.danger-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #999;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 7 19; /* Adjust for border width */
+    -fx-cursor: hand;
+}
+
+.danger-button:hover {
+    -fx-text-fill: -fx-petal-rouge;
+    -fx-border-color: -fx-petal-rouge;
+}

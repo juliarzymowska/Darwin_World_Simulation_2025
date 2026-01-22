@@ -4,7 +4,7 @@ import agh.ics.oop.configuration.ConfigAnimal;
 import agh.ics.oop.configuration.ConfigBuilder;
 import agh.ics.oop.configuration.ConfigLoadFromJSON;
 import agh.ics.oop.configuration.ConfigMap;
-import agh.ics.oop.model.exception.*;
+import agh.ics.oop.exception.ConfigurationException;
 import agh.ics.oop.simulation.Simulation;
 import agh.ics.oop.simulation.SimulationEngine;
 import javafx.fxml.FXML;
@@ -12,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.stage.FileChooser;
@@ -19,19 +20,16 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class StartWindowPresenter {
     @FXML
-    private Button closeButton;
-    @FXML
-    private Button loadFromJSON;
-    @FXML
-    private Button startButton;
+    private Button closeButton, loadFromJSON, startButton;
 
     private final SimulationEngine simulationEngine = new SimulationEngine();
 
     @FXML
-    private void handleStartSimulation() throws ConfigurationException {
+    private void handleStartSimulation() {
         try {
             ConfigAnimal defaultAnimal = new ConfigAnimal();
             ConfigMap defaultMap = new ConfigMap();
@@ -62,7 +60,6 @@ public class StartWindowPresenter {
             try {
                 ConfigLoadFromJSON parser = new ConfigLoadFromJSON(selectedFile.getAbsolutePath());
                 ConfigBuilder builder = parser.loadConfig();
-//                System.out.println("Configuration loaded successfully!");
 
                 openConfigurationWindow(builder);
             } catch (ConfigurationException | IOException e) {
@@ -71,7 +68,6 @@ public class StartWindowPresenter {
                 alert.setHeaderText("Error loading JSON");
                 alert.setContentText(e.getMessage());
                 alert.showAndWait();
-//                e.printStackTrace();
             }
         }
     }
@@ -99,6 +95,12 @@ public class StartWindowPresenter {
             Stage stage = new Stage();
             stage.setScene(scene);
             stage.setTitle("Configuration");
+            try {
+                Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/startWindow/icon.png")));
+                stage.getIcons().add(icon);
+            } catch (Exception e) {
+                System.err.println("Icon not found.");
+            }
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -108,43 +110,40 @@ public class StartWindowPresenter {
 
     private void openSimulationWindow(ConfigBuilder builder) {
         try {
-            // 1. Convert Builder to Records
-            // (Assuming you don't have a builder.build() method, we construct them manually here)
             ConfigAnimal configAnimal = builder.buildAnimalConfig();
             ConfigMap configMap = builder.buildMapConfig();
 
-            // 2. Create the Simulation
-            Simulation simulation = new Simulation(configAnimal, configMap, builder.getMoveDelay());
+            Simulation simulation = new Simulation(configAnimal, configMap, builder.getMoveDelay(), builder.isSaveToCSV());
 
-            // 3. Load the Simulation Window FXML
             FXMLLoader loader = new FXMLLoader(
                     getClass().getClassLoader().getResource("simulationWindow/simulation-window.fxml")
             );
             Parent root = loader.load();
 
-            // 4. Get the Presenter and pass the Simulation to it
             SimulationWindowPresenter presenter = loader.getController();
             presenter.setSimulation(simulation);
 
-            // 5. Setup the Stage
+
             Stage stage = new Stage();
             stage.setTitle("Darwin World - Simulation ID: " + simulation.hashCode());
             stage.setScene(new Scene(root));
+            try {
+                Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/startWindow/icon.png")));
+                stage.getIcons().add(icon);
+            } catch (Exception e) {
+                System.err.println("Icon not found.");
+            }
 
-            // Ensure simulation stops when window closes
             stage.setOnCloseRequest(event -> {
                 presenter.onWindowClose();
                 simulation.shutDown();
             });
 
             stage.show();
-
-            // 6. Start the Simulation on a separate thread
-            simulationEngine.runAsyncInThreadPool(simulation);
+            simulationEngine.addSimulation(simulation);
 
         } catch (IOException e) {
             e.printStackTrace();
-            // Ideally show an Alert here if FXML fails to load
         }
     }
 

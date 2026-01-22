@@ -2,8 +2,12 @@ package agh.ics.oop.model.util;
 
 import java.util.*;
 
-
-public class NormalPositionGenerator implements Iterable<Vector2d>{
+/*
+ * Class generating n random unique positions (Vector2d) within a given range (x,y)
+ * following a normal distribution for the y coordinate.
+ * Used for placing plants on map.
+ * */
+public class NormalPositionGenerator implements Iterable<Vector2d> {
     private final int n;
     private final int x;
     private final int y;
@@ -16,7 +20,7 @@ public class NormalPositionGenerator implements Iterable<Vector2d>{
 
     @Override
     public Iterator<Vector2d> iterator() {
-        return new RandomPositionIterator(n,x,y);
+        return new RandomPositionIterator(n, x, y);
     }
 
     private static class RandomPositionIterator implements Iterator<Vector2d> {
@@ -42,18 +46,18 @@ public class NormalPositionGenerator implements Iterable<Vector2d>{
 
         @Override
         public Vector2d next() {
-            if (!hasNext()){
+            if (!hasNext()) {
                 throw new NoSuchElementException();
             }
             int y;
-            double meanY = 0.5*y_range;
-            double sigmaY = 0.09 *y_range;
+            double meanY = 0.5 * y_range;
+            double sigmaY = 0.09 * y_range;
             do {
                 y = (int) Math.round(meanY + rand.nextGaussian() * sigmaY);
             } while (y > y_range || y < 0);
-            int x = rand.nextInt(x_range+1);
+            int x = rand.nextInt(x_range + 1);
             Vector2d pos = new Vector2d(x, y);
-            if (!used_positions.contains(pos)){
+            if (!used_positions.contains(pos)) {
                 used_positions.add(pos);
                 current++;
             }

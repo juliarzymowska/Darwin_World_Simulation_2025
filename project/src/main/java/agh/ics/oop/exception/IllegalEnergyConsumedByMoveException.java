@@ -1,4 +1,4 @@
-package agh.ics.oop.model.exception;
+package agh.ics.oop.exception;
 
 public class IllegalEnergyConsumedByMoveException extends ConfigurationException {
     public IllegalEnergyConsumedByMoveException(int maxEnergy) {

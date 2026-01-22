@@ -1,0 +1,152 @@
+.root {
+    -fx-soft-blush: #ffe5ec; /* Background */
+    -fx-pastel-pink: #ffc2d1; /* Sidebars/Headers */
+    -fx-cherry: #ffb3c6; /* Separators/Borders */
+    -fx-cotton-candy: #ff8fab; /* Buttons */
+    -fx-petal-rouge: #fb6f92; /* Accents/Text */
+    -fx-white-trans: rgba(255, 255, 255, 0.6);
+}
+
+.main-window {
+    -fx-background-color: -fx-soft-blush;
+}
+
+.header-bar {
+    -fx-background-color: -fx-pastel-pink;
+    -fx-padding: 10 15;
+    -fx-border-color: -fx-cherry;
+    -fx-border-width: 0 0 2 0; /* Bottom border only */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 5, 0, 0, 2);
+}
+
+/* --- SIDEBARS --- */
+.sidebar {
+    -fx-background-color: -fx-white-trans;
+    -fx-padding: 15;
+    -fx-min-width: 220;
+    -fx-border-color: -fx-cherry;
+    -fx-border-width: 0 1 0 1; /* Left/Right borders */
+}
+
+.sidebar-separator .line {
+    -fx-border-color: -fx-cherry;
+    -fx-border-width: 1;
+}
+
+/* --- TEXT STYLING --- */
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-petal-rouge;
+    -fx-padding: 0 0 5 0;
+}
+
+.subtitle-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #555;
+}
+
+.status-label {
+    -fx-font-style: italic;
+    -fx-text-fill: #666;
+}
+
+.stats-container Label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #333;
+}
+
+.genotype-text {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 11px;
+    -fx-text-fill: #444;
+    -fx-background-color: rgba(255, 255, 255, 0.5);
+    -fx-padding: 5;
+    -fx-background-radius: 5;
+}
+
+/* --- BUTTONS --- */
+.action-button {
+    -fx-background-radius: 20;
+    -fx-padding: 6 15;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.resume-button {
+    -fx-background-color: #59c77e; /* Green for resume */
+}
+
+.resume-button:hover {
+    -fx-background-color: #45a065;
+}
+
+.pause-button {
+    -fx-background-color: -fx-petal-rouge; /* Red/Pink for pause */
+}
+
+.pause-button:hover {
+    -fx-background-color: derive(-fx-petal-rouge, -15%);
+}
+
+.toggle-btn {
+    -fx-background-color: white;
+    -fx-text-fill: -fx-petal-rouge;
+    -fx-border-color: -fx-petal-rouge;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+}
+
+.toggle-btn:selected {
+    -fx-background-color: -fx-petal-rouge;
+    -fx-text-fill: white;
+}
+
+.stop-button {
+    -fx-background-color: -fx-cotton-candy;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.stop-button:hover {
+    -fx-background-color: -fx-petal-rouge;
+}
+
+.stop-button:disabled {
+    -fx-background-color: #ddd;
+    -fx-text-fill: #999;
+}
+
+.map-container {
+    -fx-background-color: white;
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0.5, 0, 0);
+}
+
+.chart-section {
+    -fx-background-color: -fx-pastel-pink;
+    -fx-padding: 10;
+    -fx-border-color: -fx-cherry;
+    -fx-border-width: 2 0 0 0;
+}
+
+.chart-series-line {
+    -fx-stroke: -fx-petal-rouge;
+    -fx-stroke-width: 2px;
+}
+
+.chart-line-symbol {
+    -fx-background-color: -fx-petal-rouge, white;
+}
+
+/* Add this to your CSS file */
+.log-list {
+    -fx-background-color: rgba(255, 255, 255, 0.5);
+    -fx-background-radius: 5;
+    -fx-border-color: -fx-cherry;
+    -fx-border-radius: 5;
+    -fx-font-family: "Monospaced"; /* Code-like font for logs */
+    -fx-font-size: 10px;
+}

@@ -9,7 +9,10 @@ import agh.ics.oop.model.util.Vector2d;
 
 import java.util.*;
 
-
+/*
+ * Class representing a map with feromons.
+ * Extends EarthMap and adds feromon logic to animal movement and reproduction.
+ * */
 public class FeromonMap extends EarthMap {
     private final double probability;
     private final int daysToDecrease;
@@ -74,13 +77,6 @@ public class FeromonMap extends EarthMap {
         }
     }
 
-    public int getSmellValue(Vector2d position) {
-        if (feromons.containsKey(position)) {
-            return feromons.get(position).getFeromonValue();
-        }
-        return 0;
-    }
-
     public void decreaseFeromons() {
         List<Feromon> toRemove = new ArrayList<>();
         for (Feromon feromon : feromons.values()) {
@@ -95,6 +91,14 @@ public class FeromonMap extends EarthMap {
         for (Feromon feromon : toRemove) {
             feromons.remove(feromon.getCurrentPosition());
         }
+    }
+
+    public Map<Vector2d, Integer> getActiveFeromons() {
+        Map<Vector2d, Integer> activeFeromons = new HashMap<>();
+        for (Feromon feromon : feromons.values()) {
+            activeFeromons.put(feromon.getCurrentPosition(), feromon.getFeromonValue());
+        }
+        return activeFeromons;
     }
 
     @Override

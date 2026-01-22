@@ -3,6 +3,8 @@ package agh.ics.oop.model.map;
 import agh.ics.oop.configuration.ConfigMap;
 import agh.ics.oop.model.elements.Animal;
 import agh.ics.oop.model.elements.Feromon;
+import agh.ics.oop.model.elements.Genotype;
+import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.util.Vector2d;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,10 @@ class FeromonMapTest {
 
     private ConfigMap createDefaultConfig(double moveToFeromonProbability, int daysToDecreaseFeromon, int smellRange) {
         return new ConfigMap(10, 10, 0, 0, MapType.FEROMON_MAP, moveToFeromonProbability, daysToDecreaseFeromon, smellRange);
+    }
+
+    private Animal createDefaultAnimal(Vector2d pos, MapDirection dir){
+        return new Animal(pos, 100, new Genotype(8), dir);
     }
 
     @BeforeEach
@@ -55,7 +61,7 @@ class FeromonMapTest {
         Vector2d animalPos = new Vector2d(0, 0);
         Vector2d feromonPos = new Vector2d(1, 1);
 
-        Animal animal = new Animal(animalPos);
+        Animal animal = createDefaultAnimal(animalPos, MapDirection.EAST);
         feromonMap.placeAnimal(animal);
         feromonMap.addFeromon(feromonPos);
 
@@ -67,7 +73,7 @@ class FeromonMapTest {
     @Test
     void objectAtPriority() {
         Vector2d pos = new Vector2d(5, 5);
-        Animal animal = new Animal(pos);
+        Animal animal = createDefaultAnimal(pos, MapDirection.EAST);
         feromonMap.placeAnimal(animal);
         feromonMap.addFeromon(pos);
 

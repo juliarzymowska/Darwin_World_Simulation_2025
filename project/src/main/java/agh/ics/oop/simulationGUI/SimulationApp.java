@@ -3,11 +3,16 @@ package agh.ics.oop.simulationGUI;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
+/*
+ * Class for launching the JavaFX application
+ * */
 public class SimulationApp extends Application {
 
     @Override
@@ -17,6 +22,12 @@ public class SimulationApp extends Application {
         BorderPane root = loader.load();
         configureStage(primaryStage, root);
         primaryStage.show();
+        try {
+            Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/startWindow/icon.png")));
+            primaryStage.getIcons().add(icon);
+        } catch (Exception e) {
+            System.err.println("Icon not found.");
+        }
     }
 
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {
@@ -26,12 +37,8 @@ public class SimulationApp extends Application {
     }
 
     @Override
-    public void stop() throws Exception {
-        // This method is called when the application is stopped
-        System.out.println("Shutting down application...");
-
+    public void stop() {
         // Force kill all background threads (simulations)
-        // Without this, your IntelliJ might show the app as still "Running" after you close the window
         System.exit(0);
     }
 }

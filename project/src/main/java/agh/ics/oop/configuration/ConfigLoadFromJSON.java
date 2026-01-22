@@ -1,7 +1,7 @@
 package agh.ics.oop.configuration;
 
-import agh.ics.oop.model.exception.ConfigurationException;
-import agh.ics.oop.model.exception.EarthClassException;
+import agh.ics.oop.exception.ConfigurationException;
+import agh.ics.oop.exception.EarthClassException;
 import agh.ics.oop.model.map.MapType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

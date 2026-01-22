@@ -3,13 +3,11 @@ package agh.ics.oop.model.observators;
 import agh.ics.oop.model.stats.StatsRecord;
 
 /**
- * Interfejs dla obserwatorów statystyk,
- * realizacja wzorca obserwator.
+ * Interface for classes that listen to changes in statistics.
  */
 public interface StatsChangeListener {
     /**
-    * Metoda, która jest reakcją na powiadomienie o zmianie statystyk
-     * @param stats obserwowane statystyki
+     * Called when the statistics have changed.
      */
     void statsChanged(StatsRecord stats);
 }

@@ -1,4 +1,4 @@
-package agh.ics.oop.model.exception;
+package agh.ics.oop.exception;
 
 public class IllegalMapWidthException extends ConfigurationException {
     public IllegalMapWidthException(int maxWidth) {

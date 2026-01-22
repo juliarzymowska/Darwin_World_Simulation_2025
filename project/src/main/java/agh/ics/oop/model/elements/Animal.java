@@ -20,6 +20,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
             numberOfDescendants = 0, dayOfBirth = 0, dayOfDeath = -1;
     private boolean isAlive = true;
     private final Genotype genotype;
+    private Animal mother, father;
 
 
     /*
@@ -44,6 +45,8 @@ public class Animal implements WorldElement, Comparable<Animal> {
      * */
     public Animal(Animal father, Animal mother, int currentDay) {
         this.config = father.config;
+        this.mother = mother;
+        this.father = father;
         this.currentPosition = new Vector2d(father.getCurrentPosition().getX(), father.getCurrentPosition().getY());
         this.genotype = new Genotype(father, mother, config.minMutations(), config.maxMutations());
         this.currentOrientation = MapDirection.getRandomDirection();
@@ -59,10 +62,12 @@ public class Animal implements WorldElement, Comparable<Animal> {
      * @param genotype - genotype of animal
      * */
     public Animal(Vector2d position, int energy, Genotype genotype, MapDirection orientation) {
+        this.config = new ConfigAnimal();
         this.currentPosition = position;
         this.genotype = genotype;
         this.currentEnergy = energy;
         this.currentOrientation = orientation;
+        this.maxEnergy = config.maxEnergy();
     }
 
     /*
@@ -112,6 +117,18 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return numberOfDescendants;
     }
 
+    public int getMaxEnergy() {
+        return maxEnergy;
+    }
+
+    public Animal getMother() {
+        return mother;
+    }
+
+    public Animal getFather() {
+        return father;
+    }
+
     /*
      * Setters (mostly for testing)
      * */
@@ -140,22 +157,18 @@ public class Animal implements WorldElement, Comparable<Animal> {
     }
 
     // visual representation of the animal based on its orientation
-    @Override
-    public String toString() {
-        return switch (currentOrientation) {
-            case NORTH -> "⭡";
-            case NORTH_EAST -> "↗";
-            case EAST -> "⭢";
-            case SOUTH_EAST -> "↘";
-            case SOUTH -> "⭣";
-            case SOUTH_WEST -> "↙";
-            case WEST -> "⭠";
-            case NORTH_WEST -> "↖";
-        };
-    }
-// not needed now
-//    public boolean isAt(Vector2d position) {
-//        return currentPosition.equals(position);
+//    @Override
+//    public String toString() {
+//        return switch (currentOrientation) {
+//            case NORTH -> "⭡";
+//            case NORTH_EAST -> "↗";
+//            case EAST -> "⭢";
+//            case SOUTH_EAST -> "↘";
+//            case SOUTH -> "⭣";
+//            case SOUTH_WEST -> "↙";
+//            case WEST -> "⭠";
+//            case NORTH_WEST -> "↖";
+//        };
 //    }
     /*
      * Methods
@@ -164,6 +177,12 @@ public class Animal implements WorldElement, Comparable<Animal> {
     public void updateAge() {
         if (isAlive) {
             this.currentAge += 1;
+        }
+    }
+
+    public void updateNumberOfDescendents() {
+        if (isAlive) {
+            this.numberOfDescendants++;
         }
     }
 
@@ -176,7 +195,6 @@ public class Animal implements WorldElement, Comparable<Animal> {
     public void reproduce() {
         this.currentEnergy -= config.energyToReproduce();
         this.numberOfChildren += 1;
-//        this.children.add(); // TODO later for statistics
     }
 
     // check if animal can reproduce, used in MapElementsManager
@@ -186,7 +204,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     // for eating
     public void gainEnergy() {
-        this.currentEnergy += min(config.energyGainedByEating(),maxEnergy);
+        this.currentEnergy = min(this.currentEnergy + config.energyGainedByEating(), maxEnergy);
         numberOfEatenPlants += 1;
     }
 

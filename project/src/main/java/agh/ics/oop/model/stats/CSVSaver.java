@@ -10,6 +10,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+/*
+ * Class for saving simulation statistics to a CSV file.
+ * The file is named "simulation_<mapId>.csv" where <mapId> is the unique identifier of the map.
+ * Each time the statistics change, a new line is appended to the CSV file with the following format:
+ * day;animals;plants;freeFields;avgEnergy;avgLifespan;avgChildren;mostPopularGenotype
+ * The class ensures that the header is written only once at the beginning of the file.
+ * */
 public class CSVSaver implements StatsChangeListener {
     private final Path csvFilePath;
     private static final String HEADER = "day;animals;plants;freeFields;avgEnergy;avgLifespan;avgChildren;mostPopularGenotype";
@@ -17,7 +24,7 @@ public class CSVSaver implements StatsChangeListener {
     private WorldMap map;
 
     public CSVSaver(WorldMap map) {
-        this.csvFilePath = Paths.get("simulation_" +map.getId() + ".csv");
+        this.csvFilePath = Paths.get("simulation_" + map.getId() + ".csv");
         this.map = map;
         initializeFile();
     }

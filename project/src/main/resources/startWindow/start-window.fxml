@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="agh.ics.oop.simulationGUI.StartWindowPresenter">
+            fx:controller="agh.ics.oop.simulationGUI.StartWindowPresenter"
+            stylesheets="@start-window.css"
+            styleClass="main-window"
+            prefWidth="650" prefHeight="550">
 
     <center>
-        <VBox spacing="20"
+        <VBox spacing="25"
               alignment="CENTER"
-              style="-fx-background-color: lightgray;">
+              styleClass="content-container">
 
-            <Button text="Start Simulation"
+            <Label text="Darwin World Simulation"
+                   styleClass="title-label"/>
+
+            <Button text="Start New Simulation"
                     fx:id="startButton"
-                    prefWidth="200"
+                    styleClass="menu-button"
                     onAction="#handleStartSimulation"/>
 
-            <Button text="Load from JSON"
+            <Button text="Load Config from JSON"
                     fx:id="loadFromJSON"
-                    prefWidth="200"
+                    styleClass="menu-button"
                     onAction="#handleLoadFromJson"/>
 
-            <Button text="Close"
+            <Button text="Exit Game"
                     fx:id="closeButton"
-                    prefWidth="200"
+                    styleClass="menu-button"
                     onAction="#handleClose"/>
         </VBox>
     </center>
