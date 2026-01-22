@@ -41,4 +41,17 @@ public record ConfigAnimal(
         this.maxMutations = maxMutations;
         this.genotypeLength = genotypeLength;
     }
+
+    //for tests
+    public ConfigAnimal withInitialEnergy(int energy) {
+        return new ConfigAnimal(initialAnimalCount, energy, maxEnergy, energyToReproduce, energyConsumedByMove, energyGainedByEating, minMutations, maxMutations, genotypeLength);
+    }
+
+    public ConfigAnimal withEnergyToReproduce(int energy) {
+        return new ConfigAnimal(initialAnimalCount, initialEnergy, maxEnergy, energy, energyConsumedByMove, energyGainedByEating, minMutations, maxMutations, genotypeLength);
+    }
+
+    public ConfigAnimal withMoveCost(int cost) {
+        return new ConfigAnimal(initialAnimalCount, initialEnergy, maxEnergy, energyToReproduce, cost, energyGainedByEating, minMutations, maxMutations, genotypeLength);
+    }
 }

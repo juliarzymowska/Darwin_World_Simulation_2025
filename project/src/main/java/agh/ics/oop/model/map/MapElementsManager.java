@@ -103,7 +103,24 @@ public class MapElementsManager {
         father.reproduce();
         mother.reproduce();
 
+        //Update number of descendents
+        Set<Animal> visited = new HashSet<>();
+        updateAncestorsRecursive(mother, visited);
+        updateAncestorsRecursive(father, visited);
+
         return Optional.of(new Animal(father, mother, currentDay));
+    }
+
+    private void updateAncestorsRecursive(Animal animal, Set<Animal> visited) {
+        if (animal == null || visited.contains(animal)) {
+            return;
+        }
+        visited.add(animal);
+
+        animal.updateNumberOfDescendents();
+
+        updateAncestorsRecursive(animal.getMother(), visited);
+        updateAncestorsRecursive(animal.getFather(), visited);
     }
 
 
