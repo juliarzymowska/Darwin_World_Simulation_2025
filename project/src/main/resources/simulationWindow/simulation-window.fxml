@@ -1,91 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.control.ChoiceBox?>
 
-<BorderPane minHeight="600.0" minWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="agh.ics.oop.simulationGUI.SimulationWindowPresenter">
+<BorderPane minHeight="700.0" minWidth="1100.0"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="agh.ics.oop.simulationGUI.SimulationWindowPresenter"
+            stylesheets="@simulation-window.css"
+            styleClass="main-window">
 
     <top>
-        <HBox alignment="CENTER" spacing="15" style="-fx-padding: 10; -fx-background-color: #ddd;">
-            <Button onAction="#onStartClicked" text="▶ Resume" style="-fx-font-weight: bold; -fx-text-fill: green;"/>
-            <Button onAction="#onPauseClicked" text="⏸ Pause" style="-fx-font-weight: bold; -fx-text-fill: red;"/>
+        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header-bar">
+            <Button onAction="#onStartClicked" text="▶ Resume" styleClass="action-button, resume-button"/>
+            <Button onAction="#onPauseClicked" text="⏸ Pause" styleClass="action-button, pause-button"/>
+
             <Separator orientation="VERTICAL"/>
+
             <ToggleButton fx:id="preferredFieldsToggle" onAction="#onShowPreferredFieldsClicked"
-                          text="Show Jungle Tiles"/>
+                          text="Show Jungle Tiles" styleClass="toggle-btn"/>
             <ToggleButton fx:id="dominantGenotypeToggle" onAction="#onShowDominantGenotypeClicked"
-                          text="Highlight Dominant Genotype"/>
+                          text="Highlight Dominant Genotype" styleClass="toggle-btn"/>
         </HBox>
     </top>
 
     <left>
-        <VBox spacing="8"
-              style="-fx-padding: 10; -fx-background-color: #eef; -fx-min-width: 200; -fx-border-color: #ccc; -fx-border-width: 0 1 0 0;">
-            <Label style="-fx-font-weight: bold; -fx-font-size: 14;" text="Tracked Animal"/>
-            <Label fx:id="trackedAnimalStatusLabel" text="(Click animal to track)" style="-fx-text-fill: #666;"/>
-            <Button fx:id="stopTrackingButton" text="Stop Tracking" onAction="#onStopTrackingClicked" disable="true"
-                    maxWidth="Infinity"/>
-            <Separator/>
+        <VBox spacing="10" styleClass="sidebar">
+            <Label styleClass="section-title" text="Tracked Animal"/>
 
-            <Label fx:id="trackedGenotypeLabel" text="Genotype: -" wrapText="true"/>
-            <Label fx:id="trackedActiveGeneLabel" text="Active Gene: -"/>
-            <Label fx:id="trackedEnergyLabel" text="Energy: -"/>
-            <Label fx:id="trackedEatenLabel" text="Eaten: -"/>
-            <Label fx:id="trackedChildrenLabel" text="Children: -"/>
-            <Label fx:id="trackedDescendantsLabel" text="Descendants: -"/>
-            <Label fx:id="trackedAgeLabel" text="Age: -"/>
-            <Label fx:id="trackedDeathDayLabel" text="Death Day: -"/>
+            <Label fx:id="trackedAnimalStatusLabel" text="(Click animal to track)" styleClass="status-label"/>
+
+            <Button fx:id="stopTrackingButton" text="Stop Tracking"
+                    onAction="#onStopTrackingClicked" disable="true"
+                    maxWidth="Infinity" styleClass="stop-button"/>
+
+            <Separator styleClass="sidebar-separator"/>
+
+            <VBox spacing="5" styleClass="stats-container">
+                <Label fx:id="trackedGenotypeLabel" text="Genotype: -" wrapText="true"/>
+                <Label fx:id="trackedActiveGeneLabel" text="Active Gene: -"/>
+                <Label fx:id="trackedEnergyLabel" text="Energy: -"/>
+                <Label fx:id="trackedEatenLabel" text="Eaten: -"/>
+                <Label fx:id="trackedChildrenLabel" text="Children: -"/>
+                <Label fx:id="trackedDescendantsLabel" text="Descendants: -"/>
+                <Label fx:id="trackedAgeLabel" text="Age: -"/>
+                <Label fx:id="trackedDeathDayLabel" text="Death Day: -"/>
+            </VBox>
         </VBox>
     </left>
 
     <center>
-        <StackPane fx:id="mapContainer" style="-fx-background-color: #eeeeee; -fx-padding: 20;">
-            <Canvas fx:id="mapCanvas" height="400.0" width="400.0"/>
+        <StackPane fx:id="mapContainer" styleClass="map-container">
+            <Canvas fx:id="mapCanvas"/>
         </StackPane>
     </center>
 
     <right>
-        <VBox spacing="10"
-              style="-fx-padding: 10; -fx-background-color: #ddd; -fx-min-width: 200; -fx-border-color: #ccc; -fx-border-width: 0 0 0 1;">
-            <Label style="-fx-font-weight: bold; -fx-font-size: 14;" text="Global Statistics"/>
+        <VBox spacing="10" styleClass="sidebar">
+            <Label styleClass="section-title" text="Global Statistics"/>
 
-            <Label fx:id="dayLabel" text="Day: 0"/>
-            <Label fx:id="animalCountLabel" text="Animals: 0"/>
-            <Label fx:id="plantCountLabel" text="Plants: 0"/>
-            <Label fx:id="emptyFieldsLabel" text="Empty Fields: 0"/>
-            <Label fx:id="avgEnergyLabel" text="Avg Energy: 0"/>
-            <Label fx:id="avgLifeSpanLabel" text="Avg LifeSpan: 0"/>
-            <Label fx:id="childrenCountLabel" text="Avg Children: 0"/>
+            <VBox spacing="5" styleClass="stats-container">
+                <Label fx:id="dayLabel" text="Day: 0" style="-fx-font-weight: bold;"/>
+                <Label fx:id="animalCountLabel" text="Animals: 0"/>
+                <Label fx:id="plantCountLabel" text="Plants: 0"/>
+                <Label fx:id="emptyFieldsLabel" text="Empty Fields: 0"/>
+                <Label fx:id="avgEnergyLabel" text="Avg Energy: 0"/>
+                <Label fx:id="avgLifeSpanLabel" text="Avg LifeSpan: 0"/>
+                <Label fx:id="childrenCountLabel" text="Avg Children: 0"/>
+            </VBox>
 
-            <Separator/>
+            <Separator styleClass="sidebar-separator"/>
 
+            <Label text="Dominant Genotype:" styleClass="subtitle-label"/>
             <Label fx:id="mostCommonGenotypeLabel"
-                   text="Most Common Genotype: N/A"
+                   text="-"
                    wrapText="true"
-                   style="-fx-font-family: 'monospaced';"/>
+                   styleClass="genotype-text"/>
         </VBox>
     </right>
 
     <bottom>
-        <VBox spacing="5" style="-fx-padding: 10;">
-            <Label text="Choose chart statistic:" style="-fx-font-weight: bold;"/>
-            <ChoiceBox fx:id="statChoiceBox" prefWidth="200.0"/>
-            <HBox alignment="CENTER" spacing="10" style="-fx-padding: 10;">
-                <LineChart fx:id="statsChart" prefHeight="150.0" HBox.hgrow="ALWAYS">
-                    <xAxis><NumberAxis side="BOTTOM" /></xAxis>
-                    <yAxis><NumberAxis side="LEFT" /></yAxis>
-                </LineChart>
+        <VBox spacing="5" styleClass="chart-section">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="Chart Statistic:" styleClass="subtitle-label"/>
+                <ChoiceBox fx:id="statChoiceBox" prefWidth="200.0"/>
             </HBox>
+
+            <LineChart fx:id="statsChart" prefHeight="180.0" createSymbols="false" legendVisible="false">
+                <xAxis>
+                    <NumberAxis label="Days" side="BOTTOM"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis side="LEFT"/>
+                </yAxis>
+            </LineChart>
         </VBox>
     </bottom>
 

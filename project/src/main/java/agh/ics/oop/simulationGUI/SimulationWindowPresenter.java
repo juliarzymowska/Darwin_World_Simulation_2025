@@ -55,9 +55,9 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     @FXML
     private LineChart<Number, Number> statsChart;
     private ChartManager chartManager;
-    private double cellSize;    // Calculated dynamically
-    private double offsetX;     // To center the map horizontally
-    private double offsetY;     // To center the map vertically
+    private double cellSize;
+    private double offsetX;
+    private double offsetY;
 
     private WorldMap worldMap;
     private Simulation simulation;
@@ -197,7 +197,7 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
         this.offsetX = (canvasW - mapWidth * cellSize) / 2;
         this.offsetY = (canvasH - mapHeight * cellSize) / 2;
 
-        gc.setFill(Color.LIGHTGREEN);
+        gc.setFill(Color.rgb(221, 229, 182));
         gc.fillRect(offsetX, offsetY, mapWidth * cellSize, mapHeight * cellSize);
 
         if (showPreferredFields) drawPreferredFields(gc);
@@ -206,9 +206,33 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
         drawObjects(gc);
     }
 
+    private void drawGrid(GraphicsContext gc) {
+        gc.setStroke(Color.rgb(173, 193, 120));
+        gc.setLineWidth(Math.max(0.5, cellSize * 0.05));
+
+        double gridWidth = mapWidth * cellSize;
+        double gridHeight = mapHeight * cellSize;
+
+        for (int x = 0; x <= mapWidth; x++) {
+            double xPos = offsetX + (x * cellSize);
+            gc.strokeLine(xPos, offsetY, xPos, offsetY + gridHeight);
+        }
+
+        for (int y = 0; y <= mapHeight; y++) {
+            double yPos = offsetY + (y * cellSize);
+            gc.strokeLine(offsetX, yPos, offsetX + gridWidth, yPos);
+        }
+    }
+
+    private Color getEnergyColor(Animal animal) {
+        int energy = animal.getEnergy();
+        double hue = (double) (energy * 240) / animal.getMaxEnergy();
+        return Color.hsb(hue, 1, 1);
+    }
+
     private void drawPreferredFields(GraphicsContext gc) {
         EarthMap map = (EarthMap) worldMap;
-        gc.setFill(Color.rgb(34, 139, 34, 0.5)); // Jungle Color
+        gc.setFill(Color.rgb(247, 244, 230)); // Jungle Color
 
         for (int x = 0; x < mapWidth; x++) {
             for (int y = 0; y < mapHeight; y++) {
@@ -233,7 +257,7 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
             if (pos.getX() < mapWidth && pos.getY() < mapHeight) {
                 double drawX = offsetX + (pos.getX() * cellSize);
                 double drawY = offsetY + ((mapHeight - 1 - pos.getY()) * cellSize);
-                gc.setFill(Color.DARKGREEN);
+                gc.setFill(Color.rgb(102, 109, 74));
                 gc.fillOval(drawX + cellSize * 0.2, drawY + cellSize * 0.2, cellSize * 0.6, cellSize * 0.6);
             }
         }
@@ -251,13 +275,13 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
 
                 // Highlights
                 if (animal.equals(trackedAnimal)) {
-                    gc.setStroke(Color.GOLD);
+                    gc.setStroke(Color.rgb(251, 111, 146));
                     gc.setLineWidth(Math.max(1.5, cellSize * 0.1));
                     gc.strokeOval(drawX, drawY, cellSize, cellSize);
                 }
 
                 if (showDominantGenotype && topGenotypes.contains(animal.getGenotype())) {
-                    gc.setStroke(Color.MAGENTA);
+                    gc.setStroke(Color.rgb(255, 215, 0));
                     gc.setLineWidth(Math.max(1.0, cellSize * 0.08));
                     gc.strokeOval(drawX, drawY, cellSize, cellSize);
                 }
@@ -379,29 +403,6 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
         drawMap();
     }
 
-    private void drawGrid(GraphicsContext gc) {
-        gc.setStroke(Color.rgb(180, 255, 180));
-        gc.setLineWidth(Math.max(0.5, cellSize * 0.05));
-
-        double gridWidth = mapWidth * cellSize;
-        double gridHeight = mapHeight * cellSize;
-
-        for (int x = 0; x <= mapWidth; x++) {
-            double xPos = offsetX + (x * cellSize);
-            gc.strokeLine(xPos, offsetY, xPos, offsetY + gridHeight);
-        }
-
-        for (int y = 0; y <= mapHeight; y++) {
-            double yPos = offsetY + (y * cellSize);
-            gc.strokeLine(offsetX, yPos, offsetX + gridWidth, yPos);
-        }
-    }
-
-    private Color getEnergyColor(Animal animal) {
-        int energy = animal.getEnergy();
-        double hue = (double) (energy * 240) / animal.getMaxEnergy();
-        return Color.hsb(hue, 1, 1);
-    }
 
     // empty implementation, not used in GUI
     @Override
