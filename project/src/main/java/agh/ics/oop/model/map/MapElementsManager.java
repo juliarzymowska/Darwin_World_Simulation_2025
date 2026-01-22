@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 /*
  * Class for managing map elements (animals and plants).
  * (should be) thread-safe
+ * MANAGES PLANTS AND ANIMALS ON POSITION NOT THE WHOLE MAP
  * */
 public class MapElementsManager {
     // Thread-safe map for animal lists
@@ -46,7 +47,7 @@ public class MapElementsManager {
         return new ArrayList<>(plants.values());
     }
 
-    public List<Vector2d> getPositionsWithAnimalsAndPlants() {
+    List<Vector2d> getPositionsWithAnimalsAndPlants() {
         List<Vector2d> result = new ArrayList<>();
         for (Vector2d pos : animals.keySet()) {
             if (plants.containsKey(pos)) {
@@ -79,7 +80,7 @@ public class MapElementsManager {
         }
     }
 
-    public Optional<Animal> reproduceAtPosition(Vector2d position, int currentDay) {
+    protected Optional<Animal> reproduceAtPosition(Vector2d position, int currentDay) {
         List<Animal> animalsAtPosition = animals.get(position);
 
         if (animalsAtPosition == null || animalsAtPosition.size() < 2) {
