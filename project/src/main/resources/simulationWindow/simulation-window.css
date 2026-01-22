@@ -140,3 +140,23 @@
 .chart-line-symbol {
     -fx-background-color: -fx-petal-rouge, white;
 }
+
+/* Add this to your CSS file */
+.log-list {
+    -fx-background-color: rgba(255, 255, 255, 0.5);
+    -fx-background-radius: 5;
+    -fx-border-color: -fx-cherry;
+    -fx-border-radius: 5;
+    -fx-font-family: "Monospaced"; /* Code-like font for logs */
+    -fx-font-size: 10px;
+}
+
+/* Hide the weird default gray background of empty list cells */
+.log-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333;
+}
+
+.log-list .list-cell:empty {
+    -fx-background-color: transparent;
+}
