@@ -1,11 +1,15 @@
 package agh.ics.oop.model.elements;
 
+import agh.ics.oop.model.util.MapDirection;
 import agh.ics.oop.model.util.Vector2d;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GenotypeTest {
+    private Animal createDefaultAnimal(){
+        return new Animal(new Vector2d(0,0), 100, new Genotype(8), MapDirection.NORTH);
+    }
 
     @Test
     void shouldCreateGenotypeWithValidLength() {
@@ -63,8 +67,8 @@ public class GenotypeTest {
 
     @Test
     void shouldCreateChildGenotype() {
-        Animal father = new Animal(new Vector2d(0, 0));
-        Animal mother = new Animal(new Vector2d(0, 0));
+        Animal father = createDefaultAnimal();
+        Animal mother = createDefaultAnimal();
         father.setCurrentEnergy(100);
         mother.setCurrentEnergy(100);
 
@@ -77,8 +81,8 @@ public class GenotypeTest {
 
     @Test
     void shouldInheritGenesFromParents() {
-        Animal father = new Animal(new Vector2d(0, 0));
-        Animal mother = new Animal(new Vector2d(0, 0));
+        Animal father = createDefaultAnimal();
+        Animal mother = createDefaultAnimal();
         father.setCurrentEnergy(80);
         mother.setCurrentEnergy(120);
 
@@ -91,8 +95,8 @@ public class GenotypeTest {
 
     @Test
     void shouldHandleEqualParentEnergies() {
-        Animal father = new Animal(new Vector2d(0, 0));
-        Animal mother = new Animal(new Vector2d(0, 0));
+        Animal father = createDefaultAnimal();
+        Animal mother = createDefaultAnimal();
         father.setCurrentEnergy(100);
         mother.setCurrentEnergy(100);
 

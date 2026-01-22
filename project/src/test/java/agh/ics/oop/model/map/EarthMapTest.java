@@ -21,6 +21,10 @@ public class EarthMapTest {
         return new ConfigMap(width, height, startPlants, 0, MapType.EARTH_MAP, 0, 0, 0);
     }
 
+    private Animal createDefaultAnimal(Vector2d pos, MapDirection dir){
+        return new Animal(pos, 100, new Genotype(8), dir);
+    }
+
     @BeforeEach
     void setUp() {
         map = new EarthMap(new ConfigMap(10, 10, 5, 0, MapType.EARTH_MAP, 0, 0, 0));
@@ -147,23 +151,20 @@ public class EarthMapTest {
 
     @Test
     void shouldPlaceAnimalAtValidPosition() {
-        Animal animal = new Animal(new Vector2d(5, 5));
-        animal.setCurrentEnergy(100);
+        Animal animal = createDefaultAnimal(new Vector2d(5,5), MapDirection.NORTH_WEST);
         map.placeAnimal(animal);
         assertTrue(map.isOccupied(new Vector2d(5, 5)));
     }
 
     @Test
     void shouldNotAllowPlacingAnimalOutsideBounds() {
-        Animal animal = new Animal(new Vector2d(-1, 5));
-        animal.setCurrentEnergy(100);
+        Animal animal = createDefaultAnimal(new Vector2d(-1, 5), MapDirection.NORTH);
         assertThrows(AssertionError.class, () -> map.placeAnimal(animal));
     }
 
     @Test
     void shouldRemoveAnimal() {
-        Animal animal = new Animal(new Vector2d(5, 5));
-        animal.setCurrentEnergy(100);
+        Animal animal = createDefaultAnimal(new Vector2d(5, 5), MapDirection.NORTH_WEST);
         map.placeAnimal(animal);
         map.getElementsManager().removeAnimal(animal);
         assertFalse(map.isOccupied(new Vector2d(5, 5)));
@@ -176,8 +177,7 @@ public class EarthMapTest {
 
     @Test
     void shouldReturnObjectAtPosition() {
-        Animal animal = new Animal(new Vector2d(5, 5));
-        animal.setCurrentEnergy(100);
+        Animal animal = createDefaultAnimal(new Vector2d(5, 5), MapDirection.NORTH);
         map.placeAnimal(animal);
         assertNotNull(map.objectAt(new Vector2d(5, 5)));
     }
@@ -189,7 +189,7 @@ public class EarthMapTest {
 
     @Test
     void shouldReturnAnimalAtPosition() {
-        Animal animal = new Animal(new Vector2d(5, 5));
+        Animal animal = createDefaultAnimal(new Vector2d(5, 5), MapDirection.NORTH_WEST);
         map.placeAnimal(animal);
         Optional<List<Animal>> animals = map.getElementsManager().animalAt(new Vector2d(5, 5));
         assertTrue(animals.isPresent());
@@ -211,9 +211,9 @@ public class EarthMapTest {
 
     @Test
     void shouldReturnAllAnimals() {
-        Animal animal1 = new Animal(new Vector2d(1, 1));
+        Animal animal1 = createDefaultAnimal(new Vector2d(1, 1), MapDirection.NORTH);
         animal1.setCurrentEnergy(100);
-        Animal animal2 = new Animal(new Vector2d(2, 2));
+        Animal animal2 = createDefaultAnimal(new Vector2d(2, 2), MapDirection.NORTH);
         animal2.setCurrentEnergy(100);
         map.placeAnimal(animal1);
         map.placeAnimal(animal2);
@@ -222,9 +222,9 @@ public class EarthMapTest {
 
     @Test
     void shouldHandleMultipleAnimalsAtSamePosition() {
-        Animal animal1 = new Animal(new Vector2d(5, 5));
+        Animal animal1 = createDefaultAnimal(new Vector2d(5, 5), MapDirection.NORTH_WEST);
         animal1.setCurrentEnergy(100);
-        Animal animal2 = new Animal(new Vector2d(5, 5));
+        Animal animal2 = createDefaultAnimal(new Vector2d(5, 5), MapDirection.NORTH);
         animal2.setCurrentEnergy(100);
         map.placeAnimal(animal1);
         map.placeAnimal(animal2);

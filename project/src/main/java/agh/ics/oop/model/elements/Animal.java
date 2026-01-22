@@ -20,6 +20,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
             numberOfDescendants = 0, dayOfBirth = 0, dayOfDeath = -1;
     private boolean isAlive = true;
     private final Genotype genotype;
+    private Animal mother, father;
 
 
     /*
@@ -44,6 +45,8 @@ public class Animal implements WorldElement, Comparable<Animal> {
      * */
     public Animal(Animal father, Animal mother, int currentDay) {
         this.config = father.config;
+        this.mother = mother;
+        this.father = father;
         this.currentPosition = new Vector2d(father.getCurrentPosition().getX(), father.getCurrentPosition().getY());
         this.genotype = new Genotype(father, mother, config.minMutations(), config.maxMutations());
         this.currentOrientation = MapDirection.getRandomDirection();
@@ -59,10 +62,12 @@ public class Animal implements WorldElement, Comparable<Animal> {
      * @param genotype - genotype of animal
      * */
     public Animal(Vector2d position, int energy, Genotype genotype, MapDirection orientation) {
+        this.config = new ConfigAnimal();
         this.currentPosition = position;
         this.genotype = genotype;
         this.currentEnergy = energy;
         this.currentOrientation = orientation;
+        this.maxEnergy = config.maxEnergy();
     }
 
     /*
@@ -114,6 +119,14 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     public int getMaxEnergy() {
         return maxEnergy;
+    }
+
+    public Animal getMother(){
+        return mother;
+    }
+
+    public Animal getFather(){
+        return father;
     }
 
     /*
@@ -171,6 +184,12 @@ public class Animal implements WorldElement, Comparable<Animal> {
         }
     }
 
+    public void updateNumberOfDescendents(){
+        if(isAlive){
+            this.numberOfDescendants++;
+        }
+    }
+
     // for movement
     private void decreaseEnergy() {
         this.currentEnergy = max(0, currentEnergy - config.energyConsumedByMove());
@@ -180,7 +199,6 @@ public class Animal implements WorldElement, Comparable<Animal> {
     public void reproduce() {
         this.currentEnergy -= config.energyToReproduce();
         this.numberOfChildren += 1;
-//        this.children.add(); // TODO later for statistics
     }
 
     // check if animal can reproduce, used in MapElementsManager

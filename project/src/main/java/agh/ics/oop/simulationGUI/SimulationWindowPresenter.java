@@ -101,7 +101,6 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
         double y = event.getY();
 
         int col = (int) (x / CELL_SIZE);
-        // The "Fixed" formula (without the -1)
         int row = (int) (mapHeight - (y / CELL_SIZE));
 
         // Safety check for bounds
@@ -112,33 +111,28 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
         Vector2d position = new Vector2d(col, row);
 
         if (worldMap instanceof EarthMap map) {
-            // Use your helper method to find the animal
             Animal clickedAnimal = map.getAnimalAt(position);
 
             if (clickedAnimal != null) {
                 this.trackedAnimal = clickedAnimal;
                 stopTrackingButton.setDisable(false);
                 updateTrackedAnimalStats();
-                drawMap(); // Redraw to show the gold ring
+                drawMap();
             }
         }
     }
 
     @FXML
     private void onStopTrackingClicked() {
-        // 1. Wyczyszczenie referencji
         this.trackedAnimal = null;
 
-        // 2. Zablokowanie przycisku
         stopTrackingButton.setDisable(true);
 
-        // 3. Reset UI - tekstów informacyjnych
         trackedAnimalStatusLabel.setText("Status: not tracking");
         trackedAnimalStatusLabel.setStyle("-fx-text-fill: black;");
 
-        clearTrackedStats(); // Wywołanie metody czyszczącej liczby
+        clearTrackedStats();
 
-        // 4. Odświeżenie mapy (usunięcie złotego pierścienia)
         drawMap();
     }
 
@@ -230,15 +224,12 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
                     gc.setFill(getEnergyColor(animal));
                     gc.fillOval(drawX, drawY, CELL_SIZE, CELL_SIZE);
 
-                    // A. Tracked Animal Ring
                     if (animal.equals(trackedAnimal)) {
                         gc.setStroke(Color.GOLD);
                         gc.setLineWidth(3);
                         gc.strokeOval(drawX - 2, drawY - 2, CELL_SIZE + 4, CELL_SIZE + 4);
                     }
 
-                    // B. Dominant Genotype Ring (Only if Paused + Toggled)
-                    // (Requirement: "Wyróżnianie wizualne... (+2xp)")
                     if (showDominantGenotype && topGenotypes.contains(animal.getGenotype())) {
                         gc.setStroke(Color.MAGENTA);
                         gc.setLineWidth(2);
@@ -309,19 +300,18 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     private void updateTrackedAnimalStats() {
         if (trackedAnimal != null) {
             // Podświetlenie statusu (Żyje/Martwy)
-            if (trackedAnimal.getDayOfDeath() != -1) { // Zakładam, że -1 oznacza, że żyje
+            if (trackedAnimal.getDayOfDeath() != -1) {
                 trackedAnimalStatusLabel.setText("Status: DEAD (ID: " + trackedAnimal.hashCode() + ")");
                 trackedAnimalStatusLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
-                trackedDeathDayLabel.setText("Dzień śmierci: " + trackedAnimal.getDayOfDeath());
+                trackedDeathDayLabel.setText("Death Day: " + trackedAnimal.getDayOfDeath());
             } else {
                 trackedAnimalStatusLabel.setText("Status: ALIVE (ID: " + trackedAnimal.hashCode() + ")");
                 trackedAnimalStatusLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
-                trackedDeathDayLabel.setText("Dzień śmierci: -");
+                trackedDeathDayLabel.setText("Death Day: -");
             }
 
             // Aktualizacja genotypu i aktywnego genu
             trackedGenotypeLabel.setText("Genotype: " + trackedAnimal.getGenotype());
-            // Upewnij się, że masz metodę getActiveGene() w klasie Genotype/Animal
             trackedActiveGeneLabel.setText("Active gen: " + trackedAnimal.getGenotype().getActiveGeneIndex());
 
             // Statystyki liczbowe
@@ -361,9 +351,6 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
         this.showDominantGenotype = dominantGenotypeToggle.isSelected();
         drawMap();
     }
-
-    // ... autoScaleMap, drawGrid, getEnergyColor helpers ...
-    // (Keep them as they were in previous answers)
 
     private void drawGrid(GraphicsContext gc) {
         gc.setStroke(Color.rgb(180, 255, 180));
