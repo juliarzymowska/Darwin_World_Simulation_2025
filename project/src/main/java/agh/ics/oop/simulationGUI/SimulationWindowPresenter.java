@@ -8,7 +8,6 @@ import agh.ics.oop.model.observators.StatsChangeListener;
 import agh.ics.oop.model.stats.StatsRecord;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.simulation.Simulation;
-import com.sun.javafx.scene.control.SelectedItemsReadOnlyObservableList;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -42,12 +41,6 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     Label dayLabel, animalCountLabel, plantCountLabel, emptyFieldsLabel, avgEnergyLabel, avgLifeSpanLabel, childrenCountLabel, mostCommonGenotypeLabel;
     @FXML
     Label trackedAnimalStatusLabel, trackedGenotypeLabel, trackedActiveGeneLabel, trackedEnergyLabel, trackedEatenLabel, trackedChildrenLabel, trackedDescendantsLabel, trackedAgeLabel, trackedDeathDayLabel;
-
-    // debug mode
-    @FXML
-    private ListView<String> logListView;
-
-    private boolean isDebugMode = false;
 
     // simulation state
     private WorldMap worldMap;
@@ -164,39 +157,11 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(this::drawMap);
-        logMessage(message);
-    }
-
-    // debug mode
-    public void setDebugMode(boolean debugMode) {
-        this.isDebugMode = debugMode;
-        if (!debugMode) {
-            logListView.setVisible(false);
-            logListView.setManaged(false);
-        }
     }
 
     /*
      * Others
      * */
-
-    // helper for debug mode
-    private void logMessage(String message) {
-        if (!isDebugMode || message == null || message.isEmpty()) return;
-
-        Platform.runLater(() -> {
-            logListView.getItems().add(message);
-
-            // Auto-scroll
-            logListView.scrollTo(logListView.getItems().size() - 1);
-
-            // Limit history -> better optimization
-            if (logListView.getItems().size() > 100) {
-                logListView.getItems().remove(0);
-            }
-        });
-    }
-
 
     @Override
     public void statsChanged(StatsRecord stats) {
@@ -209,21 +174,7 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
 
     @Override
     public void handleDeadAnimals(List<Animal> deadAnimals) {
-        if (deadAnimals.isEmpty()) return;
-
-        int count = deadAnimals.size();
-        if (count == 0) {
-            String message = "✝ No animals died.";
-            logMessage(message);
-        }
-        if (count == 1) {
-            String message = String.format("✝ %d animal died");
-            logMessage(message);
-        } else {
-            String message = String.format("✝ %d animals died.", count);
-            logMessage(message);
-        }
-
+        // empty
     }
 
     public void onWindowClose() {

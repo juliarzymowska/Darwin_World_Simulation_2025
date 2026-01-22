@@ -150,13 +150,3 @@
     -fx-font-family: "Monospaced"; /* Code-like font for logs */
     -fx-font-size: 10px;
 }
-
-/* Hide the weird default gray background of empty list cells */
-.log-list .list-cell {
-    -fx-background-color: transparent;
-    -fx-text-fill: #333;
-}
-
-.log-list .list-cell:empty {
-    -fx-background-color: transparent;
-}

@@ -123,7 +123,6 @@ public class StartWindowPresenter {
             SimulationWindowPresenter presenter = loader.getController();
             presenter.setSimulation(simulation);
 
-            presenter.setDebugMode(builder.isDebugMode());
 
             Stage stage = new Stage();
             stage.setTitle("Darwin World - Simulation ID: " + simulation.hashCode());
