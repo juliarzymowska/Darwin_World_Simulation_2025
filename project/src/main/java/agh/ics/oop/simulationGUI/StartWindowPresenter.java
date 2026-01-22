@@ -12,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.stage.FileChooser;
@@ -19,6 +20,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class StartWindowPresenter {
     @FXML
@@ -93,6 +95,12 @@ public class StartWindowPresenter {
             Stage stage = new Stage();
             stage.setScene(scene);
             stage.setTitle("Configuration");
+            try {
+                Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/startWindow/icon.png")));
+                stage.getIcons().add(icon);
+            } catch (Exception e) {
+                System.err.println("Icon not found.");
+            }
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -120,6 +128,12 @@ public class StartWindowPresenter {
             Stage stage = new Stage();
             stage.setTitle("Darwin World - Simulation ID: " + simulation.hashCode());
             stage.setScene(new Scene(root));
+            try {
+                Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/startWindow/icon.png")));
+                stage.getIcons().add(icon);
+            } catch (Exception e) {
+                System.err.println("Icon not found.");
+            }
 
             stage.setOnCloseRequest(event -> {
                 presenter.onWindowClose();
