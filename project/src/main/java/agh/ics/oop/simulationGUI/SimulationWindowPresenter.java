@@ -226,21 +226,22 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     private void drawObjects(GraphicsContext gc) {
         if (!(worldMap instanceof EarthMap map)) return;
 
-        gc.setFill(Color.DARKGREEN);
         for (Plant plant : map.getElementsManager().getPlants()) {
-            Vector2d pos = plant.getCurrentPosition();
+            if (plant == null || plant.getCurrentPosition() == null) continue;
 
+            Vector2d pos = plant.getCurrentPosition();
             if (pos.getX() < mapWidth && pos.getY() < mapHeight) {
                 double drawX = offsetX + (pos.getX() * cellSize);
                 double drawY = offsetY + ((mapHeight - 1 - pos.getY()) * cellSize);
-
+                gc.setFill(Color.DARKGREEN);
                 gc.fillOval(drawX + cellSize * 0.2, drawY + cellSize * 0.2, cellSize * 0.6, cellSize * 0.6);
             }
         }
 
         for (Animal animal : map.getElementsManager().getAnimals()) {
-            Vector2d pos = animal.getCurrentPosition();
+            if (animal == null || animal.getCurrentPosition() == null) continue; // SKIP NULLS
 
+            Vector2d pos = animal.getCurrentPosition();
             if (pos.getX() < mapWidth && pos.getY() < mapHeight) {
                 double drawX = offsetX + (pos.getX() * cellSize);
                 double drawY = offsetY + ((mapHeight - 1 - pos.getY()) * cellSize);
@@ -380,21 +381,16 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
 
     private void drawGrid(GraphicsContext gc) {
         gc.setStroke(Color.rgb(180, 255, 180));
-        // Optional: Make the line thinner if cells are tiny so the map isn't all green
         gc.setLineWidth(Math.max(0.5, cellSize * 0.05));
 
         double gridWidth = mapWidth * cellSize;
         double gridHeight = mapHeight * cellSize;
 
-        // 1. Draw Vertical Lines
-        // Start at offsetX, move right by cellSize each time
         for (int x = 0; x <= mapWidth; x++) {
             double xPos = offsetX + (x * cellSize);
             gc.strokeLine(xPos, offsetY, xPos, offsetY + gridHeight);
         }
 
-        // 2. Draw Horizontal Lines
-        // Start at offsetY, move down by cellSize each time
         for (int y = 0; y <= mapHeight; y++) {
             double yPos = offsetY + (y * cellSize);
             gc.strokeLine(offsetX, yPos, offsetX + gridWidth, yPos);
