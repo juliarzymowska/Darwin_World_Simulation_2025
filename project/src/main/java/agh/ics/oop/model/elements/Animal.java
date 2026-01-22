@@ -112,6 +112,10 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return numberOfDescendants;
     }
 
+    public int getMaxEnergy() {
+        return maxEnergy;
+    }
+
     /*
      * Setters (mostly for testing)
      * */
@@ -186,7 +190,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     // for eating
     public void gainEnergy() {
-        this.currentEnergy += min(config.energyGainedByEating(),maxEnergy);
+        this.currentEnergy = min(this.currentEnergy  +config.energyGainedByEating(),maxEnergy);
         numberOfEatenPlants += 1;
     }
 
