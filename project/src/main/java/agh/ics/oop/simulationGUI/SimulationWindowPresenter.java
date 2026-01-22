@@ -177,10 +177,8 @@ public class SimulationWindowPresenter implements MapChangeListener, StatsChange
     private Color getEnergyColor(Animal animal) {
         // Visualizing energy: Red (low) -> Yellow -> Blue (high)
         int energy = animal.getEnergy();
-        if (energy < 10) return Color.RED;
-        if (energy < 30) return Color.ORANGE;
-        if (energy < 50) return Color.YELLOW;
-        return Color.BLUE;
+        double hue = (double) (energy * 240) /animal.getMaxEnergy();
+        return Color.hsb(hue,1.0,1.0);
     }
 
     private void autoScaleMap() {

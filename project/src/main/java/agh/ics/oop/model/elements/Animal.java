@@ -47,6 +47,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
         this.currentPosition = new Vector2d(father.getCurrentPosition().getX(), father.getCurrentPosition().getY());
         this.genotype = new Genotype(father, mother, config.minMutations(), config.maxMutations());
         this.currentOrientation = MapDirection.getRandomDirection();
+        this.maxEnergy = father.getMaxEnergy();
         this.currentEnergy = 2 * config.energyToReproduce(); // energy from parents, apply reproduction cost from config
         this.dayOfBirth = currentDay;
     }
@@ -110,6 +111,10 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     public int getNumberOfDescendants() {
         return numberOfDescendants;
+    }
+
+    public int getMaxEnergy(){
+        return maxEnergy;
     }
 
     /*
@@ -186,7 +191,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     // for eating
     public void gainEnergy() {
-        this.currentEnergy += min(config.energyGainedByEating(),maxEnergy);
+        this.currentEnergy = min(this.currentEnergy+config.energyGainedByEating(),maxEnergy);
         numberOfEatenPlants += 1;
     }
 
