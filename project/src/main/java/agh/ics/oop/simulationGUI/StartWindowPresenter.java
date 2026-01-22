@@ -31,7 +31,7 @@ public class StartWindowPresenter {
     private final SimulationEngine simulationEngine = new SimulationEngine();
 
     @FXML
-    private void handleStartSimulation() throws ConfigurationException {
+    private void handleStartSimulation() {
         try {
             ConfigAnimal defaultAnimal = new ConfigAnimal();
             ConfigMap defaultMap = new ConfigMap();
@@ -62,7 +62,6 @@ public class StartWindowPresenter {
             try {
                 ConfigLoadFromJSON parser = new ConfigLoadFromJSON(selectedFile.getAbsolutePath());
                 ConfigBuilder builder = parser.loadConfig();
-//                System.out.println("Configuration loaded successfully!");
 
                 openConfigurationWindow(builder);
             } catch (ConfigurationException | IOException e) {
@@ -71,7 +70,6 @@ public class StartWindowPresenter {
                 alert.setHeaderText("Error loading JSON");
                 alert.setContentText(e.getMessage());
                 alert.showAndWait();
-//                e.printStackTrace();
             }
         }
     }
@@ -108,43 +106,33 @@ public class StartWindowPresenter {
 
     private void openSimulationWindow(ConfigBuilder builder) {
         try {
-            // 1. Convert Builder to Records
-            // (Assuming you don't have a builder.build() method, we construct them manually here)
             ConfigAnimal configAnimal = builder.buildAnimalConfig();
             ConfigMap configMap = builder.buildMapConfig();
 
-            // 2. Create the Simulation
             Simulation simulation = new Simulation(configAnimal, configMap, builder.getMoveDelay(), builder.isSaveToCSV());
 
-            // 3. Load the Simulation Window FXML
             FXMLLoader loader = new FXMLLoader(
                     getClass().getClassLoader().getResource("simulationWindow/simulation-window.fxml")
             );
             Parent root = loader.load();
 
-            // 4. Get the Presenter and pass the Simulation to it
             SimulationWindowPresenter presenter = loader.getController();
             presenter.setSimulation(simulation);
 
-            // 5. Setup the Stage
             Stage stage = new Stage();
             stage.setTitle("Darwin World - Simulation ID: " + simulation.hashCode());
             stage.setScene(new Scene(root));
 
-            // Ensure simulation stops when window closes
             stage.setOnCloseRequest(event -> {
                 presenter.onWindowClose();
                 simulation.shutDown();
             });
 
             stage.show();
-
-            // 6. Start the Simulation on a separate thread
-            simulationEngine.runAsyncInThreadPool(simulation);
+            simulationEngine.addSimulation(simulation);
 
         } catch (IOException e) {
             e.printStackTrace();
-            // Ideally show an Alert here if FXML fails to load
         }
     }
 

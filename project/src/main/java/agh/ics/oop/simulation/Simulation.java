@@ -18,7 +18,6 @@ public class Simulation implements Runnable {
     private final SimulationStatsTracker statsTracker;
     private final int moveDelay;
 
-    // Thread control
     private volatile boolean running = false;
     private volatile boolean paused = true;
     private final Object pauseLock = new Object();
@@ -79,8 +78,6 @@ public class Simulation implements Runnable {
             feromonMap.decreaseFeromons();
         }
 
-        // Stats are updated via observers automatically,
-        // but we trigger mapChanged to notify UI
         map.mapChanged(map, "Day " + currentDay);
         statsTracker.updateStats(currentDay);
 
@@ -102,7 +99,7 @@ public class Simulation implements Runnable {
 
     public void shutDown() {
         running = false;
-        resume(); // break wait if paused
+        resume();
     }
 
     public WorldMap getMap() {
@@ -124,6 +121,13 @@ public class Simulation implements Runnable {
             if (!map.isOccupied(position) || map.canMoveTo(position)) {
                 map.placeAnimal(newAnimal);
             }
+        }
+    }
+
+    public void stop() {
+        if (running) {
+            running = false;
+            resume();
         }
     }
 }

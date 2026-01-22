@@ -7,17 +7,16 @@ import agh.ics.oop.model.util.NormalPositionGenerator;
 import agh.ics.oop.model.util.Vector2d;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-/*
- * MapElementsManager class.
- * Manages the elements (animals and plants) on the map.
- * MANAGES ONLY AT POSITION LEVEL, NOT THE WHOLE MAP LOGIC!!!
- * Reproduction, movement and other logic should be handled in AbstractWorldMap or its subclasses.
- * */
 public class MapElementsManager {
-    private final Map<Vector2d, List<Animal>> animals = new HashMap<>();
-    private final Map<Vector2d, Plant> plants = new HashMap<>();
+    // Thread-safe map for animal lists (Key: Position, Value: Thread-safe List of Animals)
+    private final Map<Vector2d, List<Animal>> animals = new ConcurrentHashMap<>();
+
+    // Thread-safe map for plants
+    private final Map<Vector2d, Plant> plants = new ConcurrentHashMap<>();
 
     /*
      * PLANTS LOGIC
@@ -26,9 +25,8 @@ public class MapElementsManager {
     public void addPlants(int n, int x, int y) {
         NormalPositionGenerator randomPositionGenerator = new NormalPositionGenerator(n, x, y);
         for (Vector2d v : randomPositionGenerator) {
-            if (!plants.containsKey(v)) {
-                this.plants.put(v, new Plant(v));
-            }
+            // putIfAbsent is atomic and thread-safe
+            plants.putIfAbsent(v, new Plant(v));
         }
     }
 
@@ -41,17 +39,20 @@ public class MapElementsManager {
     }
 
     public List<Plant> getPlants() {
+        // Returns a safe snapshot of the values
         return new ArrayList<>(plants.values());
     }
 
-    // get all positions where there are both animals and plants
-    // used in EarthMap.consumePlants()
     public List<Vector2d> getPositionsWithAnimalsAndPlants() {
-        return animals.keySet().stream()
-                .filter(plants::containsKey)
-                .toList();
+        // Thread-safe iteration over keys
+        List<Vector2d> result = new ArrayList<>();
+        for (Vector2d pos : animals.keySet()) {
+            if (plants.containsKey(pos)) {
+                result.add(pos);
+            }
+        }
+        return result;
     }
-
 
     /*
      * ANIMAL LOGIC
@@ -59,51 +60,51 @@ public class MapElementsManager {
 
     public void placeAnimal(Animal animal) {
         Vector2d position = animal.getCurrentPosition();
-        if (animals.containsKey(position)) {
-            animals.get(position).add(animal);
-        } else {
-            List<Animal> list = new ArrayList<>();
-            list.add(animal);
-            animals.put(position, list);
-        }
+        // Atomically get the list or create a new CopyOnWriteArrayList (safe for iteration)
+        animals.computeIfAbsent(position, k -> new CopyOnWriteArrayList<>()).add(animal);
     }
 
     public void removeAnimal(Animal animal) {
         if (animal == null) return;
         Vector2d position = animal.getCurrentPosition();
-        List<Animal> list = animals.get(position);
 
-        if (list == null) return;
-
-        list.remove(animal);
-        if (list.isEmpty()) animals.remove(position);
+        List<Animal> cellAnimals = animals.get(position);
+        if (cellAnimals != null) {
+            cellAnimals.remove(animal);
+            // Clean up empty keys (optional, but good for memory)
+            if (cellAnimals.isEmpty()) {
+                animals.remove(position);
+            }
+        }
     }
 
-    protected Optional<Animal> reproduceAtPosition(Vector2d position, int currentDay) {
+    public Optional<Animal> reproduceAtPosition(Vector2d position, int currentDay) {
         List<Animal> animalsAtPosition = animals.get(position);
-        if (animalsAtPosition.size() < 2) {
-            return Optional.empty(); // Not enough animals to reproduce
+
+        // Defensive check
+        if (animalsAtPosition == null || animalsAtPosition.size() < 2) {
+            return Optional.empty();
         }
 
-        // Filter animals with enough energy to reproduce
-        List<Animal> eligibleAnimals = animalsAtPosition.stream()
-                .filter(Animal::validateReproduction) // alive and enough energy
-                .sorted() // Uses compareTo for priority
+        // Create a local copy to sort/filter safely without modifying the map
+        List<Animal> sortedAnimals = new ArrayList<>(animalsAtPosition);
+
+        List<Animal> eligibleAnimals = sortedAnimals.stream()
+                .filter(Animal::validateReproduction)
+                .sorted()
                 .toList();
 
         if (eligibleAnimals.size() < 2) {
             return Optional.empty();
         }
 
-        // Take top 2 animals
         Animal father = eligibleAnimals.get(0);
         Animal mother = eligibleAnimals.get(1);
 
-        // Remove energy and update stats
         father.reproduce();
         mother.reproduce();
 
-        //Update number of descendents
+        // Update descendants
         Set<Animal> visited = new HashSet<>();
         updateAncestorsRecursive(mother, visited);
         updateAncestorsRecursive(father, visited);
@@ -116,30 +117,30 @@ public class MapElementsManager {
             return;
         }
         visited.add(animal);
-
         animal.updateNumberOfDescendents();
-
         updateAncestorsRecursive(animal.getMother(), visited);
         updateAncestorsRecursive(animal.getFather(), visited);
     }
 
-
     public Optional<List<Animal>> animalAt(Vector2d position) {
-        return Optional.ofNullable(animals.get(position));
+        List<Animal> list = animals.get(position);
+        // Return a copy to ensure caller doesn't hit concurrency issues later
+        return list == null ? Optional.empty() : Optional.of(new ArrayList<>(list));
     }
 
-    // get all positions where there are at least 2 animals
-    // used for reproduction
-    protected List<Vector2d> getPositionsWithMultipleAnimals() {
-        return getAnimals().stream()
-                .collect(Collectors.groupingBy(Animal::getCurrentPosition))
-                .entrySet().stream()
-                .filter(entry -> entry.getValue().size() >= 2)
-                .map(Map.Entry::getKey)
-                .toList();
+    public List<Vector2d> getPositionsWithMultipleAnimals() {
+        List<Vector2d> result = new ArrayList<>();
+        for (Map.Entry<Vector2d, List<Animal>> entry : animals.entrySet()) {
+            // Safe to check size on CopyOnWriteArrayList
+            if (entry.getValue().size() >= 2) {
+                result.add(entry.getKey());
+            }
+        }
+        return result;
     }
 
     public List<Animal> getAnimals() {
+        // Safely collect all animals into a new list
         return animals.values().stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
@@ -152,9 +153,9 @@ public class MapElementsManager {
     public WorldElement objectAt(Vector2d position) {
         List<Animal> list = animals.get(position);
         if (list != null && !list.isEmpty()) {
-            return list.getFirst();
-        } else {
-            return plants.get(position);
+            // CopyOnWriteArrayList makes this get(0) safe even if simulation is adding animals
+            return list.get(0);
         }
+        return plants.get(position);
     }
 }
