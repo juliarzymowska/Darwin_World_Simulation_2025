@@ -428,6 +428,13 @@ The project includes 3 pre-configured scenarios in `src/premade_configurations/`
 
 ---
 
+## Autorzy
+
+- [Juliet2112](https://github.com/juliet2112)
+- [Juliarzymowska](https://github.com/juliarzymowska)
+
+---
+
 ## 📚 Credits
 
 ### Project Base
